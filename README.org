@@ -1,0 +1,227 @@
+#+TITLE: snvec-R
+#+AUTHOR: Ilja J. Kocken
+#+EMAIL: ikocken@hawaii.edu
+written by Ilja J. Kocken [[https://orcid.org/0000-0003-2196-8718][orcid:0000-0003-2196-8718]]
+
+#+PROPERTY: header-args:R  :session *R:snvec-R* :exports both :results output :eval no-export
+
+* working notes
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+This project aims to make the =snvec= C-code more readily available to R-users.
+
+snvec: Pre-computed Precession-Tilt solutions and C code.
+
+#+begin_quote
+When using snvec, cite as:
+
+A deep-time dating tool for paleo-applications utilizing obliquity
+and precession cycles: The role of dynamical ellipticity and tidal
+dissipation, Richard E. Zeebe and Lucas J. Lourens, Paleoceanography
+and Paleoclimatology, 2022.
+
+Richard E. Zeebe
+School of Ocean and Earth
+Science and Technology
+University of Hawaii at Manoa
+1000 Pope Road, MSB 504
+Honolulu, HI 96822, USA
+email: zeebe@soest.hawaii.edu
+#+end_quote
+
+what the code must do:
+
+** read in the orbital solution ZB18a
+[[file:snvec-3.7.5/ems-plan3.dat]]
+
+#+begin_src R :results value :colnames yes
+  library(readr)
+
+  dat <- read_table("snvec-3.7.5/ems-plan3.dat",
+                    comment = "#",
+                    skip = 3,
+                    col_names = c(
+                      "time",
+                      "x1", "x2", "x3",
+                      "v1", "v2", "v3",
+                      "semimajor_axis"#,
+                      ## "eccentricity",
+                      ## "inclination",
+                      ## "long_ascend_node",
+                      ## "arg_periapse",
+                      ## "long_periapse",
+                      ## "time_periapse",
+                      ## "peri_distance",
+                      ## "mean_anomaly", "true_anomaly",
+                      ## "mean_longitude", "true_longitude",
+                      ## "mean_latitude", "true_latitude",
+                      ## "mass",
+                      ## "enc_radius",
+                      ## "capt_radius",
+                      ## "id_tag",
+                      ## "jac_index"
+                    ))
+
+  head(dat) |> round(2)
+#+end_src
+
+#+RESULTS:
+|    time | x1 |   x2 |   x3 |    v1 |      v2 |      v3 | semimajor_axis |
+|---------+----+------+------+-------+---------+---------+----------------|
+|       0 |  1 | 0.02 | 7.15 | 27.32 |     180 | -152.68 |          -2.45 |
+| -146100 |  1 | 0.02 | 7.15 | 26.12 | -179.59 | -154.29 |           1.27 |
+| -292200 |  1 | 0.02 | 7.14 | 24.69 | -179.17 | -156.14 |           5.22 |
+| -438300 |  1 | 0.02 | 7.12 | 23.67 | -178.75 | -157.58 |           8.75 |
+| -584400 |  1 | 0.02 | 7.11 | 22.12 | -178.34 | -159.54 |           12.8 |
+| -730500 |  1 | 0.02 |  7.1 |    21 | -177.92 | -161.08 |          16.45 |
+
+** snvec.c
+
+*** define global variables
+once we turn this into a package, best to define them using a function
+#+begin_src R
+  ## def_globals <- function()
+#+end_src
+
+for now do it the simple way
+#+begin_src R
+  AU <- 1.49597870700e11 # m
+  GM <- 1.32712440041e20 # m3/s2
+  OM <- 7.292115e-5      # 1/s EarthRot
+  R0 <- 3.8440e8         # m Moon R0
+  GK <- 0.9925194        # Kinoshita75,77
+  ED0 <- 0.0032738134    # DynEll (C-A)/C
+  FGP <- 0.99961908
+  AU3 <- AU * AU * AU
+  R03 <- R0 * R0 * R0
+  # no need to define pi in R
+  R2D <- 180. / pi       # radians to deg
+
+  D2S <- 3600. * 24.
+  Y2D <- 365.25
+  KY2D <- 1.e3 * Y2D
+
+  # set default Ed, Td
+  ED <- 1.0000         # set factor 1.0
+  TD <- 0.0000         # set factor 0.0
+
+  # mass ratios
+  MSEL <- 328900.5596      # MS/(ME+ML)
+  MEL <- 81.300568         # ME/ML
+  MLS <- 1. / (MSEL * (1 + MEL)) # ML/MS
+  # K0, beta0 for torques
+  K0 <- (3. / 2.) * GM * ED0 * ED / (OM * AU3)
+  K0D <- K0 * D2S          # 1/s => 1/d */
+  BET0 <- GK * MLS * AU3 / R03
+  K0B0 <- K0D * (1. + BET0)
+  # Moon mean motion
+  N0 <- sqrt(GM / MSEL / R03)
+  NW0 <- (N0 / OM) # ratio (n/om)_0
+  # Tidal dissipation Quinn91 Eqs. (3, 11)
+  # NDN = (dndt/n)_0, WDW = (domdt/om)_0
+  NDN <- (-4.6e-18 * D2S * TD) # 1/s => 1/d
+  WDW <- (51. * NDN * NW0)     # Lambeck80
+  # tidal effect on obliquity
+  UEPSDOT <- -4.17e-19
+
+  # SunRot Angles (Transform to HCI)
+  OMT <- 75.5940
+  INCT <- 7.155
+  EP0 <- 23.439291111111110 # Obliquity t0
+#+end_src
+
+#+RESULTS:
+
+*** quick interpolation
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*===================== qinterp() ============================*/][qinterp()]]
+not sure if needed, could just use R's interp?
+#+begin_src R
+  qinterp <- function(y, ds, dx, m) {
+    yi <- y[m]
+    dy <- 0.
+    dsa <- abs(ds)
+    dxa <- abs(x)
+    mm <- 1L
+
+    if (dxa > DBL_EPSILON) {
+      mm <- m -
+    }
+  }
+#+end_src
+
+linear interpolation using approx
+#+begin_src R
+  x = c(41, 45, seq(48, 50, length.out = 8))
+  y = rnorm(length(x), 0, 1)
+  z = approx(x = x, y = y, xout = 41:50)$y
+
+  plot(x, y, type = "o")
+  points(41:50, z, col = "red", pch = 3)
+#+end_src
+
+#+RESULTS:
+: [1m[33mError[39m in `tibble()`:[22m
+: [1m[22m[33m![39m Tibble columns must have compatible sizes.
+: [36m•[39m Size 10: Existing data.
+: [36m•[39m Size 50: Column `z`.
+: [36mℹ[39m Only values of size one are recycled.
+: [90mRun `rlang::last_trace()` to see where the error occurred.[39m
+
+*** unwrap
+I used some help by chatgpt for the next few functions to explain the c-code
+
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== unwrap() ============================*/][unwrap()]]
+#+begin_src R
+  #' unwrap angle.
+  #'
+  #' unwrap angle. maps jumps greater than pi to their 2pi complement.
+  unwrap <- function(y) {
+    stopifnot(length(y) > 1L)
+
+    dy <- diff(y) / R2D
+
+    cor <- cumsum(ifelse(dy > pi, -2 * pi,
+                  ifelse(dy < -pi, 2 * pi, 0)))
+    yu <- y[-1] + cor * R2D
+    return(c(y[1], yu))
+  }
+#+end_src
+
+*** euler
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*======================= euler() ============================*/][euler()]]
+#+begin_src R
+  #' Euler transformation.
+  #'
+  #' s* = A * s, where spin vector s is in invariable plane and s* in instant
+  #' orbit plane. inv = 1 gives inverse transformation (A^-1 = A' =
+  #' transpose(A)).
+  euler <- function(s, inc, lan, inv = FALSE) {
+    a <- matrix(c(cos(lan), sin(lan), 0,
+                  -cos(inc)*sin(lan), cos(inc)*cos(lan), sin(inc),
+                  sin(inc)*sin(lan), -sin(inc)*cos(lan), cos(inc)), nrow = 3)
+    if (inv) a <- t(a)
+    t(a %*% s)
+  }
+#+end_src
+
+*** fvei
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== fvei() ==============================*/][fvei()]]
+calculates global h,k,p,q etc. from ecc,inc etc.
+
+*** finargs
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== finargs() ===========================*/][finargs()]]
+
+*** fedtd
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== fedtd() =============================*/][fedtd()]]
+
+*** finits
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== finits() ============================*/][finits()]]
+
+*** derivs
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== derivs() ============================*/][derivs()]]
+
+*** driver
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*======================== driver() ==========================*/][driver()]]
+** calculate precession and obliquity/tilt based on values for \(E_{d}\) and \(T_{d}\)
+** make the output easily accessible as well
