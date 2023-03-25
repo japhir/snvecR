@@ -33,7 +33,13 @@ email: zeebe@soest.hawaii.edu
 what the code must do:
 
 ** read in the orbital solution ZB18a
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
 [[file:snvec-3.7.5/ems-plan3.dat]]
+
+the top of the file has some lines specifying which columns were used
+0  7  8  9  12 10 11 15
 
 #+begin_src R :results value :colnames yes
   library(readr)
@@ -43,17 +49,17 @@ what the code must do:
                     skip = 3,
                     col_names = c(
                       "time",
-                      "x1", "x2", "x3",
-                      "v1", "v2", "v3",
-                      "semimajor_axis"#,
-                      ## "eccentricity",
-                      ## "inclination",
-                      ## "long_ascend_node",
-                      ## "arg_periapse",
-                      ## "long_periapse",
+                      ## "x1", "x2", "x3",
+                      ## "v1", "v2", "v3",
+                      "semimajor_axis",
+                      "eccentricity",
+                      "inclination",
+                      "long_periapse",
                       ## "time_periapse",
+                      "long_ascend_node",
+                      "arg_periapse",
                       ## "peri_distance",
-                      ## "mean_anomaly", "true_anomaly",
+                      "mean_anomaly"#, "true_anomaly",
                       ## "mean_longitude", "true_longitude",
                       ## "mean_latitude", "true_latitude",
                       ## "mass",
@@ -67,24 +73,16 @@ what the code must do:
 #+end_src
 
 #+RESULTS:
-|    time | x1 |   x2 |   x3 |    v1 |      v2 |      v3 | semimajor_axis |
-|---------+----+------+------+-------+---------+---------+----------------|
-|       0 |  1 | 0.02 | 7.15 | 27.32 |     180 | -152.68 |          -2.45 |
-| -146100 |  1 | 0.02 | 7.15 | 26.12 | -179.59 | -154.29 |           1.27 |
-| -292200 |  1 | 0.02 | 7.14 | 24.69 | -179.17 | -156.14 |           5.22 |
-| -438300 |  1 | 0.02 | 7.12 | 23.67 | -178.75 | -157.58 |           8.75 |
-| -584400 |  1 | 0.02 | 7.11 | 22.12 | -178.34 | -159.54 |           12.8 |
-| -730500 |  1 | 0.02 |  7.1 |    21 | -177.92 | -161.08 |          16.45 |
+|    time | semimajor_axis | eccentricity | inclination | long_periapse | long_ascend_node | arg_periapse | mean_anomaly |
+|---------+----------------+--------------+-------------+---------------+------------------+--------------+--------------|
+|       0 |              1 |         0.02 |        7.15 |         27.32 |              180 |      -152.68 |        -2.45 |
+| -146100 |              1 |         0.02 |        7.15 |         26.12 |          -179.59 |      -154.29 |         1.27 |
+| -292200 |              1 |         0.02 |        7.14 |         24.69 |          -179.17 |      -156.14 |         5.22 |
+| -438300 |              1 |         0.02 |        7.12 |         23.67 |          -178.75 |      -157.58 |         8.75 |
+| -584400 |              1 |         0.02 |        7.11 |         22.12 |          -178.34 |      -159.54 |         12.8 |
+| -730500 |              1 |         0.02 |         7.1 |            21 |          -177.92 |      -161.08 |        16.45 |
 
-** snvec.c
-
-*** define global variables
-once we turn this into a package, best to define them using a function
-#+begin_src R
-  ## def_globals <- function()
-#+end_src
-
-for now do it the simple way
+** global variables
 #+begin_src R
   AU <- 1.49597870700e11 # m
   GM <- 1.32712440041e20 # m3/s2
@@ -133,8 +131,274 @@ for now do it the simple way
 
 #+RESULTS:
 
-*** quick interpolation
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*===================== qinterp() ============================*/][qinterp()]]
+** extract values from solution
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 14:14]
+:END:
+#+begin_src R
+  ee <- dat$eccentricity
+  inc <- dat$inclination
+  lph <- dat$long_periapse
+  lan <- dat$long_ascend_node
+#+end_src
+
+#+RESULTS:
+
+** input parameters of the final function/program
+#+begin_src R
+  ed <- 1
+  td <- 0
+  tend <- -1e3
+#+end_src
+
+#+RESULTS:
+
+*** calculate parameters that vary as a function of Ed and Td
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 14:40]
+:END:
+see fedtd
+#+begin_src R
+  # as a function of ed, td
+  k0d <- ((3./2.)*GM*ED0*ed/(OM*AU3))*D2S # 1/s => 1/d
+  k0b0 <- k0d*(1.+BET0)
+  ndn <- -4.6e-18*D2S*td # 1/s => 1/d
+  wdw <- 51.*ndn*NW0 # Lambeck80, see PTman
+  tdg <- td # global Td
+#+end_src
+
+#+RESULTS:
+
+*** calculate helper parameters
+#+begin_src R
+  hh <- ee * sin(lph / R2D)
+  kk <- ee * cos(lph / R2D)
+  pp <- 2. * sin(0.5 * inc / R2D) * sin(lan / R2D)
+  qq <- 2. * sin(0.5 * inc / R2D) * cos(lan / R2D)
+  cc <- cos(inc / R2D)
+  dd <- cos(inc / R2D/2.)
+  ## /* nn <- nvec(t): normal to orbit */
+  nn <- matrix(nrow = length(inc), ncol = 3)
+  nn[, 1] <-  sin(inc / R2D) * sin(lan / R2D)
+  nn[, 2] <- -sin(inc / R2D) * cos(lan / R2D)
+  nn[, 3] <-  cos(inc / R2D)
+#+end_src
+
+#+RESULTS:
+
+
+*** NEXT linearly interpolate them
+#+begin_src R :eval never
+  dx = t-ts[m];
+  qqi = qinterp(qq,dts,dx,m);
+  ppi = qinterp(pp,dts,dx,m);
+  cci = qinterp(cc,dts,dx,m);
+  ddi = qinterp(dd,dts,dx,m);
+#+end_src
+
+*** pre-computed ff
+#+begin_src R
+  ff <- (1.-hh*hh-kk*kk)
+  ff <- 1./sqrt(ff*ff*ff)
+#+end_src
+
+#+RESULTS:
+
+*** define parameters
+#+begin_src R :eval never
+  parameters <- c(
+    qqi = interp(qq, dts, dx, m),
+    ppi = interp(pp, dts, dx, m),
+    cci = interp(cc, dts, dx, m),
+    ddi = interp(dd, dts, dx, m),
+  )
+#+end_src
+
+#+RESULTS:
+: Error in interp(qq, dts, dx, m) : could not find function "interp"
+
+for now without interpolation
+
+#+begin_src R
+  parameters <- c(
+    ff = ff[1],
+
+    qqi = qq[1],
+    ppi = pp[1],
+    cci = cc[1],
+    ddi = dd[1]
+  )
+#+end_src
+
+#+RESULTS:
+
+*** the euler transformation
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 15:14]
+:END:
+
+#+begin_src R
+  #' Euler transformation.
+  #'
+  #' s* = A * s, where spin vector s is in invariable plane and s* in instant
+  #' orbit plane. inv = 1 gives inverse transformation (A^-1 = A' =
+  #' transpose(A)).
+  #' @param s The vector to be transformed.
+  #' @param inc  The inclination.
+  #' @param lan  The Long Ascending Node
+  #' @param inv  Invert the output.
+  euler <- function(s, inc, lan, inv = FALSE) {
+    a <- matrix(c(cos(lan), sin(lan), 0,
+                  -cos(inc)*sin(lan), cos(inc)*cos(lan), sin(inc),
+                  sin(inc)*sin(lan), -sin(inc)*cos(lan), cos(inc)), nrow = 3)
+    if (inv) a <- t(a)
+    t(a %*% s)
+  }
+#+end_src
+
+#+RESULTS:
+
+*** initial values for the state variables
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 14:04]
+:END:
+
+use finits to get initial conditions in transformed ECLIPJ2000
+
+#+begin_src R
+  N <- nn[1, ]
+  omt <- OMT / R2D
+  inct <- INCT / R2D
+  ep0 <- EP0 / R2D
+  cs <- cos(ep0)
+
+  np <- euler(N, inct, omt, 1)
+
+  a <- np[2] * np[2] + np[3]*np[3]
+  b <- -2 * cs * np[2]
+  c <- cs*cs - np[3] * np[3]
+
+  s0p <- c(NA, NA, NA)
+  s0p[2] <- (-b + sqrt(b*b-4*a*c))/(2*a)
+  s0p[3] <- sqrt(1-s0p[2]*s0p[2])
+  s0p[1] <- 0
+  as.matrix(s0p)
+
+  # transform s0' to s0
+  s0 <- euler(s0p, inct, omt, 0)
+#+end_src
+
+#+RESULTS:
+:           [,1]
+: [1,] 0.0000000
+: [2,] 0.5208739
+: [3,] 0.8536336
+
+#+begin_src R
+  state <- c(sx = s0[1],
+             sy = s0[2],
+             sz = s0[3])
+#+end_src
+
+#+RESULTS:
+
+*** the differential equations
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 11:56]
+:END:
+see [[derivs]]
+
+#+begin_src R
+  eqns <- function(t, state, parameters) {
+    with(as.list(c(state, parameters)), {
+
+      kb <- k0d*(1.+1.*wdw*t)*(ff + BET0*(1.+2.*ndn*t))
+      fac = FGP * kb * (ddi * (ppi * sx - qqi * sy) + cci * sz)
+
+      dX <-  fac * ( cci * sy + ddi * qqi * sz)
+      dY <-  fac * (-cci * sx + ddi * ppi * sz)
+      dZ <- -fac * ( qqi * sx + ppi * sy) * ddi
+
+      list(c(dX, dY, dZ))
+    }) # end 'with(as.list( ...
+  }
+#+end_src
+
+#+RESULTS:
+
+*** timesteps for which to integrate
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 14:08]
+:END:
+
+
+#+begin_src R
+  ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
+  times <- seq(tend * KY2D, 0, by = 1 * KY2D)
+#+end_src
+
+#+RESULTS:
+
+
+*** solve the system of ODEs
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 14:11]
+:END:
+
+odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
+
+#+begin_src R
+  library(deSolve)
+  out <- ode(y = state, times = times, func = eqns, parms = parameters)
+  head(out)
+#+end_src
+
+#+RESULTS:
+:            time         sx        sy        sz
+: [1,] -365250000 -0.3975872 0.1021274 0.9118632
+: [2,] -364884750 -0.3887436 0.1978961 0.8998412
+: [3,] -364519500 -0.3568203 0.2887001 0.8884425
+: [4,] -364154250 -0.3037115 0.3691479 0.8783437
+: [5,] -363789000 -0.2325699 0.4344631 0.8701445
+: [6,] -363423750 -0.1476207 0.4807665 0.8643319
+
+*** plot the output
+clean it up because I cannot deal with base graphics right now
+
+#+begin_src R :results output graphics file :output graphics file :file 2023-03-24_output.png :width 700
+  library(tidyverse)
+
+  out |>
+   as_tibble() |>
+   pivot_longer(cols=c(sx, sy, sz)) |>
+   ggplot(aes(x = time, y = value, colour = name)) +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:2023-03-24_output.png]]
+
+** snvec.c
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+[[file:snvec-3.7.5/snvec-3.7.5.c]]
+
+*** define global variables
+once we turn this into a package, best to define them using a function
+#+begin_src R
+  ## def_globals <- function()
+#+end_src
+
+for now do it the simple way
+
+#+RESULTS:
+
+*** SOME quick interpolation
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:38]
+:END:
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
 not sure if needed, could just use R's interp?
 #+begin_src R
   qinterp <- function(y, ds, dx, m) {
@@ -168,10 +432,18 @@ linear interpolation using approx
 : [36mℹ[39m Only values of size one are recycled.
 : [90mRun `rlang::last_trace()` to see where the error occurred.[39m
 
-*** unwrap
+#+begin_src R
+    qinterp <- function(x) {
+    approx(x = x, y = y, xout = )
+  }
+#+end_src
+*** SOME unwrap
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:38]
+:END:
 I used some help by chatgpt for the next few functions to explain the c-code
 
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== unwrap() ============================*/][unwrap()]]
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
 #+begin_src R
   #' unwrap angle.
   #'
@@ -189,39 +461,152 @@ I used some help by chatgpt for the next few functions to explain the c-code
 #+end_src
 
 *** euler
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*======================= euler() ============================*/][euler()]]
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:39]
+:END:
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
+
+#+RESULTS:
+
+*** fvei
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
+calculates global h,k,p,q etc. from ecc,inc etc.
+
 #+begin_src R
-  #' Euler transformation.
+  #' fvei
   #'
-  #' s* = A * s, where spin vector s is in invariable plane and s* in instant
-  #' orbit plane. inv = 1 gives inverse transformation (A^-1 = A' =
-  #' transpose(A)).
-  euler <- function(s, inc, lan, inv = FALSE) {
-    a <- matrix(c(cos(lan), sin(lan), 0,
-                  -cos(inc)*sin(lan), cos(inc)*cos(lan), sin(inc),
-                  sin(inc)*sin(lan), -sin(inc)*cos(lan), cos(inc)), nrow = 3)
-    if (inv) a <- t(a)
-    t(a %*% s)
+  #' calculates global h,k,p,q etc. from ecc,inc etc.
+  fvei <- function(ee, inc, lph, lan, ls) {
+    hh <- ee * sin(lph / R2D)
+    kk <- ee * cos(lph / R2D)
+    pp <- 2. * sin(0.5 * inc / R2D) * sin(lan / R2D)
+    qq <- 2. * sin(0.5 * inc / R2D) * cos(lan / R2D)
+    cc <- cos(inc / R2D)
+    dd <- cos(inc / R2D/2.)
+    ## /* nn <- nvec(t): normal to orbit */
+    nn[1] <-  sin(inc / R2D) * sin(lan / R2D)
+    nn[2] <- -sin(inc / R2D) * cos(lan / R2D)
+    nn[3] <-  cos(inc / R2D)
   }
 #+end_src
 
-*** fvei
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== fvei() ==============================*/][fvei()]]
-calculates global h,k,p,q etc. from ecc,inc etc.
-
+for now put these values in a simple script below
 *** finargs
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== finargs() ===========================*/][finargs()]]
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== finargs()][finargs()]]
+ parse input arguments. arg list:
+ [1] tend
+ [2] Ed
+ [3] Td
+ [4] dir  OrbitSoln
+ [5] file OrbitSoln
 
 *** fedtd
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== fedtd() =============================*/][fedtd()]]
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
+calculates global vars ndn,wdw,k0d from Td,Ed
+
+#+begin_src R
+  # as a function of ed, td
+  k0d <- ((3./2.)*GM*ED0*ed/(OM*AU3))*D2S # 1/s => 1/d
+  k0b0 <- k0d*(1.+BET0)
+  ndn <- -4.6e-18*D2S*td # 1/s => 1/d
+  wdw <- 51.*ndn*NW0 # Lambeck80, see PTman
+  tdg <- td # global Td
+#+end_src
+
+#+RESULTS:
+: Error: object 'ed' not found
+: Error: object 'k0d' not found
+: Error: object 'td' not found
+: Error: object 'ndn' not found
+: Error: object 'td' not found
 
 *** finits
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== finits() ============================*/][finits()]]
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== finits() ][finits()]]
+init spin vector, transform to HCI
+s,n in HCI. s',n' in ECLIPJ2000
+
+calculates np
+s0p
+via euler transform
 
 *** derivs
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*====================== derivs() ============================*/][derivs()]]
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== derivs()][derivs()]]
 
+derivatives. RHS of DEQs for spin vector s = y
+
+uses quinterp
+#+begin_src R
+  derivs <- function(t, y, yp) {
+    kb <- ...
+    ...
+  }
+#+end_src
+
+yp[1]
+yp[2]
+yp[3] are the differential equations
+
+qq pp = g-modes and s-modes, direct
+cp derivs of h and k,
+h and k from g-modes, calculate from ecc and long perihelion
+
+these are prepped in fvei
 *** driver
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::/*======================== driver() ==========================*/][driver()]]
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== driver()][driver()]]
+driver routine solving DEQs for spin vector s = y.
+
+this calls =odeint=
+
+odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
+
+where y0 = a vector of size 3 (simple matrix)
+NEQ = 3
+t0 = 0.0
+tfin = tfink * KY2D # days negative
+  tfink =  tend = TEND = -1e3 (see finargs)
+EPSLVR = 1e-7 global solver control
+h1 = 0.1*dxsav
+  dxsav = (tfin - t0)/kmax
+  kmax = floor(1000.*2.656*sckx)
+  sckx = fabs(tfink/1e3)
+hmin = 0.0
+&nok = ??
+&nbad = ??
+derivs = function(t, *y, *yp)
+stiff = ??
+
+*** odeint
+[[file:snvec-3.7.5/fun/solver.c]]
+Runge-Kutta driver. calls derivs and SOLVER.
+Runge-Kutta driver with adaptive stepsize control. Integrate starting
+values ystart[1..nvar] from x1 to x2 with accuracy eps, storing
+intermediate results in global variables. h1 should be set as a
+guessed first stepsize, hmin as the minimum allowed stepsize (can be
+zero). On output nok and nbad are the number of good and bad (but retried
+and fixed) steps taken, and ystart is replaced by values at the end of
+the integration interval. derivs is the user-supplied routine for
+calculating the right-hand side derivative, while SOLVER is the name
+of the stepper routine to be used.
+
+** inspect deSolve package
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 12:02]
+:END:
+https://cran.r-project.org/package=deSolve
+the implicit Runge-Kutta method RADAU (Hairer and Wanner 2010). The package contains also a de novo implementation of several Runge-Kutta methods (Butcher 1987; Press et al. 1992; Hairer, Norsett, and Wanner 2009).
+
 ** calculate precession and obliquity/tilt based on values for \(E_{d}\) and \(T_{d}\)
-** make the output easily accessible as well
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+** SOME make the output easily accessible as well
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 13:59]
+:END:
+** what are the parameters that are needed for the differential equations?
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 13:54]
+:END:
