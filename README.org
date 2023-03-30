@@ -30,7 +30,73 @@ Honolulu, HI 96822, USA
 email: zeebe@soest.hawaii.edu
 #+end_quote
 
-what the code must do:
+** load libraries
+:PROPERTIES:
+:CREATED:  [2023-03-30 Thu 09:14]
+:END:
+#+begin_src R
+  library(tidyverse)
+  # make sure you have `glue` for the info messages
+#+end_src
+
+** set the version
+:PROPERTIES:
+:CREATED:  [2023-03-28 Tue 13:32]
+:END:
+#+begin_src R
+ VER <- "snvec.r VERSION: 3.7.5 03/2023"
+#+end_src
+
+#+RESULTS:
+
+** global variables
+#+begin_src R
+  AU <- 1.49597870700e11 # m
+  GM <- 1.32712440041e20 # m3/s2
+  OM <- 7.292115e-5      # 1/s EarthRot
+  R0 <- 3.8440e8         # m Moon R0
+  GK <- 0.9925194        # Kinoshita75,77
+  ED0 <- 0.0032738134    # DynEll (C-A)/C
+  FGP <- 0.99961908
+  AU3 <- AU * AU * AU
+  R03 <- R0 * R0 * R0
+  # no need to define pi in R
+  R2D <- 180. / pi       # radians to deg
+
+  D2S <- 3600. * 24.
+  Y2D <- 365.25
+  KY2D <- 1.e3 * Y2D
+
+  # set default Ed, Td
+  ED <- 1.0000         # set factor 1.0
+  TD <- 0.0000         # set factor 0.0
+
+  # mass ratios
+  MSEL <- 328900.5596      # MS/(ME+ML)
+  MEL <- 81.300568         # ME/ML
+  MLS <- 1. / (MSEL * (1 + MEL)) # ML/MS
+  # K0, beta0 for torques
+  K0 <- (3. / 2.) * GM * ED0 * ED / (OM * AU3)
+  K0D <- K0 * D2S          # 1/s => 1/d */
+  BET0 <- GK * MLS * AU3 / R03
+  K0B0 <- K0D * (1. + BET0)
+  # Moon mean motion
+  N0 <- sqrt(GM / MSEL / R03)
+  NW0 <- (N0 / OM) # ratio (n/om)_0
+  # Tidal dissipation Quinn91 Eqs. (3, 11)
+  # NDN = (dndt/n)_0, WDW = (domdt/om)_0
+  NDN <- (-4.6e-18 * D2S * TD) # 1/s => 1/d
+  WDW <- (51. * NDN * NW0)     # Lambeck80
+  # tidal effect on obliquity
+  UEPSDOT <- -4.17e-19
+
+  # SunRot Angles (Transform to HCI)
+  OMT <- 75.5940
+  INCT <- 7.155
+  EP0 <- 23.439291111111110 # Obliquity t0
+#+end_src
+
+#+RESULTS:
 
 ** read in the orbital solution ZB18a
 :PROPERTIES:
@@ -82,67 +148,21 @@ the top of the file has some lines specifying which columns were used
 | -584400 |              1 |         0.02 |        7.11 |         22.12 |          -178.34 |      -159.54 |         12.8 |
 | -730500 |              1 |         0.02 |         7.1 |            21 |          -177.92 |      -161.08 |        16.45 |
 
-** global variables
-#+begin_src R
-  AU <- 1.49597870700e11 # m
-  GM <- 1.32712440041e20 # m3/s2
-  OM <- 7.292115e-5      # 1/s EarthRot
-  R0 <- 3.8440e8         # m Moon R0
-  GK <- 0.9925194        # Kinoshita75,77
-  ED0 <- 0.0032738134    # DynEll (C-A)/C
-  FGP <- 0.99961908
-  AU3 <- AU * AU * AU
-  R03 <- R0 * R0 * R0
-  # no need to define pi in R
-  R2D <- 180. / pi       # radians to deg
-
-  D2S <- 3600. * 24.
-  Y2D <- 365.25
-  KY2D <- 1.e3 * Y2D
-
-  # set default Ed, Td
-  ED <- 1.0000         # set factor 1.0
-  TD <- 0.0000         # set factor 0.0
-
-  # mass ratios
-  MSEL <- 328900.5596      # MS/(ME+ML)
-  MEL <- 81.300568         # ME/ML
-  MLS <- 1. / (MSEL * (1 + MEL)) # ML/MS
-  # K0, beta0 for torques
-  K0 <- (3. / 2.) * GM * ED0 * ED / (OM * AU3)
-  K0D <- K0 * D2S          # 1/s => 1/d */
-  BET0 <- GK * MLS * AU3 / R03
-  K0B0 <- K0D * (1. + BET0)
-  # Moon mean motion
-  N0 <- sqrt(GM / MSEL / R03)
-  NW0 <- (N0 / OM) # ratio (n/om)_0
-  # Tidal dissipation Quinn91 Eqs. (3, 11)
-  # NDN = (dndt/n)_0, WDW = (domdt/om)_0
-  NDN <- (-4.6e-18 * D2S * TD) # 1/s => 1/d
-  WDW <- (51. * NDN * NW0)     # Lambeck80
-  # tidal effect on obliquity
-  UEPSDOT <- -4.17e-19
-
-  # SunRot Angles (Transform to HCI)
-  OMT <- 75.5940
-  INCT <- 7.155
-  EP0 <- 23.439291111111110 # Obliquity t0
-#+end_src
-
-#+RESULTS:
-
-** extract values from solution
+** rename some of the names in dat
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:14]
 :END:
 #+begin_src R
-  ee <- dat$eccentricity
-  inc <- dat$inclination
-  lph <- dat$long_periapse
-  lan <- dat$long_ascend_node
+  dat <- dat |>
+    tidylog::rename(
+      ee = eccentricity,
+      inc = inclination,
+      lph = long_periapse,
+      lan = long_ascend_node)
 #+end_src
 
 #+RESULTS:
+: rename: renamed 4 variables (ee, inc, lph, lan)
 
 ** input parameters of the final function/program
 #+begin_src R
@@ -153,86 +173,148 @@ the top of the file has some lines specifying which columns were used
 
 #+RESULTS:
 
-*** calculate parameters that vary as a function of Ed and Td
+** check inputs
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 11:56]
+:END:
+#+begin_src R
+  if (tend >= 0) {
+    stop(glue::glue("`tend` must be < 0, but tend = {tend}"))
+  }
+  if (tend < min(dat$time)) {
+    stop(glue::glue("`tend` must be < the orbital solution {min(dat$time)} but tend = {tend}."))
+  }
+#+end_src
+
+#+RESULTS:
+
+** message user about inputs
+:PROPERTIES:
+:CREATED:  [2023-03-28 Tue 13:31]
+:END:
+#+begin_src R
+  message(glue::glue("This is {VER}"))
+  message("Richard E. Zeebe")
+  message("Ilja J. Kocken")
+  message("Integration parameters:")
+  message(glue::glue(" tend = {tend} kyr"))
+  message(glue::glue(" Ed = {ed}"))
+  message(glue::glue(" Td = {td}"))
+#+end_src
+
+#+RESULTS:
+: This is snvec.r VERSION: 3.7.5 03/2023
+: Richard E. Zeebe
+: Ilja J. Kocken
+: Integration parameters:
+:  tend = -1000 kyr
+:  Ed = 1
+:  Td = 0
+
+** calculate helper parameters
+see fvei
+helper parameters as new columns of dat
+#+begin_src R
+  dat <- dat |>
+    mutate(age = - time / KY2D, .after = time) |>
+    mutate(hh = ee * sin(lph / R2D),
+           kk = ee * cos(lph / R2D),
+           pp = 2 * sin(0.5 * inc / R2D) * sin(lan / R2D),
+           qq = 2 * sin(0.5 * inc / R2D) * cos(lan / R2D),
+           cc = cos(inc / R2D),
+           dd = cos(inc / R2D / 2),
+           ## /* nn <- nvec(t): normal to orbit */
+           nnx = sin(inc / R2D) * sin(lan / R2D),
+           nny = -sin(inc / R2D) * cos(lan / R2D),
+           nnz = cos(inc / R2D))
+#+end_src
+
+#+RESULTS:
+
+** plot orbital solution input
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 14:20]
+:END:
+*** ee
+#+begin_src R :results output graphics file :file input_ee.png :width 700
+  dat |>
+   ggplot(aes(x = age / 1e3, y = ee)) +
+   labs(x = "Age (Ma)", y = "Eccentricity") +
+   scale_x_reverse() +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:input_ee.png]]
+
+*** inc
+#+begin_src R :results output graphics file :file input_inc.png :width 700
+  dat |>
+   ggplot(aes(x = age / 1e3, y = inc)) +
+   labs(x = "Age (Ma)", y = "Inclination") +
+   scale_x_reverse() +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:input_inc.png]]
+
+*** lph
+#+begin_src R :results output graphics file :file input_lph.png :width 700
+  dat |>
+   ggplot(aes(x = age / 1e3, y = lph)) +
+   labs(x = "Age (Ma)", y = "Long Periapse") +
+   scale_x_reverse() +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:input_lph.png]]
+
+*** lan
+#+begin_src R :results output graphics file :file input_lan.png :width 700
+  dat |>
+   ggplot(aes(x = age / 1e3, y = lan)) +
+   labs(x = "Age (Ma)", y = "Long Ascending Node") +
+   scale_x_reverse() +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:input_lan.png]]
+
+*** h, k, p, q
+#+begin_src R :results output graphics file :file input_hkpq.png :width 700
+  dat |>
+    select(age, hh, kk, pp, qq) |>
+    pivot_longer(hh:qq) |>
+    ggplot(aes(x = age / 1e3, y = value)) +
+    labs(x = "Age (Ma)") +
+    scale_x_reverse() +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:input_hkpq.png]]
+
+** calculate global vars ndn, wdw, k0d from Td and Ed
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:40]
 :END:
 see fedtd
 #+begin_src R
   # as a function of ed, td
-  k0d <- ((3./2.)*GM*ED0*ed/(OM*AU3))*D2S # 1/s => 1/d
-  k0b0 <- k0d*(1.+BET0)
-  ndn <- -4.6e-18*D2S*td # 1/s => 1/d
-  wdw <- 51.*ndn*NW0 # Lambeck80, see PTman
+  k0d <- ((3 / 2) * GM * ED0 * ed / (OM * AU3)) * D2S # 1/s => 1/d
+  k0b0 <- k0d * (1 + BET0)
+  ndn <- -4.6e-18 * D2S * td # 1/s => 1/d
+  wdw <- 51 * ndn * NW0 # Lambeck80, see PTman
   tdg <- td # global Td
 #+end_src
 
 #+RESULTS:
 
-*** calculate helper parameters
-#+begin_src R
-  hh <- ee * sin(lph / R2D)
-  kk <- ee * cos(lph / R2D)
-  pp <- 2. * sin(0.5 * inc / R2D) * sin(lan / R2D)
-  qq <- 2. * sin(0.5 * inc / R2D) * cos(lan / R2D)
-  cc <- cos(inc / R2D)
-  dd <- cos(inc / R2D/2.)
-  ## /* nn <- nvec(t): normal to orbit */
-  nn <- matrix(nrow = length(inc), ncol = 3)
-  nn[, 1] <-  sin(inc / R2D) * sin(lan / R2D)
-  nn[, 2] <- -sin(inc / R2D) * cos(lan / R2D)
-  nn[, 3] <-  cos(inc / R2D)
-#+end_src
-
-#+RESULTS:
-
-
-*** NEXT linearly interpolate them
-#+begin_src R :eval never
-  dx = t-ts[m];
-  qqi = qinterp(qq,dts,dx,m);
-  ppi = qinterp(pp,dts,dx,m);
-  cci = qinterp(cc,dts,dx,m);
-  ddi = qinterp(dd,dts,dx,m);
-#+end_src
-
-*** pre-computed ff
-#+begin_src R
-  ff <- (1.-hh*hh-kk*kk)
-  ff <- 1./sqrt(ff*ff*ff)
-#+end_src
-
-#+RESULTS:
-
-*** define parameters
-#+begin_src R :eval never
-  parameters <- c(
-    qqi = interp(qq, dts, dx, m),
-    ppi = interp(pp, dts, dx, m),
-    cci = interp(cc, dts, dx, m),
-    ddi = interp(dd, dts, dx, m),
-  )
-#+end_src
-
-#+RESULTS:
-: Error in interp(qq, dts, dx, m) : could not find function "interp"
-
-for now without interpolation
-
-#+begin_src R
-  parameters <- c(
-    ff = ff[1],
-
-    qqi = qq[1],
-    ppi = pp[1],
-    cci = cc[1],
-    ddi = dd[1]
-  )
-#+end_src
-
-#+RESULTS:
-
-*** the euler transformation
+** the euler transformation
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 15:14]
 :END:
@@ -249,31 +331,38 @@ for now without interpolation
   #' @param inv  Invert the output.
   euler <- function(s, inc, lan, inv = FALSE) {
     a <- matrix(c(cos(lan), sin(lan), 0,
-                  -cos(inc)*sin(lan), cos(inc)*cos(lan), sin(inc),
-                  sin(inc)*sin(lan), -sin(inc)*cos(lan), cos(inc)), nrow = 3)
+                  -cos(inc) * sin(lan), cos(inc) * cos(lan), sin(inc),
+                  sin(inc) * sin(lan), -sin(inc) * cos(lan), cos(inc)),
+                nrow = 3)
     if (inv) a <- t(a)
-    t(a %*% s)
+    a %*% s
   }
 #+end_src
 
 #+RESULTS:
 
-*** initial values for the state variables
+** initial values for the spin vector s
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:04]
 :END:
+finits
 
 use finits to get initial conditions in transformed ECLIPJ2000
 
 #+begin_src R
-  N <- nn[1, ]
   omt <- OMT / R2D
   inct <- INCT / R2D
   ep0 <- EP0 / R2D
   cs <- cos(ep0)
 
-  np <- euler(N, inct, omt, 1)
+  # first row of nn -> needs to be a vector
+  # orbit normal at t=0
+  ninit <- with(dat |> slice(1), c(nnx, nny, nnz))  # IJK, named n in C-code
 
+  # transform n => n'
+  np <- euler(ninit, inct, omt, TRUE)
+
+  # solve quadratic equation for s0'y
   a <- np[2] * np[2] + np[3]*np[3]
   b <- -2 * cs * np[2]
   c <- cs*cs - np[3] * np[3]
@@ -294,6 +383,7 @@ use finits to get initial conditions in transformed ECLIPJ2000
 : [2,] 0.5208739
 : [3,] 0.8536336
 
+** set the deSolve state
 #+begin_src R
   state <- c(sx = s0[1],
              sy = s0[2],
@@ -302,22 +392,110 @@ use finits to get initial conditions in transformed ECLIPJ2000
 
 #+RESULTS:
 
-*** the differential equations
+** define deSolve parameters
+#+begin_src R
+  parameters <- c(
+    ed = ed,
+    td = td,
+    k0d = k0d,
+    wdw = wdw,
+    ndn = ndn)
+#+end_src
+
+#+RESULTS:
+
+** our inputs change as a function of time, so we need a function to describe them
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 09:06]
+:END:
+richard does this with qinterp
+http://desolve.r-forge.r-project.org/ has an article on time-varying inputs
+we use approxfun to generate a function that approximates =col= for timestep t.
+
+#+begin_src R
+  qinterp <- function(dat, col = ee) {
+    dat |>
+     select(time, {{col}}) |>
+     approxfun(rule = 2)
+  }
+#+end_src
+
+#+RESULTS:
+
+**** double-check that the interpolation is working
+#+begin_src R :eval never
+  input <- dat |>
+    select(time, ee) |>
+    approxfun(rule = 2)
+
+  # this creates a function that we can call from within the other function
+  # e.g.
+  input(1.42 * KY2D)
+#+end_src
+
+#+RESULTS:
+: [1] 0.01670545
+
+> I created the function
+
+#+begin_src R :results output graphics file :file qinterp_test.png
+  dat |>
+    slice(1:3) |>
+    ggplot(aes(x = time, y = lph)) +
+    geom_line() +
+    geom_point() +
+    annotate("point", x = -.45 * KY2D, y = qinterp(dat, lph)(-.45 * KY2D), col = "red")
+#+end_src
+
+#+RESULTS:
+[[file:qinterp_test.png]]
+
+** the differential equations
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 11:56]
 :END:
 see [[derivs]]
 
 #+begin_src R
+  # derivatives. RHS of DEQs for spin vector s = y
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
 
-      kb <- k0d*(1.+1.*wdw*t)*(ff + BET0*(1.+2.*ndn*t))
-      fac = FGP * kb * (ddi * (ppi * sx - qqi * sy) + cci * sz)
+      # K0, beta0 changing with Td, Ed
+      kb <- k0d * (1 + 1 * wdw * t) * (1 + BET0 * (1 + 2 * ndn * t))
+
+      # set time index of solution
+      dts <- diff(dat$time)[1]
+      ## t <- dat$time[5] # e.g.
+      m <- min(round(abs(t / dts) + 1), nrow(dat))
+
+      # for interpolation we can use t directly
+      ## if (qinterp) {
+      # we call on global dat for now
+      qqi <- qinterp(dat, qq)(t)
+      ppi <- qinterp(dat, pp)(t)
+      cci <- qinterp(dat, cc)(t)
+      ddi <- qinterp(dat, dd)(t)
+      ## }
+
+      # 1/(1-e^2)^3/2 term
+      ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
+      # shouldn't I also interpolate hh and kk?
+      ff <- 1 / sqrt(ff*ff*ff)
+      kb <- k0d * (1 + 1 * wdw * t) * (ff + BET0 * (1 + 2 * ndn * t))
+
+      fac <- FGP * kb * (ddi * (ppi * sx - qqi * sy) + cci * sz)
 
       dX <-  fac * ( cci * sy + ddi * qqi * sz)
       dY <-  fac * (-cci * sx + ddi * ppi * sz)
       dZ <- -fac * ( qqi * sx + ppi * sy) * ddi
+
+      # EPSDOT
+      ## dotab = s[1]*nn[1][m]+s[2]*nn[2][m]+s[3]*nn[3][m];
+      ## tmp = tdg*EPSDOT*D2S/sqrt(1.-dotab*dotab);
+      ## yp[1] += tmp*(nn[1][m] - dotab*s[1]);
+      ## yp[2] += tmp*(nn[2][m] - dotab*s[2]);
+      ## yp[3] += tmp*(nn[3][m] - dotab*s[3]);
 
       list(c(dX, dY, dZ))
     }) # end 'with(as.list( ...
@@ -326,11 +504,10 @@ see [[derivs]]
 
 #+RESULTS:
 
-*** timesteps for which to integrate
+** NEXT timesteps to report
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:08]
 :END:
-
 
 #+begin_src R
   ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
@@ -339,8 +516,7 @@ see [[derivs]]
 
 #+RESULTS:
 
-
-*** solve the system of ODEs
+** solve the system of ODEs
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:11]
 :END:
@@ -349,23 +525,23 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
 
 #+begin_src R
   library(deSolve)
-  out <- ode(y = state, times = times, func = eqns, parms = parameters)
-  head(out)
+  print(system.time(
+    out <- ode(y = state,
+               times = times,
+               func = eqns,
+               parms = parameters,
+               method = "rk4")
+  ))
 #+end_src
 
 #+RESULTS:
-:            time         sx        sy        sz
-: [1,] -365250000 -0.3975872 0.1021274 0.9118632
-: [2,] -364884750 -0.3887436 0.1978961 0.8998412
-: [3,] -364519500 -0.3568203 0.2887001 0.8884425
-: [4,] -364154250 -0.3037115 0.3691479 0.8783437
-: [5,] -363789000 -0.2325699 0.4344631 0.8701445
-: [6,] -363423750 -0.1476207 0.4807665 0.8643319
+: user  system elapsed
+: 351.876  12.550 366.878
 
 *** plot the output
 clean it up because I cannot deal with base graphics right now
 
-#+begin_src R :results output graphics file :output graphics file :file 2023-03-24_output.png :width 700
+#+begin_src R :results output graphics file :output graphics file :file 2023-03-29_output.png :width 700
   library(tidyverse)
 
   out |>
@@ -376,9 +552,188 @@ clean it up because I cannot deal with base graphics right now
 #+end_src
 
 #+RESULTS:
-[[file:2023-03-24_output.png]]
+[[file:2023-03-29_output.png]]
 
-** snvec.c
+** print the final values for s
+:LOGBOOK:
+- State "SOME"       from              [2023-03-29 Wed 12:03]
+:END:
+#+begin_src R
+  message(glue::glue("Final values for s:\n {paste(out[nrow(out), 2], out[nrow(out), 3], out[nrow(out), 4])}"))
+#+end_src
+
+#+RESULTS:
+: Final values for s:
+: 0.332791684826841 0.383763337618294 0.861097029093646
+
+** unwrap function
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:38]
+:END:
+I used some help by chatgpt for the next few functions to explain the c-code
+
+[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
+#+begin_src R
+  #' unwrap angle.
+  #'
+  #' unwrap angle. maps jumps greater than pi to their 2pi complement.
+  unwrap <- function(y) {
+    stopifnot(length(y) > 1L)
+
+    dy <- diff(y) / R2D
+
+    cor <- cumsum(ifelse(dy > pi, -2 * pi,
+                  ifelse(dy < -pi, 2 * pi, 0)))
+    yu <- y[-1] + cor * R2D
+    return(c(y[1], yu))
+  }
+#+end_src
+
+#+RESULTS:
+
+** unwrap
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:03]
+:END:
+unwrap lph, lan
+
+#+begin_src R
+  dat <- dat |>
+    mutate(lphu = unwrap(lph),
+           lanu = unwrap(lan))
+#+end_src
+
+#+RESULTS:
+
+lphu <- unwrap(lph, ls)
+
+** interpolate the orbital solution
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:04]
+:END:
+#+begin_src R
+  out <- out |>
+    as_tibble() |>
+    mutate(
+      ## m = min(round(abs(time / )))
+      ## dx = diff(time),
+      nnx = qinterp(dat, nnx)(time),
+      nny = qinterp(dat, nny)(time),
+      nnz = qinterp(dat, nnz)(time),
+      eei = qinterp(dat, ee)(time),
+      inci = qinterp(dat, inc)(time),
+      lphi = qinterp(dat, lphu)(time),
+      lani = qinterp(dat, lanu)(time)
+    )
+#+end_src
+
+#+RESULTS:
+
+** calculate obliquity
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:12]
+:END:
+#+begin_src R
+  out <- out |>
+    # for each row, extract sx, sy, sz, and nnx, nny, nnz as vectors
+    rowwise() |>
+    mutate(u = list(as.vector(c(sx, sy, sz))),
+           nni = list(as.vector(c(nnx, nny, nnz)))) |>
+    # and calculate the dotproduct
+    mutate(tmp = pracma::dot(u, nni),
+           epl = acos(tmp))
+#+end_src
+
+#+RESULTS:
+
+** calculate precession and climatic precession
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:14]
+:END:
+#+begin_src R
+  out <- out |>
+    # coords: fixed HCI => moving orbit plane
+    mutate(up = list(euler(u, inci / R2D, lani / R2D,0)),
+           # coords: relative to phi(t=0)=0 at J2000
+           up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0)),
+           phi = atan2(up[2], up[1]),
+           cp = eei * sin((lphi + OMT) / R2D - phi))
+#+end_src
+
+#+RESULTS:
+
+** message user about final values
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:18]
+:END:
+#+begin_src R
+  message(glue::glue("Final values obliquity, precession (rad): \n {paste(out[nrow(out), 'epl'], out[nrow(out), 'phi'])}"))
+#+end_src
+
+#+RESULTS:
+: Final values obliquity, precession (rad):
+: 0.445973680953389 -2.20220595876195
+
+** plot final values
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 14:14]
+:END:
+#+begin_src R :results output graphics file :file final_epl.png :width 700
+  out |>
+   mutate(age = -time/KY2D) |>
+   ggplot(aes(x = age, y = epl)) +
+   geom_line() +
+   geom_point() +
+   scale_x_reverse()
+#+end_src
+*** epl
+#+begin_src R :results output graphics file :file final_epl.png :width 700
+  out |>
+   mutate(age = -time/KY2D) |>
+   ggplot(aes(x = age, y = epl)) +
+   geom_line() +
+   geom_point() +
+   scale_x_reverse()
+#+end_src
+
+#+RESULTS:
+[[file:final_epl.png]]
+
+*** phi
+#+begin_src R :results output graphics file :file final_phi.png :width 700
+  out |>
+   mutate(age = -time/KY2D) |>
+   ggplot(aes(x = age, y = phi)) +
+   geom_hline(yintercept = c(-pi, pi), col = "red") +
+   geom_line() +
+   geom_point() +
+   scale_x_reverse()
+#+end_src
+
+#+RESULTS:
+[[file:final_phi.png]]
+
+** write output files
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:22]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-03-29 Wed 12:23]
+:END:
+for now write the rds output
+#+begin_src R
+  write_rds(out, "out/2023-03-29_out.rds")
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
+  out <- read_rds("out/2023-03-29_out.rds")
+#+end_src
+
+#+RESULTS:
+
+* snvec.c
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
 :END:
@@ -394,7 +749,7 @@ for now do it the simple way
 
 #+RESULTS:
 
-*** SOME quick interpolation
+*** quick interpolation
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
@@ -437,7 +792,7 @@ linear interpolation using approx
     approx(x = x, y = y, xout = )
   }
 #+end_src
-*** SOME unwrap
+*** NEXT unwrap
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
@@ -460,7 +815,7 @@ I used some help by chatgpt for the next few functions to explain the c-code
   }
 #+end_src
 
-*** euler
+*** NEXT euler
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:39]
 :END:
@@ -551,7 +906,9 @@ cp derivs of h and k,
 h and k from g-modes, calculate from ecc and long perihelion
 
 these are prepped in fvei
-*** driver
+*** NEXT driver
+this is the one we want to study that does all the steps!
+
 [[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== driver()][driver()]]
 driver routine solving DEQs for spin vector s = y.
 
@@ -588,14 +945,15 @@ the integration interval. derivs is the user-supplied routine for
 calculating the right-hand side derivative, while SOLVER is the name
 of the stepper routine to be used.
 
-** inspect deSolve package
+* inspect deSolve package
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 12:02]
 :END:
 https://cran.r-project.org/package=deSolve
 the implicit Runge-Kutta method RADAU (Hairer and Wanner 2010). The package contains also a de novo implementation of several Runge-Kutta methods (Butcher 1987; Press et al. 1992; Hairer, Norsett, and Wanner 2009).
 
-** calculate precession and obliquity/tilt based on values for \(E_{d}\) and \(T_{d}\)
+** DONE calculate precession and obliquity/tilt based on values for \(E_{d}\) and \(T_{d}\)
+CLOSED: [2023-03-29 Wed 14:09]
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
 :END:
@@ -606,7 +964,41 @@ the implicit Runge-Kutta method RADAU (Hairer and Wanner 2010). The package cont
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 13:59]
 :END:
-** what are the parameters that are needed for the differential equations?
+** DONE what are the parameters that are needed for the differential equations?
+CLOSED: [2023-03-29 Wed 12:01]
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 13:54]
 :END:
+
+* COMMENT step-by-step
+:PROPERTIES:
+:CREATED:  [2023-03-28 Tue 15:33]
+:END:
+
+** read in the orbital solution
+
+** make them a function of time
+:PROPERTIES:
+:CREATED:  [2023-03-30 Thu 09:32]
+:END:
+
+** specify constants
+
+** specify input values
+- tend
+- Ed
+- Td
+
+** calculate global variables
+ndn, wdw, k0d
+from Td and Ed
+
+** set up the initial spin vector s
+transform them: s, n in HCI, s' and n' in ECLIPJ2000
+using the euler function
+
+f(s0, nn, ep0, inct, omt)
+
+** set up the system of differential equations
+spin vector s = y
+as a function of t, y, and y'
