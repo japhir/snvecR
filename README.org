@@ -35,31 +35,27 @@ email: zeebe@soest.hawaii.edu
 :PROPERTIES:
 :CREATED:  [2023-03-30 Thu 09:14]
 :END:
-#+begin_src R
+#+begin_src R :results none
   library(tidyverse)
+  # we use dplyr and ggplot2 mostly
+  library(deSolve)
   # make sure you have `glue` for the info messages
 #+end_src
 
-#+RESULTS:
-#+begin_example
-── [1mAttaching core tidyverse packages[22m ────────────────────── tidyverse 2.0.0 ──
-[32m✔[39m [34mdplyr    [39m 1.1.1     [32m✔[39m [34mreadr    [39m 2.1.4
-[32m✔[39m [34mforcats  [39m 1.0.0     [32m✔[39m [34mstringr  [39m 1.5.0
-[32m✔[39m [34mggplot2  [39m 3.4.1     [32m✔[39m [34mtibble   [39m 3.2.1
-[32m✔[39m [34mlubridate[39m 1.9.2     [32m✔[39m [34mtidyr    [39m 1.3.0
-[32m✔[39m [34mpurrr    [39m 1.0.1
-── [1mConflicts[22m ──────────────────────────────────────── tidyverse_conflicts() ──
-[31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
-[31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
-[36mℹ[39m Use the conflicted package ([3m[34m<http://conflicted.r-lib.org/>[39m[23m) to force all conflicts to become errors
-#+end_example
+*** SOME reduce dependencies
+:PROPERTIES:
+:CREATED:  [2023-03-31 Fri 12:23]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-03-31 Fri 12:23]
+:END:
 
 ** set the version
 :PROPERTIES:
 :CREATED:  [2023-03-28 Tue 13:32]
 :END:
 #+begin_src R
- VER <- "snvec.r VERSION: 3.7.5 03/2023"
+ VER <- "snvec.r VERSION: 3.7.5 2023-03-29"
 #+end_src
 
 #+RESULTS:
@@ -129,25 +125,28 @@ the top of the file has some lines specifying which columns were used
                     comment = "#",
                     skip = 3,
                     col_names = c(
-                      "time",
-                      ## "x1", "x2", "x3",
-                      ## "v1", "v2", "v3",
-                      "semimajor_axis",
-                      "eccentricity",
-                      "inclination",
-                      "long_periapse",
-                      ## "time_periapse",
-                      "long_ascend_node",
-                      "arg_periapse",
-                      ## "peri_distance",
-                      "mean_anomaly"#, "true_anomaly",
-                      ## "mean_longitude", "true_longitude",
-                      ## "mean_latitude", "true_latitude",
-                      ## "mass",
-                      ## "enc_radius",
-                      ## "capt_radius",
-                      ## "id_tag",
-                      ## "jac_index"
+                      "time",              # 0-Time (=Epoch)
+                      ## "x1", "x2", "x3", # 1-3
+                      ## "v1", "v2", "v3", # 4-6
+                      "semimajor_axis",    # 7-SemiMajorAxis
+                      "eccentricity",      # 8
+                      "inclination",       # 9
+                      "long_periapse",     # 12
+                      ## "time_periapse",  # 13
+                      "long_ascend_node",  # 10
+                      "arg_periapse",      # 11
+                      ## "peri_distance",  # 12
+                      "mean_anomaly"#      # 15
+                      ## "true_anomaly",   # 16
+                      ## "mean_longitude", # 17
+                      ## "true_longitude", # 18
+                      ## "mean_latitude",  # 19
+                      ## "true_latitude",  # 20
+                      ## "mass",           # 21
+                      ## "enc_radius",     # 22
+                      ## "capt_radius",    # 23
+                      ## "id_tag",         # 24
+                      ## "jac_index"       # 25
                     ))
 
   head(dat) |> round(2)
@@ -167,17 +166,22 @@ the top of the file has some lines specifying which columns were used
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:14]
 :END:
+to make the naming consistent with the C code
 #+begin_src R
   dat <- dat |>
     tidylog::rename(
+      t  = time,
+      aa = semimajor_axis,
       ee = eccentricity,
       inc = inclination,
       lph = long_periapse,
-      lan = long_ascend_node)
+      lan = long_ascend_node,
+      arp = arg_periapse,
+      mna = mean_anomaly)
 #+end_src
 
 #+RESULTS:
-: rename: renamed 4 variables (ee, inc, lph, lan)
+: rename: renamed 8 variables (t, aa, ee, inc, lph, …)
 
 ** input parameters of the final function/program
 #+begin_src R
@@ -196,8 +200,8 @@ the top of the file has some lines specifying which columns were used
   if (tend >= 0) {
     stop(glue::glue("`tend` must be < 0, but tend = {tend}"))
   }
-  if (tend < min(dat$time / KY2D)) {
-    stop(glue::glue("`tend` must be < the orbital solution {min(dat$time)/KY2D}, but tend = {tend}."))
+  if (tend < min(dat$t / KY2D)) {
+    stop(glue::glue("`tend` must be > the orbital solution {min(dat$t)/KY2D}, but tend = {tend}."))
   }
 #+end_src
 
@@ -218,7 +222,7 @@ the top of the file has some lines specifying which columns were used
 #+end_src
 
 #+RESULTS:
-: This is snvec.r VERSION: 3.7.5 03/2023
+: This is snvec.r VERSION: 3.7.5 2023-03-29
 : Richard E. Zeebe
 : Ilja J. Kocken
 : Integration parameters:
@@ -227,12 +231,11 @@ the top of the file has some lines specifying which columns were used
 :  Td = 0
 
 ** calculate helper parameters
-see fvei
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
 helper parameters as new columns of dat
 #+begin_src R
   dat <- dat |>
-    mutate(age = - time / KY2D, .after = time) |>
-    rowwise() |>
+    mutate(age = - t / KY2D, .after = t) |>
     mutate(hh = ee * sin(lph / R2D),
            kk = ee * cos(lph / R2D),
            pp = 2 * sin(0.5 * inc / R2D) * sin(lan / R2D),
@@ -243,10 +246,6 @@ helper parameters as new columns of dat
            nnx = sin(inc / R2D) * sin(lan / R2D),
            nny = -sin(inc / R2D) * cos(lan / R2D),
            nnz = cos(inc / R2D))
-  # SOME: do it as a list of vectors in stead?
-           ## nn = list(c(sin(inc / R2D) * sin(lan / R2D),
-           ##             -sin(inc / R2D) * cos(lan / R2D),
-           ##             cos(inc / R2D))))
 #+end_src
 
 #+RESULTS:
@@ -258,6 +257,13 @@ helper parameters as new columns of dat
 :LOGBOOK:
 - State "SOME"       from "NEXT"       [2023-03-30 Thu 12:34]
 :END:
+#+begin_src R :eval never
+    ## rowwise() |> # this makes it very slow already, without vectors
+  # SOME: do it as a list of vectors in stead?
+           ## nn = list(c(sin(inc / R2D) * sin(lan / R2D),
+           ##             -sin(inc / R2D) * cos(lan / R2D),
+           ##             cos(inc / R2D))))
+#+end_src
 
 ** plot orbital solution input
 :PROPERTIES:
@@ -288,24 +294,30 @@ helper parameters as new columns of dat
 [[file:input_inc.png]]
 
 *** lph
-#+begin_src R :results output graphics file :file input_lph.png :width 700 :eval never
+#+begin_src R :results output graphics file :file input_lph.png :width 700
   dat |>
    ggplot(aes(x = age / 1e3, y = lph)) +
    labs(x = "Age (Ma)", y = "Long Periapse") +
    scale_x_reverse() +
-   geom_line()
+   xlim(c(1, 0)) +
+   geom_line() +
+   geom_line(aes(y = unwrap(lph)), col = "red") +
+   coord_cartesian(ylim=c(-3.1e6,200))
 #+end_src
 
 #+RESULTS:
 [[file:input_lph.png]]
 
 *** lan
-#+begin_src R :results output graphics file :file input_lan.png :width 700 :eval never
+#+begin_src R :results output graphics file :file input_lan.png :width 700
   dat |>
    ggplot(aes(x = age / 1e3, y = lan)) +
    labs(x = "Age (Ma)", y = "Long Ascending Node") +
    scale_x_reverse() +
-   geom_line()
+   xlim(c(1, 0)) +
+   geom_line() +
+   geom_line(aes(y = unwrap(lan)), col = "red") +
+   coord_cartesian(ylim=c(-2e4, 5))
 #+end_src
 
 #+RESULTS:
@@ -319,6 +331,7 @@ helper parameters as new columns of dat
     ggplot(aes(x = age / 1e3, y = value)) +
     labs(x = "Age (Ma)") +
     scale_x_reverse() +
+    xlim(c(1, 0)) +
     facet_grid(rows = vars(name), scales = "free_y") +
     geom_line()
 #+end_src
@@ -330,7 +343,7 @@ helper parameters as new columns of dat
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:40]
 :END:
-see fedtd
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
 #+begin_src R
   # as a function of ed, td
   k0d <- ((3 / 2) * GM * ED0 * ed / (OM * AU3)) * D2S # 1/s => 1/d
@@ -342,11 +355,11 @@ see fedtd
 
 #+RESULTS:
 
-** NEXT the euler transformation
+** the euler transformation
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 15:14]
 :END:
-
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
 #+begin_src R
   #' Euler transformation.
   #'
@@ -358,10 +371,11 @@ see fedtd
   #' @param lan  The Long Ascending Node
   #' @param inv  Invert the output.
   euler <- function(s, inc, lan, inv = FALSE) {
-    a <- matrix(c(cos(lan), sin(lan), 0,
+    a <- matrix(c( cos(lan), sin(lan), 0,
                   -cos(inc) * sin(lan), cos(inc) * cos(lan), sin(inc),
-                  sin(inc) * sin(lan), -sin(inc) * cos(lan), cos(inc)),
-                nrow = 3)
+                   sin(inc) * sin(lan), -sin(inc) * cos(lan), cos(inc)),
+                 ncol = 3,
+                 byrow = TRUE)
     if (inv) a <- t(a)
     a %*% s
   }
@@ -373,7 +387,7 @@ see fedtd
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:04]
 :END:
-finits
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== finits() ][finits()]]
 
 use finits to get initial conditions in transformed ECLIPJ2000
 
@@ -386,7 +400,7 @@ use finits to get initial conditions in transformed ECLIPJ2000
   # first row of nn -> needs to be a vector
   # orbit normal at t=0
   ninit <- dat |>
-    filter(time == 0) |>
+    filter(t == 0) |>
     select(nnx, nny, nnz) |>
     as.matrix() |>
     as.vector()
@@ -412,8 +426,8 @@ use finits to get initial conditions in transformed ECLIPJ2000
 #+RESULTS:
 :           [,1]
 : [1,] 0.0000000
-: [2,] 0.5208739
-: [3,] 0.8536336
+: [2,] 0.3977784
+: [3,] 0.9174815
 
 ** set the deSolve state
 #+begin_src R
@@ -447,7 +461,7 @@ we use approxfun to generate a function that approximates =col= for timestep t.
 #+begin_src R
   qinterp <- function(dat, col = ee) {
     dat |>
-     select(time, {{col}}) |>
+     select(t, {{col}}) |>
      approxfun(rule = 2)
   }
 #+end_src
@@ -473,10 +487,13 @@ we use approxfun to generate a function that approximates =col= for timestep t.
 #+begin_src R :results output graphics file :file qinterp_test.png
   dat |>
     slice(1:3) |>
-    ggplot(aes(x = time, y = lph)) +
+    ggplot(aes(x = t, y = lph)) +
     geom_line() +
     geom_point() +
-    annotate("point", x = -.45 * KY2D, y = qinterp(dat, lph)(-.45 * KY2D), col = "red")
+    annotate("point",
+             x = -.45 * KY2D,
+             y = qinterp(dat, lph)(-.45 * KY2D),
+             col = "red")
 #+end_src
 
 #+RESULTS:
@@ -494,12 +511,13 @@ see [[derivs]]
     with(as.list(c(state, parameters)), {
 
       # K0, beta0 changing with Td, Ed
-      kb <- k0d * (1 + 1 * wdw * t) * (1 + BET0 * (1 + 2 * ndn * t))
+      ## kb <- k0d * (1 + 1 * wdw * t) * (1 + BET0 * (1 + 2 * ndn * t))
+      # we leave qinterp on, so ff is used for kb
 
       # set time index of solution
-      dts <- diff(dat$time)[1]
+      ## dts <- diff(dat$t)[1]
       ## t <- dat$time[5] # e.g.
-      m <- min(round(abs(t / dts) + 1), nrow(dat))
+      ## m <- min(round(abs(t / dts) + 1), nrow(dat))
 
       # for interpolation we can use t directly
       ## if (qinterp) {
@@ -511,8 +529,13 @@ see [[derivs]]
       ## }
 
       # 1/(1-e^2)^3/2 term
-      ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
-      # shouldn't I also interpolate hh and kk?
+      # add interpolation
+      hhi <- qinterp(dat, hh)(t)
+      kki <- qinterp(dat, kk)(t)
+      ff <- (1 - hhi * hhi - kki * kki)
+
+      # shouldn't I also interpolate hh and kk? -> see above
+      ## ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
       ff <- 1 / sqrt(ff*ff*ff)
       kb <- k0d * (1 + 1 * wdw * t) * (ff + BET0 * (1 + 2 * ndn * t))
 
@@ -536,14 +559,24 @@ see [[derivs]]
 
 #+RESULTS:
 
+*** DONE use qinterp on hh and kk as well
+CLOSED: [2023-04-01 Sat 11:10]
+:PROPERTIES:
+:CREATED:  [2023-03-31 Fri 12:39]
+:END:
+
 ** NEXT timesteps to report
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:08]
 :END:
+:LOGBOOK:
+- Note taken on [2023-03-31 Fri 16:55] \\
+  i just changed this so from by = 1 * KY2D to 0.2*KY2D making it 5 times more high-res to see if that's the cause of the discrepancy
+:END:
 
 #+begin_src R
   ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
-  times <- seq(tend * KY2D, 0, by = 1 * KY2D)
+  times <- seq(tend * KY2D, 0, by = 0.2 * KY2D)
 #+end_src
 
 #+RESULTS:
@@ -556,55 +589,72 @@ see [[derivs]]
 odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
 
 #+begin_src R :eval query
-  library(deSolve)
   print(system.time(
     out <- ode(y = state,
                times = times,
                func = eqns,
                parms = parameters,
-               method = "rk4") # ode23 ode45 radau
+               method = "ode23") # ode23 ode45 radau
   ))
 #+end_src
 
 #+RESULTS:
-:
-: Attaching package: ‘deSolve’
-:
-: The following object is masked _by_ ‘.GlobalEnv’:
-:
-:     euler
-:    user  system elapsed
-: 968.762   0.073 972.058
+: user  system elapsed
+: 361.986   0.213 364.353 # rk4, 1000 steps
+: 334.800   0.081 336.341 # rk4, 1000 steps, no error
+: 2927.945  187.784 3136.222 # ode23 5000 steps with interpolation of hh kk much slower
 
 #+begin_src R
-lubridate::as.duration(968.762)
+  lubridate::as.duration(c(100, 500, 1000, 2000, 3000))
 #+end_src
 
 #+RESULTS:
-: [1] "968.762s (~16.15 minutes)"
+: [1] "100s (~1.67 minutes)"   "500s (~8.33 minutes)"   "1000s (~16.67 minutes)"
+: [4] "2000s (~33.33 minutes)" "3000s (~50 minutes)"
 
 *** save the output
 #+begin_src R
-  write_rds(out, "out/2023-03-30_out.rds")
-#+end_src
-*** read in previous results
-#+begin_src R
-  out <- read_rds("out/2023-03-29_out.rds")
+  ## write_rds(out, "out/2023-03-30_out.rds")
+  write_rds(out, "out/2023-03-31_out.rds")
 #+end_src
 
 #+RESULTS:
 
-*** plot the output
-clean it up because I cannot deal with base graphics right now
+*** read in previous results
+#+begin_src R
+  ## out <- read_rds("out/2023-03-29_out.rds")
+  ## out <- read_rds("out/2023-03-30_out.rds")
+  out <- read_rds("out/2023-03-31_out.rds")
+#+end_src
+
+#+RESULTS:
+
+** [#A] plot the output
+and contrast to the C-results
 
 #+begin_src R :results output graphics file :output graphics file :file 2023-03-29_output.png :width 700
-  library(tidyverse)
+  comb <- snv_sout |>
+    mutate(code = "C") |>
+    bind_rows(
+      out |>
+      as_tibble() |>
+      select(time, sx, sy, sz) |>
+      mutate(time = time / KY2D) |>
+      mutate(code = "R") |>
+      mutate(across(time:sz, as.numeric)))
 
-  out |>
-   as_tibble() |>
-   pivot_longer(cols=c(sx, sy, sz)) |>
-   ggplot(aes(x = time, y = value, colour = name)) +
-   geom_line()
+  comb |>
+    pivot_longer(cols = sx:sz) |>
+    ggplot(aes(x = time, y = value, colour = name, linetype = code)) +
+    geom_line() +
+    geom_point() +
+    annotate("rug",
+             y = c(0.404360548210294,
+                   -0.053622586775944,
+                   0.913026378223150),
+             sides = "r",
+             colour = c("red", "green", "blue"),
+             length = grid::unit(1, "cm"))
 #+end_src
 
 #+RESULTS:
@@ -623,8 +673,9 @@ do we mean the value at time == 0?
 #+end_src
 
 #+RESULTS:
-: Error in pracma::dot(u, u) :
-:   Arguments 'x' and 'y' must be real or complex.
+: Final values s[1][2][3]; s-error = |s|-1:
+: 0.354433949865365 0.288908441936762 0.889073541112711
+: -0.000228389007675633
 
 ** NEXT unwrap function
 :LOGBOOK:
@@ -632,20 +683,27 @@ do we mean the value at time == 0?
 :END:
 I used some help by chatgpt for the next few functions to explain the c-code
 
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
 #+begin_src R
   #' unwrap angle.
   #'
   #' unwrap angle. maps jumps greater than pi to their 2pi complement.
   unwrap <- function(y) {
-    ## stopifnot(length(y) > 1L)
+    # massive jumps
+    ## y <- c(-600, -200, 0, 69, 490)
+    ## y <- c(0, 20, -200, 30, 40)
+    # more expected jumps
+    ## y <- c(0, 20, -170, 30, 40)
 
-    dy <- diff(y) / R2D
+    dy <- c(0, diff(y)) / R2D
 
-    cor <- cumsum(ifelse(dy > pi, -2 * pi,
-                  ifelse(dy < -pi, 2 * pi, 0)))
-    yu <- y[-1] + cor * R2D
-    return(c(y[1], yu))
+    dy[dy > pi] <- dy[dy > pi] - 2 * pi
+    dy[dy < -pi] <- dy[dy < -pi] + 2 * pi
+    dy <- cumsum(dy)
+
+    yu <- y
+    yu <- cumsum(yu + dy * R2D)
+    yu
   }
 #+end_src
 
@@ -678,7 +736,7 @@ lphu <- unwrap(lph, ls)
     ggplot(aes(x = age, y = lph)) +
     scale_x_reverse() +
     geom_line() +
-    geom_line(aes(y = lphu), col = "red", lty = 2)
+    geom_line(aes(y = lphu), col = "red")
 #+end_src
 
 #+RESULTS:
@@ -688,6 +746,7 @@ lphu <- unwrap(lph, ls)
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:04]
 :END:
+back onto output timescale
 #+begin_src R
   out <- out |>
     as_tibble() |>
@@ -705,7 +764,6 @@ lphu <- unwrap(lph, ls)
 #+end_src
 
 #+RESULTS:
-: Error in as_tibble(out) : object 'out' not found
 
 ** NEXT calculate obliquity
 :PROPERTIES:
@@ -714,7 +772,7 @@ lphu <- unwrap(lph, ls)
 #+begin_src R
   out <- out |>
     # for each row, extract sx, sy, sz, and nnx, nny, nnz as vectors
-    ## rowwise() |>
+    rowwise() |>
     mutate(u = list(as.vector(c(sx, sy, sz))),
            nni = list(as.vector(c(nnx, nny, nnz)))) |>
     # and calculate the dotproduct, richard's vvdot
@@ -723,8 +781,6 @@ lphu <- unwrap(lph, ls)
 #+end_src
 
 #+RESULTS:
-: Error in mutate(out, u = list(as.vector(c(sx, sy, sz))), nni = list(as.vector(c(nnx,  :
-:   object 'out' not found
 
 ** NEXT calculate precession and climatic precession
 :PROPERTIES:
@@ -738,19 +794,22 @@ lphu <- unwrap(lph, ls)
       # coords: relative to phi(t=0)=0 at J2000
       up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0)),
       # get 2nd and 1st column of up
-      phi = atan2(up[, 2], up[, 1]),
-      phi = phi - ,
-      cp = eei * sin((lphi + OMT) / R2D - phi)) |>
-    arrange(-time)
+      ## phi = atan2(up[, 2], up[, 1]),
+      ## phi = phi - ,
+      ## cp = eei * sin((lphi + OMT) / R2D - phi)
+    )
 #+end_src
 
 #+RESULTS:
-: [1m[33mError[39m in `mutate()`:[22m
-: [1m[22m[36mℹ[39m In argument: `phi = atan2(up[, 2], up[, 1])`.
-: [36mℹ[39m In row 1.
-: [1mCaused by error in `up[, 2]`:[22m
-: [33m![39m subscript out of bounds
-: [90mRun `rlang::last_trace()` to see where the error occurred.[39m
+: Error: unexpected ',' in:
+: "    phi = atan2(up[, 2], up[, 1]),
+:     phi = phi - ,"
+: Error: unexpected ')' in "    cp = eei * sin((lphi + OMT) / R2D - phi))"
+
+*** NEXT fix phi
+:PROPERTIES:
+:CREATED:  [2023-03-31 Fri 13:06]
+:END:
 
 ** message user about final values
 :PROPERTIES:
@@ -761,8 +820,10 @@ lphu <- unwrap(lph, ls)
 #+end_src
 
 #+RESULTS:
-: Error in paste(out[nrow(out), "epl"], out[nrow(out), "phi"]) :
-:   object 'out' not found
+: [1m[33mError[39m in `out[nrow(out), "phi"]`:[22m
+: [33m![39m Can't subset columns that don't exist.
+: [31m✖[39m Column `phi` doesn't exist.
+: [90mRun `rlang::last_trace()` to see where the error occurred.[39m
 
 ** write output files
 :PROPERTIES:
@@ -798,7 +859,7 @@ for now write the rds output
 *** phi
 #+begin_src R :results output graphics file :file final_phi.png :width 700
   out |>
-   mutate(age = -time/KY2D) |>
+   mutate(age = -time / KY2D) |>
    ggplot(aes(x = age, y = phi)) +
    geom_hline(yintercept = c(-pi, pi), col = "red") +
    geom_line() +
@@ -829,7 +890,7 @@ for now do it the simple way
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
 not sure if needed, could just use R's interp?
 #+begin_src R
   qinterp <- function(y, ds, dx, m) {
@@ -868,39 +929,20 @@ linear interpolation using approx
     approx(x = x, y = y, xout = )
   }
 #+end_src
-*** NEXT unwrap
+*** unwrap
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
 I used some help by chatgpt for the next few functions to explain the c-code
-
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
-#+begin_src R
-  #' unwrap angle.
-  #'
-  #' unwrap angle. maps jumps greater than pi to their 2pi complement.
-  unwrap <- function(y) {
-    stopifnot(length(y) > 1L)
-
-    dy <- diff(y) / R2D
-
-    cor <- cumsum(ifelse(dy > pi, -2 * pi,
-                  ifelse(dy < -pi, 2 * pi, 0)))
-    yu <- y[-1] + cor * R2D
-    return(c(y[1], yu))
-  }
-#+end_src
-
-*** NEXT euler
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
+*** euler
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:39]
 :END:
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
-
-#+RESULTS:
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
 
 *** fvei
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
 calculates global h,k,p,q etc. from ecc,inc etc.
 
 #+begin_src R
@@ -923,7 +965,7 @@ calculates global h,k,p,q etc. from ecc,inc etc.
 
 for now put these values in a simple script below
 *** finargs
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== finargs()][finargs()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== finargs()][finargs()]]
  parse input arguments. arg list:
  [1] tend
  [2] Ed
@@ -932,7 +974,7 @@ for now put these values in a simple script below
  [5] file OrbitSoln
 
 *** fedtd
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
 calculates global vars ndn,wdw,k0d from Td,Ed
 
 #+begin_src R
@@ -952,7 +994,7 @@ calculates global vars ndn,wdw,k0d from Td,Ed
 : Error: object 'td' not found
 
 *** finits
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== finits() ][finits()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== finits() ][finits()]]
 init spin vector, transform to HCI
 s,n in HCI. s',n' in ECLIPJ2000
 
@@ -961,7 +1003,7 @@ s0p
 via euler transform
 
 *** derivs
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== derivs()][derivs()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== derivs()][derivs()]]
 
 derivatives. RHS of DEQs for spin vector s = y
 
@@ -982,10 +1024,10 @@ cp derivs of h and k,
 h and k from g-modes, calculate from ecc and long perihelion
 
 these are prepped in fvei
-*** NEXT driver
+*** driver
 this is the one we want to study that does all the steps!
 
-[[file:~/Downloads/snvec-3.7.5/snvec-3.7.5.c::=== driver()][driver()]]
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== driver()][driver()]]
 driver routine solving DEQs for spin vector s = y.
 
 this calls =odeint=
@@ -1022,16 +1064,80 @@ calculating the right-hand side derivative, while SOLVER is the name
 of the stepper routine to be used.
 
 *** write outputs
-*** inspect the c output
+*** [#A] inspect the c output
+the raw spin vector s, added as something that we write to file myself (not sure if correct!)
 #+begin_src R
-  snv_out <- read_table("snvec-3.7.5/out.dat", col_names = FALSE)
-
-  snv_out |>
-    ggplot(aes(X1, X2)) +
-    geom_line() +
-    geom_point()
+  snv_sout <- read_table("snvec-3.7.5/s-out.dat",
+                        col_names = c("time", "sx", "sy", "sz", "x")) |>
+    # this is because there's some whitespace there?
+    # note that t is in tmv / KY2D = in kyr
+    select(-x)
 #+end_src
 
+#+RESULTS:
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────[39m
+: cols(
+:   time = [32mcol_double()[39m,
+:   sx = [32mcol_double()[39m,
+:   sy = [32mcol_double()[39m,
+:   sz = [32mcol_double()[39m,
+:   x = [33mcol_logical()[39m
+: )
+
+#+begin_src R :results output graphics file :file c-output_s.png :width 700
+  pl_refs <- snv_sout |>
+    pivot_longer(cols = sx:sz) |>
+    ggplot(aes(time, value, col = name)) +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    ## scale_x_reverse() +
+    geom_line() +
+    ## geom_point() +
+    # fix the xlim so that when we add other data it doesn't rescale
+    xlim(c(-1e3, 0))
+  pl_refs
+#+end_src
+
+#+RESULTS:
+[[file:c-output_s.png]]
+
+#+begin_src R
+  snv_out <- read_table("snvec-3.7.5/out.dat",
+                        col_names = c("t", "epl", "phi", "cp", "x")) |>
+    # this is because there's some whitespace there?
+    # note that t is in tmv / KY2D = in kyr
+    select(-x)
+
+#+end_src
+
+#+RESULTS:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────[39m
+: cols(
+:   t = [32mcol_double()[39m,
+:   epl = [32mcol_double()[39m,
+:   phi = [32mcol_double()[39m,
+:   cp = [32mcol_double()[39m,
+:   x = [33mcol_logical()[39m
+: )
+
+#+begin_src R :results output graphics file :file c-output_ee.png :width 700
+  pl_ref <- snv_out |>
+    pivot_longer(cols = epl:cp) |>
+    ggplot(aes(t, value)) +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    ## scale_x_reverse() +
+    geom_line() +
+    geom_point() +
+    # fix the xlim so that when we add other data it doesn't rescale
+    xlim(c(-1e3, 0))
+  pl_ref
+#+end_src
+
+#+RESULTS:
+[[file:c-output_ee.png]]
+
+*** debug specific functions
+[[file:snvec-3.7.5/snvec-3.7.5.c::Ilja's debugging scheme][Ilja's debugging scheme]]
 * inspect deSolve package
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 12:02]
@@ -1090,6 +1196,23 @@ CLOSED: [2023-03-29 Wed 12:01]
   ))
   plot(out)
 #+end_src
+* compare c and R output
+:PROPERTIES:
+:CREATED:  [2023-03-31 Fri 10:24]
+:END:
+#+begin_src R :results output graphics file :file compare_c-R.png :width 700
+  pl_ref +
+    geom_line(aes(x = time / KY2D),
+              data = out |>
+                select(time, epl# ## phi, cp
+                       ) |>
+                pivot_longer(cols = c(epl, ## phi, cp
+                                      )),
+              col = "red")
+#+end_src
+
+#+RESULTS:
+[[file:compare_c-R.png]]
 
 * COMMENT step-by-step
 :PROPERTIES:
