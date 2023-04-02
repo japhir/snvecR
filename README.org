@@ -576,7 +576,10 @@ CLOSED: [2023-04-01 Sat 11:10]
 
 #+begin_src R
   ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
-  times <- seq(tend * KY2D, 0, by = 0.2 * KY2D)
+  times <- seq(tend * KY2D, 0,
+               ## by = 0.2 * KY2D
+               length.out = 2523L # the length of the C-output
+               )
 #+end_src
 
 #+RESULTS:
@@ -594,15 +597,30 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
                times = times,
                func = eqns,
                parms = parameters,
-               method = "ode23") # ode23 ode45 radau
+               method =
+                 ## "lsoda"# = default, chooses stiff/nonstiff automatically starting non-stiff
+                 # "ode23" # = non-stiff, variable time-step
+                 ## "ode45" # = stiff, variable time-step
+               # radau #= stiff/non-stiff
+               ## "bdf" # = stiff
+               "daspk" # = very stiff
+               )
   ))
 #+end_src
 
 #+RESULTS:
-: user  system elapsed
-: 361.986   0.213 364.353 # rk4, 1000 steps
-: 334.800   0.081 336.341 # rk4, 1000 steps, no error
-: 2927.945  187.784 3136.222 # ode23 5000 steps with interpolation of hh kk much slower
+:
+
+older results notes
+| date             |     user |  system |  elapsed | method | steps | notes                                |
+|------------------+----------+---------+----------+--------+-------+--------------------------------------|
+| [2023-03-30 Thu] |  361.986 |   0.213 |  364.353 | rk4    |  1000 |                                      |
+| [2023-03-30 Thu] |  334.800 |   0.081 |  336.341 | rk4    |  1000 | no error                             |
+| [2023-03-31 Fri] | 2927.945 | 187.784 | 3136.222 | ode23  |  5001 | with interpolation of hh kk          |
+| [2023-04-01 Sat] | 3649.884 | 186.344 | 3853.946 | ode45  |  5001 |                                      |
+| [2023-04-01 Sat] |  366.281 |  13.585 |  381.437 | bdf    |  2523 | same number of steps as in C-routine |
+| [2023-04-02 Sun] |  320.980 |  12.352 |  334.679 | daspk  |  2523 |                                      |
+| [2023-04-02 Sun] |  792.366 |  26.664 |  824.907 | lsoda  |  2523 | default                              |
 
 #+begin_src R
   lubridate::as.duration(c(100, 500, 1000, 2000, 3000))
@@ -614,17 +632,42 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
 
 *** save the output
 #+begin_src R
-  ## write_rds(out, "out/2023-03-30_out.rds")
-  write_rds(out, "out/2023-03-31_out.rds")
+  ## write_rds(out, "out/2023-03-30_out.rds") # rk4, 1000 steps
+  ## write_rds(out, "out/2023-03-31_out.rds") # ode23 5001 steps, intended for non-stiff problems!
+  ## write_rds(out, "out/2023-04-01_out-ode45.rds") # ode45 5001 steps
+  ## write_rds(out, "out/2023-04-01_out-bdf.rds")   # bdf stiff 2523 steps
+  ## write_rds(out, "out/2023-04-02_out-daspk.rds")    # daspk stiff 2523 steps
+  write_rds(out, "out/2023-04-02_out-lsoda.rds")    # lsoda stiff 2523 steps
 #+end_src
 
 #+RESULTS:
 
 *** read in previous results
 #+begin_src R
+  make_combinable <- function(dat, method) {
+    dat |>
+     as_tibble() |>
+     mutate(across(time:sz, as.double)) |>
+     mutate(method = method)
+  }
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
   ## out <- read_rds("out/2023-03-29_out.rds")
-  ## out <- read_rds("out/2023-03-30_out.rds")
-  out <- read_rds("out/2023-03-31_out.rds")
+  rk4 <- read_rds("out/2023-03-30_out.rds") |> make_combinable("rk4") # rk4, 1000 steps
+  ode23 <- read_rds("out/2023-03-31_out.rds") |> make_combinable("ode23")# ode23 5001 steps, intended for non-stiff problems!
+  ode45 <- read_rds("out/2023-04-01_out-ode45.rds") |> make_combinable("ode45") # ode45 5001 steps
+  bdf <- read_rds("out/2023-04-01_out-bdf.rds") |> make_combinable("bdf")     # bdf stiff 2523
+  daspk <- read_rds("out/2023-04-02_out-daspk.rds") |> make_combinable("daspk")     # stiff 2523
+  lsoda <- read_rds("out/2023-04-02_out-lsoda.rds") |> make_combinable("lsoda")     # stiff 2523
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
+  allout <- bind_rows(rk4, ode23, ode45, bdf, daspk, lsoda)
 #+end_src
 
 #+RESULTS:
@@ -660,6 +703,31 @@ and contrast to the C-results
 #+RESULTS:
 [[file:2023-03-29_output.png]]
 
+** plot the different methods
+:PROPERTIES:
+:CREATED:  [2023-04-02 Sun 11:24]
+:END:
+the different methods (other then timestep) result in identical results!!
+
+#+begin_src R :results output graphics file :output graphics file :file 2023-04-02_all-output.png :width 700
+  allout |>
+    pivot_longer(cols = sx:sz) |>
+    ggplot(aes(x = time, y = value, colour = name, linetype = method)) +
+    geom_line() +
+    geom_point() +
+    annotate("rug",
+             y = c(0.404360548210294,
+                   -0.053622586775944,
+                   0.913026378223150),
+             sides = "r",
+             colour = c("red", "green", "blue"),
+             length = grid::unit(1, "cm")) +
+   coord_cartesian(xlim = c(-20*KY2D, 0))
+#+end_src
+
+#+RESULTS:
+[[file:2023-04-02_all-output.png]]
+
 ** print the final values for s
 :LOGBOOK:
 - State "SOME"       from              [2023-03-29 Wed 12:03]
@@ -674,8 +742,8 @@ do we mean the value at time == 0?
 
 #+RESULTS:
 : Final values s[1][2][3]; s-error = |s|-1:
-: 0.354433949865365 0.288908441936762 0.889073541112711
-: -0.000228389007675633
+: 0.355962306701157 0.286673811800495 0.88938337284608
+: -5.30903796420734e-05
 
 ** NEXT unwrap function
 :LOGBOOK:
