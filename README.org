@@ -265,7 +265,7 @@ helper parameters as new columns of dat
            ##             cos(inc / R2D))))
 #+end_src
 
-** plot orbital solution input
+** COMMENT plot orbital solution input
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 14:20]
 :END:
@@ -450,15 +450,17 @@ use finits to get initial conditions in transformed ECLIPJ2000
 
 #+RESULTS:
 
-** our inputs change as a function of time, so we need a function to describe them
+** NEXT our inputs change as a function of time, so we need a function to describe them
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 09:06]
 :END:
+
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
 richard does this with qinterp
 http://desolve.r-forge.r-project.org/ has an article on time-varying inputs
 we use approxfun to generate a function that approximates =col= for timestep t.
 
-#+begin_src R
+#+begin_src R :eval never
   qinterp <- function(dat, col = ee) {
     dat |>
      select(t, {{col}}) |>
@@ -468,7 +470,30 @@ we use approxfun to generate a function that approximates =col= for timestep t.
 
 #+RESULTS:
 
-**** double-check that the interpolation is working
+this is very slow though, so we use a quicker interpolation algorithm, closer to how it's done in C.
+
+#+begin_src R
+  ##' qinterp
+  ##'
+  ##' @param y The vector to interpolate.
+  ##' @param ds The difference in timestep in the astronomical solution.
+  ##' @param dx The difference between the current timestep and the timestep in the astronomical solution.
+  ##' @param m The index variable of the current position in the astronomical solution.
+  ##' @return The vector of interpolated results
+  qinterp <- function(y, ds, dx, m) {
+    yi <- y[m]; dy <- 0; dsa <- abs(ds); dxa <- abs(dx); mm <- 1L
+    if (dxa > 0) {
+      mm <- m - as.integer(sign(dx))
+      dy <- y[mm] - y[m]
+      yi <- yi + dy * dxa / dsa
+    }
+    return(yi)
+  }
+#+end_src
+
+#+RESULTS:
+
+*** double-check that the interpolation is working
 #+begin_src R :eval never
   input <- dat |>
     select(time, ee) |>
@@ -485,19 +510,48 @@ we use approxfun to generate a function that approximates =col= for timestep t.
 > I created the function
 
 #+begin_src R :results output graphics file :file qinterp_test.png
+  t <- -.45 * KY2D
+  m <- min(round(abs(t / dts) + 1), nrow(dat))
+  dx <- t - dat$t[m];
+
   dat |>
     slice(1:3) |>
     ggplot(aes(x = t, y = lph)) +
     geom_line() +
     geom_point() +
     annotate("point",
-             x = -.45 * KY2D,
-             y = qinterp(dat, lph)(-.45 * KY2D),
+             x = t,
+             ## y = qinterp(dat, lph)(-.45 * KY2D),
+             y = qinterp(dat$lph, dts, dx, m),
              col = "red")
 #+end_src
 
 #+RESULTS:
 [[file:qinterp_test.png]]
+
+**** time how long it takes
+
+#+begin_src R
+  microbenchmark::microbenchmark(
+                  qinterp(dat, ee)(-150000)
+                  )
+#+end_src
+
+#+RESULTS:
+: Error in qinterp(dat, ee) : object 'ee' not found
+
+#+begin_src R
+  microbenchmark::microbenchmark(
+                  qinterp(dat$qq,-146100,-48700,4)
+                  )
+#+end_src
+
+#+RESULTS:
+: Unit: microseconds
+:                                 expr   min     lq    mean median     uq
+:  qinterp(dat$qq, -146100, -48700, 4) 3.088 3.1675 3.47784  3.247 3.3395
+:     max neval
+:  19.351   100
 
 ** the differential equations
 :PROPERTIES:
@@ -507,6 +561,7 @@ see [[derivs]]
 
 #+begin_src R
   # derivatives. RHS of DEQs for spin vector s = y
+  dts <- dat$t[2] - dat$t[1]
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
 
@@ -515,27 +570,34 @@ see [[derivs]]
       # we leave qinterp on, so ff is used for kb
 
       # set time index of solution
-      ## dts <- diff(dat$t)[1]
-      ## t <- dat$time[5] # e.g.
-      ## m <- min(round(abs(t / dts) + 1), nrow(dat))
+      ## t <- dat$t[5] # e.g.
+      m <- min(round(abs(t / dts) + 1), nrow(dat))
 
       # for interpolation we can use t directly
       ## if (qinterp) {
       # we call on global dat for now
-      qqi <- qinterp(dat, qq)(t)
-      ppi <- qinterp(dat, pp)(t)
-      cci <- qinterp(dat, cc)(t)
-      ddi <- qinterp(dat, dd)(t)
+      ## qqi <- qinterp(dat, qq)(t)
+      ## ppi <- qinterp(dat, pp)(t)
+      ## cci <- qinterp(dat, cc)(t)
+      ## ddi <- qinterp(dat, dd)(t)
       ## }
+      dx <- t - dat$t[m];
+      qqi <- qinterp(dat$qq,dts,dx,m)
+      ppi <- qinterp(dat$pp,dts,dx,m)
+      cci <- qinterp(dat$cc,dts,dx,m)
+      ddi <- qinterp(dat$dd,dts,dx,m)
 
       # 1/(1-e^2)^3/2 term
       # add interpolation
-      hhi <- qinterp(dat, hh)(t)
-      kki <- qinterp(dat, kk)(t)
+      hhi <- qinterp(dat$hh,dts,dx,m)
+      kki <- qinterp(dat$kk,dts,dx,m)
       ff <- (1 - hhi * hhi - kki * kki)
 
       # shouldn't I also interpolate hh and kk? -> see above
       ## ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
+      # i've tried both, gives identical results if I use the prescribed timesteps.
+      # they're also equally fast! so let's go with my own which I think is better.
+
       ff <- 1 / sqrt(ff*ff*ff)
       kb <- k0d * (1 + 1 * wdw * t) * (ff + BET0 * (1 + 2 * ndn * t))
 
@@ -574,12 +636,26 @@ CLOSED: [2023-04-01 Sat 11:10]
   i just changed this so from by = 1 * KY2D to 0.2*KY2D making it 5 times more high-res to see if that's the cause of the discrepancy
 :END:
 
+*** a linear sequence of steps
 #+begin_src R
   ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
-  times <- seq(tend * KY2D, 0,
-               ## by = 0.2 * KY2D
-               length.out = 2523L # the length of the C-output
+  times <- seq(0, tend * KY2D,
+               ## length.out = 2523L # the length of the C-output
+               by = - 0.4 * KY2D # ~ the average diff in the C-output
+               # snv_sout$time |> diff() |> median() = 0.396013
                )
+#+end_src
+
+#+RESULTS:
+
+*** let's use the exact same timesteps as the C-routine
+[[file:~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/README.org::*inspect the c output][inspect the c output]]
+
+#+begin_src R :eval never
+  times <- snv_sout$time * KY2D
+  # what if I offset it by a few steps?
+  ## times <- times - 0.1 * KY2D
+  # it gets offset again! :O
 #+end_src
 
 #+RESULTS:
@@ -591,8 +667,10 @@ CLOSED: [2023-04-01 Sat 11:10]
 
 odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
 
+*** solve it
 #+begin_src R :eval query
   print(system.time(
+  ## microbenchmark::microbenchmark(
     out <- ode(y = state,
                times = times,
                func = eqns,
@@ -602,16 +680,28 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
                  # "ode23" # = non-stiff, variable time-step
                  ## "ode45" # = stiff, variable time-step
                # radau #= stiff/non-stiff
-               ## "bdf" # = stiff
-               "daspk" # = very stiff
+               "bdf" # = stiff
+               ## "daspk", # = very stiff
+               ## rtol = 1e-10, atol = 1e-10
+               ## rtol = 1e-5, atol = 1e-5
                )
   ))
+  ## )
 #+end_src
 
 #+RESULTS:
-:
+:    user  system elapsed
+:   0.162   0.000   0.162
 
-older results notes
+
+:  out <- ode(y = state, times = times, func = eqns, parms = parameters,      method = "bdf")
+:       min       lq    mean   median       uq      max neval
+:  130.6327 134.4619 143.1704 137.2702 142.9504 279.2405   100 # daspk
+:  125.8702 133.1821 140.109  134.8777 139.3579 188.0364   100 # bdf
+:  213.6866 226.2011 241.949 232.1017 249.3671 401.4864    100 # lsoda
+:  702.615  712.545  883.7992 715.33  724.0765 12602.84    100 # ode45
+
+*** older results notes
 | date             |     user |  system |  elapsed | method | steps | notes                                |
 |------------------+----------+---------+----------+--------+-------+--------------------------------------|
 | [2023-03-30 Thu] |  361.986 |   0.213 |  364.353 | rk4    |  1000 |                                      |
@@ -621,6 +711,10 @@ older results notes
 | [2023-04-01 Sat] |  366.281 |  13.585 |  381.437 | bdf    |  2523 | same number of steps as in C-routine |
 | [2023-04-02 Sun] |  320.980 |  12.352 |  334.679 | daspk  |  2523 |                                      |
 | [2023-04-02 Sun] |  792.366 |  26.664 |  824.907 | lsoda  |  2523 | default                              |
+| [2023-04-03 Mon] |  242.316 |  25.936 |  269.344 | daspk  |  2523 | qinterp closer to C                  |
+| [2023-04-03 Mon] |    0.181 |   0.000 |    0.182 | daspk  |  2523 | qinterp fix!                         |
+| [2023-04-03 Mon] |    0.128 |   0.001 |    0.128 | daspk  |  2523 | same timesteps as C                  |
+| [2023-04-03 Mon] |   15.517 |   0.000 |   15.556 | daspk  |  2501 | linear timestep + a/rtol = 1e-10     |
 
 #+begin_src R
   lubridate::as.duration(c(100, 500, 1000, 2000, 3000))
@@ -637,12 +731,61 @@ older results notes
   ## write_rds(out, "out/2023-04-01_out-ode45.rds") # ode45 5001 steps
   ## write_rds(out, "out/2023-04-01_out-bdf.rds")   # bdf stiff 2523 steps
   ## write_rds(out, "out/2023-04-02_out-daspk.rds")    # daspk stiff 2523 steps
-  write_rds(out, "out/2023-04-02_out-lsoda.rds")    # lsoda stiff 2523 steps
+  ## write_rds(out, "out/2023-04-02_out-lsoda.rds")    # lsoda stiff 2523 steps
+  ## write_rds(out, "out/2023-04-03_out-qinterp.rds")    # daspk 2523 steps but with qinterp closer to c-implementation (???)
+  ## write_rds(out, "out/2023-04-03_out-qinterp2.rds")    # daspk 2523 qinterp fix
+  ## write_rds(out, "out/2023-04-03_out-times.rds")    # daspk 2523 same timestep as C = IDENTICAL!
+  ## write_rds(out, "out/2023-04-03_out-tol.rds")    # daspk 2523 atol rtol = 1e-10
+  ## write_rds(out, "out/2023-04-03_out-tollow.rds")    # daspk 2523 atol rtol = 1e-10
+  ## write_rds(out, "out/2023-04-03_out-bdf.rds")    # bdf 2523 atol rtol = 1e-10
+  write_rds(out, "out/2023-04-03_out-works.rds")    # bdf 2501 time in different order
 #+end_src
 
 #+RESULTS:
 
-*** read in previous results
+** analyse the ODE solver for problems
+:PROPERTIES:
+:CREATED:  [2023-04-03 Mon 14:38]
+:END:
+#+begin_src R
+  diagnostics(out)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+--------------------
+lsode return code
+--------------------
+
+  return code (idid) =  2
+  Integration was successful.
+
+--------------------
+INTEGER values
+--------------------
+
+  1 The return code : 2
+  2 The number of steps taken for the problem so far: 2511
+  3 The number of function evaluations for the problem so far: 2903
+  5 The method order last used (successfully): 5
+  6 The order of the method to be attempted on the next step: 5
+  7 If return flag =-4,-5: the largest component in error vector 0
+  8 The length of the real work array actually required: 58
+  9 The length of the integer work array actually required: 23
+ 14 The number of Jacobian evaluations and LU decompositions so far: 129
+
+--------------------
+RSTATE values
+--------------------
+
+  1 The step size in t last used (successfully): -146100
+  2 The step size to be attempted on the next step: -146100
+  3 The current value of the independent variable which the solver has reached: -365331300
+  4 Tolerance scale factor > 1.0 computed when requesting too much accuracy: 0
+#+end_example
+
+** read in previous results
 #+begin_src R
   make_combinable <- function(dat, method) {
     dat |>
@@ -654,7 +797,7 @@ older results notes
 
 #+RESULTS:
 
-#+begin_src R
+#+begin_src R :eval never
   ## out <- read_rds("out/2023-03-29_out.rds")
   rk4 <- read_rds("out/2023-03-30_out.rds") |> make_combinable("rk4") # rk4, 1000 steps
   ode23 <- read_rds("out/2023-03-31_out.rds") |> make_combinable("ode23")# ode23 5001 steps, intended for non-stiff problems!
@@ -671,6 +814,7 @@ older results notes
 #+end_src
 
 #+RESULTS:
+: Error in list2(...) : object 'ode23' not found
 
 ** [#A] plot the output
 and contrast to the C-results
@@ -695,15 +839,15 @@ and contrast to the C-results
              y = c(0.404360548210294,
                    -0.053622586775944,
                    0.913026378223150),
-             sides = "r",
-             colour = c("red", "green", "blue"),
+             sides = "l",
+             colour = scales::hue_pal()(3),
              length = grid::unit(1, "cm"))
 #+end_src
 
 #+RESULTS:
 [[file:2023-03-29_output.png]]
 
-** plot the different methods
+* plot the different methods
 :PROPERTIES:
 :CREATED:  [2023-04-02 Sun 11:24]
 :END:
@@ -1133,6 +1277,7 @@ of the stepper routine to be used.
 
 *** write outputs
 *** [#A] inspect the c output
+**** read in the raw spin vector s
 the raw spin vector s, added as something that we write to file myself (not sure if correct!)
 #+begin_src R
   snv_sout <- read_table("snvec-3.7.5/s-out.dat",
@@ -1144,7 +1289,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 
 #+RESULTS:
 :
-: [36m──[39m [1mColumn specification[22m [36m──────────────[39m
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────[39m
 : cols(
 :   time = [32mcol_double()[39m,
 :   sx = [32mcol_double()[39m,
@@ -1153,11 +1298,12 @@ the raw spin vector s, added as something that we write to file myself (not sure
 :   x = [33mcol_logical()[39m
 : )
 
+**** plot the raw spin vector s
 #+begin_src R :results output graphics file :file c-output_s.png :width 700
   pl_refs <- snv_sout |>
     pivot_longer(cols = sx:sz) |>
     ggplot(aes(time, value, col = name)) +
-    facet_grid(rows = vars(name), scales = "free_y") +
+    ## facet_grid(rows = vars(name), scales = "free_y") +
     ## scale_x_reverse() +
     geom_line() +
     ## geom_point() +
@@ -1169,6 +1315,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+RESULTS:
 [[file:c-output_s.png]]
 
+**** read the final eccentricity, phi, precession
 #+begin_src R
   snv_out <- read_table("snvec-3.7.5/out.dat",
                         col_names = c("t", "epl", "phi", "cp", "x")) |>
@@ -1179,7 +1326,8 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+end_src
 
 #+RESULTS:
-: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────[39m
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────[39m
 : cols(
 :   t = [32mcol_double()[39m,
 :   epl = [32mcol_double()[39m,
@@ -1188,6 +1336,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 :   x = [33mcol_logical()[39m
 : )
 
+**** plot the final eccentricity, phi, precession
 #+begin_src R :results output graphics file :file c-output_ee.png :width 700
   pl_ref <- snv_out |>
     pivot_longer(cols = epl:cp) |>
@@ -1203,6 +1352,17 @@ the raw spin vector s, added as something that we write to file myself (not sure
 
 #+RESULTS:
 [[file:c-output_ee.png]]
+
+**** plot a histogram of the timesteps in the C-output
+#+begin_src R :results output graphics file :file c-output_dt.png :width 700
+  snv_out |>
+    mutate(dt = t - lag(t)) |>
+    ggplot(aes(dt)) +
+    geom_histogram(binwidth = 0.001)
+#+end_src
+
+#+RESULTS:
+[[file:c-output_dt.png]]
 
 *** debug specific functions
 [[file:snvec-3.7.5/snvec-3.7.5.c::Ilja's debugging scheme][Ilja's debugging scheme]]
