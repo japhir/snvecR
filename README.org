@@ -13,7 +13,8 @@ This project aims to make the =snvec= C-code more readily available to R-users.
 
 snvec: Pre-computed Precession-Tilt solutions and C code.
 
-** citation
+** setup
+*** citation
 #+begin_quote
 When using snvec, cite as:
 
@@ -31,7 +32,7 @@ Honolulu, HI 96822, USA
 email: zeebe@soest.hawaii.edu
 #+end_quote
 
-** load libraries
+*** load libraries
 :PROPERTIES:
 :CREATED:  [2023-03-30 Thu 09:14]
 :END:
@@ -50,7 +51,7 @@ email: zeebe@soest.hawaii.edu
 - State "SOME"       from              [2023-03-31 Fri 12:23]
 :END:
 
-** set the version
+*** set the version
 :PROPERTIES:
 :CREATED:  [2023-03-28 Tue 13:32]
 :END:
@@ -60,7 +61,7 @@ email: zeebe@soest.hawaii.edu
 
 #+RESULTS:
 
-** global variables
+*** global variables
 #+begin_src R
   AU <- 1.49597870700e11 # m
   GM <- 1.32712440041e20 # m3/s2
@@ -162,7 +163,7 @@ the top of the file has some lines specifying which columns were used
 | -584400 |              1 |         0.02 |        7.11 |         22.12 |          -178.34 |      -159.54 |         12.8 |
 | -730500 |              1 |         0.02 |         7.1 |            21 |          -177.92 |      -161.08 |        16.45 |
 
-** rename some of the names in dat
+*** rename some of the names in dat
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:14]
 :END:
@@ -184,15 +185,17 @@ to make the naming consistent with the C code
 : rename: renamed 8 variables (t, aa, ee, inc, lph, …)
 
 ** input parameters of the final function/program
+*** set the inputs
 #+begin_src R
   ed <- 1
   td <- 0
-  tend <- -1e3
+  tend <- -1e3 # quick tester, defaults for C
+  ## tend <- -1e5 # full solution
 #+end_src
 
 #+RESULTS:
 
-** check inputs
+*** check inputs
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 11:56]
 :END:
@@ -207,7 +210,7 @@ to make the naming consistent with the C code
 
 #+RESULTS:
 
-** message user about inputs
+*** message user about inputs
 :PROPERTIES:
 :CREATED:  [2023-03-28 Tue 13:31]
 :END:
@@ -230,7 +233,8 @@ to make the naming consistent with the C code
 :  Ed = 1
 :  Td = 0
 
-** calculate helper parameters
+** prepare variables
+*** calculate helper parameters
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
 helper parameters as new columns of dat
 #+begin_src R
@@ -265,7 +269,7 @@ helper parameters as new columns of dat
            ##             cos(inc / R2D))))
 #+end_src
 
-** COMMENT plot orbital solution input
+*** COMMENT plot orbital solution input
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 14:20]
 :END:
@@ -339,7 +343,7 @@ helper parameters as new columns of dat
 #+RESULTS:
 [[file:input_hkpq.png]]
 
-** calculate global vars ndn, wdw, k0d from Td and Ed
+*** calculate global vars ndn, wdw, k0d from Td and Ed
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:40]
 :END:
@@ -351,11 +355,12 @@ helper parameters as new columns of dat
   ndn <- -4.6e-18 * D2S * td # 1/s => 1/d
   wdw <- 51 * ndn * NW0 # Lambeck80, see PTman
   tdg <- td # global Td
+  dts <- dat$t[2] - dat$t[1] # difference in time
 #+end_src
 
 #+RESULTS:
 
-** the euler transformation
+*** the euler transformation
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 15:14]
 :END:
@@ -366,6 +371,7 @@ helper parameters as new columns of dat
   #' s* = A * s, where spin vector s is in invariable plane and s* in instant
   #' orbit plane. inv = 1 gives inverse transformation (A^-1 = A' =
   #' transpose(A)).
+  #'
   #' @param s The vector to be transformed.
   #' @param inc  The inclination.
   #' @param lan  The Long Ascending Node
@@ -383,7 +389,7 @@ helper parameters as new columns of dat
 
 #+RESULTS:
 
-** initial values for the spin vector s
+*** initial values for the spin vector s
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:04]
 :END:
@@ -429,7 +435,7 @@ use finits to get initial conditions in transformed ECLIPJ2000
 : [2,] 0.3977784
 : [3,] 0.9174815
 
-** set the deSolve state
+*** set the deSolve state
 #+begin_src R
   state <- c(sx = s0[1],
              sy = s0[2],
@@ -438,7 +444,7 @@ use finits to get initial conditions in transformed ECLIPJ2000
 
 #+RESULTS:
 
-** define deSolve parameters
+*** define deSolve parameters
 #+begin_src R
   parameters <- c(
     ed = ed,
@@ -450,18 +456,18 @@ use finits to get initial conditions in transformed ECLIPJ2000
 
 #+RESULTS:
 
-** NEXT our inputs change as a function of time, so we need a function to describe them
+*** our inputs change as a function of time, so we need a function to describe them
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 09:06]
 :END:
-
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
-richard does this with qinterp
+
+**** using approxfun
 http://desolve.r-forge.r-project.org/ has an article on time-varying inputs
-we use approxfun to generate a function that approximates =col= for timestep t.
+we can use approxfun to generate a function that approximates =col= for timestep t.
 
 #+begin_src R :eval never
-  qinterp <- function(dat, col = ee) {
+  old_qinterp <- function(dat, col = ee) {
     dat |>
      select(t, {{col}}) |>
      approxfun(rule = 2)
@@ -470,8 +476,10 @@ we use approxfun to generate a function that approximates =col= for timestep t.
 
 #+RESULTS:
 
-this is very slow though, so we use a quicker interpolation algorithm, closer to how it's done in C.
+this is very slow though, so we use a quicker interpolation algorithm, closer
+to how Richard does it in C.
 
+**** implement qinterp similar to the C-routine
 #+begin_src R
   ##' qinterp
   ##'
@@ -482,18 +490,18 @@ this is very slow though, so we use a quicker interpolation algorithm, closer to
   ##' @return The vector of interpolated results
   qinterp <- function(y, ds, dx, m) {
     yi <- y[m]; dy <- 0; dsa <- abs(ds); dxa <- abs(dx); mm <- 1L
-    if (dxa > 0) {
+    ## if (dxa > 0) {
       mm <- m - as.integer(sign(dx))
       dy <- y[mm] - y[m]
       yi <- yi + dy * dxa / dsa
-    }
+    ## }
     return(yi)
   }
 #+end_src
 
 #+RESULTS:
 
-*** double-check that the interpolation is working
+**** double-check that the interpolation is working
 #+begin_src R :eval never
   input <- dat |>
     select(time, ee) |>
@@ -507,7 +515,7 @@ this is very slow though, so we use a quicker interpolation algorithm, closer to
 #+RESULTS:
 : [1] 0.01670545
 
-> I created the function
+> I created the approxfun function
 
 #+begin_src R :results output graphics file :file qinterp_test.png
   t <- -.45 * KY2D
@@ -530,30 +538,26 @@ this is very slow though, so we use a quicker interpolation algorithm, closer to
 [[file:qinterp_test.png]]
 
 **** time how long it takes
-
-#+begin_src R
-  microbenchmark::microbenchmark(
-                  qinterp(dat, ee)(-150000)
-                  )
-#+end_src
-
-#+RESULTS:
-: Error in qinterp(dat, ee) : object 'ee' not found
-
-#+begin_src R
-  microbenchmark::microbenchmark(
+#+begin_src R :results output graphics file :file benchmark_qinterp.png :width 800 :eval never
+  bm_qi <- microbenchmark::microbenchmark(
+                  old_qinterp(dat, qq)(-146100),
                   qinterp(dat$qq,-146100,-48700,4)
                   )
+  autoplot(bm_qi)
 #+end_src
 
 #+RESULTS:
-: Unit: microseconds
-:                                 expr   min     lq    mean median     uq
-:  qinterp(dat$qq, -146100, -48700, 4) 3.088 3.1675 3.47784  3.247 3.3395
-:     max neval
-:  19.351   100
+[[file:benchmark_qinterp.png]]
 
-** the differential equations
+yeah that's ... 4 orders of magnitude faster...
+
+
+** solve the system of ODEs
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 14:11]
+:END:
+
+*** the differential equations
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 11:56]
 :END:
@@ -561,7 +565,6 @@ see [[derivs]]
 
 #+begin_src R
   # derivatives. RHS of DEQs for spin vector s = y
-  dts <- dat$t[2] - dat$t[1]
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
 
@@ -589,14 +592,15 @@ see [[derivs]]
 
       # 1/(1-e^2)^3/2 term
       # add interpolation
-      hhi <- qinterp(dat$hh,dts,dx,m)
-      kki <- qinterp(dat$kk,dts,dx,m)
-      ff <- (1 - hhi * hhi - kki * kki)
+      ## hhi <- qinterp(dat$hh,dts,dx,m)
+      ## kki <- qinterp(dat$kk,dts,dx,m)
+      ## ff <- (1 - hhi * hhi - kki * kki)
 
       # shouldn't I also interpolate hh and kk? -> see above
-      ## ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
+      ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
       # i've tried both, gives identical results if I use the prescribed timesteps.
       # they're also equally fast! so let's go with my own which I think is better.
+      # it might be the cause of numerical diffs between C and R? try without again
 
       ff <- 1 / sqrt(ff*ff*ff)
       kb <- k0d * (1 + 1 * wdw * t) * (ff + BET0 * (1 + 2 * ndn * t))
@@ -621,13 +625,8 @@ see [[derivs]]
 
 #+RESULTS:
 
-*** DONE use qinterp on hh and kk as well
-CLOSED: [2023-04-01 Sat 11:10]
-:PROPERTIES:
-:CREATED:  [2023-03-31 Fri 12:39]
-:END:
 
-** NEXT timesteps to report
+*** timesteps to report
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:08]
 :END:
@@ -636,7 +635,7 @@ CLOSED: [2023-04-01 Sat 11:10]
   i just changed this so from by = 1 * KY2D to 0.2*KY2D making it 5 times more high-res to see if that's the cause of the discrepancy
 :END:
 
-*** a linear sequence of steps
+**** a linear sequence of steps
 #+begin_src R
   ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
   times <- seq(0, tend * KY2D,
@@ -648,7 +647,7 @@ CLOSED: [2023-04-01 Sat 11:10]
 
 #+RESULTS:
 
-*** let's use the exact same timesteps as the C-routine
+**** let's use the exact same timesteps as the C-routine
 [[file:~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/README.org::*inspect the c output][inspect the c output]]
 
 #+begin_src R :eval never
@@ -659,16 +658,15 @@ CLOSED: [2023-04-01 Sat 11:10]
 #+end_src
 
 #+RESULTS:
-
-** solve the system of ODEs
+*** DONE use qinterp on hh and kk as well
+CLOSED: [2023-04-01 Sat 11:10]
 :PROPERTIES:
-:CREATED:  [2023-03-24 Fri 14:11]
+:CREATED:  [2023-03-31 Fri 12:39]
 :END:
 
-odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
-
 *** solve it
-#+begin_src R :eval query
+[[file:snvec-3.7.5/snvec-3.7.5.c::%%% solver][odeint()]]
+#+begin_src R
   print(system.time(
   ## microbenchmark::microbenchmark(
     out <- ode(y = state,
@@ -680,10 +678,12 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
                  # "ode23" # = non-stiff, variable time-step
                  ## "ode45" # = stiff, variable time-step
                # radau #= stiff/non-stiff
-               "bdf" # = stiff
+               "bdf", # = stiff
                ## "daspk", # = very stiff
-               ## rtol = 1e-10, atol = 1e-10
-               ## rtol = 1e-5, atol = 1e-5
+               # play around with machine precision: default is 1e-6
+               ## rtol = 1e-5, atol = 1e-5 # rougher = faster?
+               rtol = 1e-7, atol = 1e-7 # based on EPSLVR
+               ## rtol = 1e-12, atol = 1e-12
                )
   ))
   ## )
@@ -691,9 +691,34 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
 
 #+RESULTS:
 :    user  system elapsed
-:   0.162   0.000   0.162
+:   0.223   0.000   0.224
 
+*** older results notes
+| date             |     user |  system |  elapsed | method |  steps | notes                                |                           |
+|------------------+----------+---------+----------+--------+--------+--------------------------------------+---------------------------|
+| [2023-03-30 Thu] |  361.986 |   0.213 |  364.353 | rk4    |   1000 |                                      |                           |
+| [2023-03-30 Thu] |  334.800 |   0.081 |  336.341 | rk4    |   1000 | no error                             |                           |
+| [2023-03-31 Fri] | 2927.945 | 187.784 | 3136.222 | ode23  |   5001 | with interpolation of hh kk          |                           |
+| [2023-04-01 Sat] | 3649.884 | 186.344 | 3853.946 | ode45  |   5001 |                                      |                           |
+| [2023-04-01 Sat] |  366.281 |  13.585 |  381.437 | bdf    |   2523 | same number of steps as in C-routine |                           |
+| [2023-04-02 Sun] |  320.980 |  12.352 |  334.679 | daspk  |   2523 |                                      |                           |
+| [2023-04-02 Sun] |  792.366 |  26.664 |  824.907 | lsoda  |   2523 | default                              |                           |
+| [2023-04-03 Mon] |  242.316 |  25.936 |  269.344 | daspk  |   2523 | qinterp closer to C                  |                           |
+| [2023-04-03 Mon] |    0.181 |   0.000 |    0.182 | daspk  |   2523 | qinterp fix!                         |                           |
+| [2023-04-03 Mon] |    0.128 |   0.001 |    0.128 | daspk  |   2523 | same timesteps as C                  |                           |
+| [2023-04-03 Mon] |   15.517 |   0.000 |   15.556 | daspk  |   2501 | linear timestep + a/rtol = 1e-10     |                           |
+| [2023-04-03 Mon] |    0.147 |   0.000 |    0.147 | bdf    |   2501 | flipped times                        |                           |
+| [2023-04-03 Mon] |   29.969 |   0.000 |   30.073 | bdf    |   2501 | rtol = atol = 1e-12                  |                           |
+| [2023-04-03 Mon] |   18.229 |   0.026 |   18.338 | bdf    | 250001 | bdf                                  | rtol = 1e-7, full 100 Myr |
 
+#+begin_src R
+  lubridate::as.duration(c(0.147, 100, 500, 1000, 2000, 3000))
+#+end_src
+
+#+RESULTS:
+: [1] "0.147s"                 "100s (~1.67 minutes)"   "500s (~8.33 minutes)"   "1000s (~16.67 minutes)" "2000s (~33.33 minutes)" "3000s (~50 minutes)"
+
+*** benchmarks using microbenchmark
 :  out <- ode(y = state, times = times, func = eqns, parms = parameters,      method = "bdf")
 :       min       lq    mean   median       uq      max neval
 :  130.6327 134.4619 143.1704 137.2702 142.9504 279.2405   100 # daspk
@@ -701,31 +726,9 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
 :  213.6866 226.2011 241.949 232.1017 249.3671 401.4864    100 # lsoda
 :  702.615  712.545  883.7992 715.33  724.0765 12602.84    100 # ode45
 
-*** older results notes
-| date             |     user |  system |  elapsed | method | steps | notes                                |
-|------------------+----------+---------+----------+--------+-------+--------------------------------------|
-| [2023-03-30 Thu] |  361.986 |   0.213 |  364.353 | rk4    |  1000 |                                      |
-| [2023-03-30 Thu] |  334.800 |   0.081 |  336.341 | rk4    |  1000 | no error                             |
-| [2023-03-31 Fri] | 2927.945 | 187.784 | 3136.222 | ode23  |  5001 | with interpolation of hh kk          |
-| [2023-04-01 Sat] | 3649.884 | 186.344 | 3853.946 | ode45  |  5001 |                                      |
-| [2023-04-01 Sat] |  366.281 |  13.585 |  381.437 | bdf    |  2523 | same number of steps as in C-routine |
-| [2023-04-02 Sun] |  320.980 |  12.352 |  334.679 | daspk  |  2523 |                                      |
-| [2023-04-02 Sun] |  792.366 |  26.664 |  824.907 | lsoda  |  2523 | default                              |
-| [2023-04-03 Mon] |  242.316 |  25.936 |  269.344 | daspk  |  2523 | qinterp closer to C                  |
-| [2023-04-03 Mon] |    0.181 |   0.000 |    0.182 | daspk  |  2523 | qinterp fix!                         |
-| [2023-04-03 Mon] |    0.128 |   0.001 |    0.128 | daspk  |  2523 | same timesteps as C                  |
-| [2023-04-03 Mon] |   15.517 |   0.000 |   15.556 | daspk  |  2501 | linear timestep + a/rtol = 1e-10     |
-
-#+begin_src R
-  lubridate::as.duration(c(100, 500, 1000, 2000, 3000))
-#+end_src
-
-#+RESULTS:
-: [1] "100s (~1.67 minutes)"   "500s (~8.33 minutes)"   "1000s (~16.67 minutes)"
-: [4] "2000s (~33.33 minutes)" "3000s (~50 minutes)"
-
-*** save the output
-#+begin_src R
+*** COMMENT save the output
+this is no longer needed now that I have implemented the fast qinterp algorithm and it solves it almost instantly
+#+begin_src R :eval never
   ## write_rds(out, "out/2023-03-30_out.rds") # rk4, 1000 steps
   ## write_rds(out, "out/2023-03-31_out.rds") # ode23 5001 steps, intended for non-stiff problems!
   ## write_rds(out, "out/2023-04-01_out-ode45.rds") # ode45 5001 steps
@@ -738,7 +741,15 @@ odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
   ## write_rds(out, "out/2023-04-03_out-tol.rds")    # daspk 2523 atol rtol = 1e-10
   ## write_rds(out, "out/2023-04-03_out-tollow.rds")    # daspk 2523 atol rtol = 1e-10
   ## write_rds(out, "out/2023-04-03_out-bdf.rds")    # bdf 2523 atol rtol = 1e-10
-  write_rds(out, "out/2023-04-03_out-works.rds")    # bdf 2501 time in different order
+  ## write_rds(out, "out/2023-04-03_out-works.rds")    # bdf 2501 time in different order
+  write_rds(out, "out/2023-04-04_out-tol.rds")    # bdf 2501 rtol = atol = 1e-12
+#+end_src
+
+#+RESULTS:
+
+*** COMMENT read in the main result
+#+begin_src R :eval never
+  out <- read_rds("out/2023-04-03_out-works.rds")
 #+end_src
 
 #+RESULTS:
@@ -766,14 +777,14 @@ INTEGER values
 --------------------
 
   1 The return code : 2
-  2 The number of steps taken for the problem so far: 2511
-  3 The number of function evaluations for the problem so far: 2903
+  2 The number of steps taken for the problem so far: 2539
+  3 The number of function evaluations for the problem so far: 3194
   5 The method order last used (successfully): 5
   6 The order of the method to be attempted on the next step: 5
   7 If return flag =-4,-5: the largest component in error vector 0
   8 The length of the real work array actually required: 58
   9 The length of the integer work array actually required: 23
- 14 The number of Jacobian evaluations and LU decompositions so far: 129
+ 14 The number of Jacobian evaluations and LU decompositions so far: 132
 
 --------------------
 RSTATE values
@@ -781,12 +792,12 @@ RSTATE values
 
   1 The step size in t last used (successfully): -146100
   2 The step size to be attempted on the next step: -146100
-  3 The current value of the independent variable which the solver has reached: -365331300
+  3 The current value of the independent variable which the solver has reached: -365307400
   4 Tolerance scale factor > 1.0 computed when requesting too much accuracy: 0
 #+end_example
 
-** read in previous results
-#+begin_src R
+** COMMENT read in previous results
+#+begin_src R :eval never
   make_combinable <- function(dat, method) {
     dat |>
      as_tibble() |>
@@ -816,9 +827,33 @@ RSTATE values
 #+RESULTS:
 : Error in list2(...) : object 'ode23' not found
 
-** [#A] plot the output
+** plot the output
 and contrast to the C-results
+this depends on snv_sout from [[file:~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/README.org::*inspect the c output][inspect the c output]]
 
+*** read in the raw spin vector s from the C-routine
+the raw spin vector s, added as something that we write to file myself (not sure if correct!)
+#+begin_src R
+  snv_sout <- read_table("snvec-3.7.5/s-out.dat",
+                        col_names = c("time", "sx", "sy", "sz", "x")) |>
+    # this is because there's some whitespace there?
+    # note that t is in tmv / KY2D = in kyr
+    select(-x)
+#+end_src
+
+#+RESULTS:
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+: cols(
+:   time = [32mcol_double()[39m,
+:   sx = [32mcol_double()[39m,
+:   sy = [32mcol_double()[39m,
+:   sz = [32mcol_double()[39m,
+:   x = [33mcol_logical()[39m
+: )
+
+
+*** plot the spin vector s together with the C-routine for easy inspection
 #+begin_src R :results output graphics file :output graphics file :file 2023-03-29_output.png :width 700
   comb <- snv_sout |>
     mutate(code = "C") |>
@@ -830,7 +865,8 @@ and contrast to the C-results
       mutate(code = "R") |>
       mutate(across(time:sz, as.numeric)))
 
-  comb |>
+
+  pl_s <- comb |>
     pivot_longer(cols = sx:sz) |>
     ggplot(aes(x = time, y = value, colour = name, linetype = code)) +
     geom_line() +
@@ -842,18 +878,33 @@ and contrast to the C-results
              sides = "l",
              colour = scales::hue_pal()(3),
              length = grid::unit(1, "cm"))
+  pl_s
 #+end_src
 
 #+RESULTS:
 [[file:2023-03-29_output.png]]
 
-* plot the different methods
+**** SOME make a plot of the difference between the two
+:LOGBOOK:
+- State "SOME"       from              [2023-04-04 Tue 11:15]
+:END:
+but they're not on the same timesteps so that would be annoying...
+
+*** make the figure interactive in the browser
+#+begin_src R
+  plotly::toWebGL(plotly::ggplotly(pl_s, dynamicTicks = TRUE))
+#+end_src
+
+#+RESULTS:
+: There were 15 warnings (use warnings() to see them)
+
+** COMMENT plot the different methods
 :PROPERTIES:
 :CREATED:  [2023-04-02 Sun 11:24]
 :END:
 the different methods (other then timestep) result in identical results!!
 
-#+begin_src R :results output graphics file :output graphics file :file 2023-04-02_all-output.png :width 700
+#+begin_src R :results output graphics file :output graphics file :file 2023-04-02_all-output.png :width 700 :eval never
   allout |>
     pivot_longer(cols = sx:sz) |>
     ggplot(aes(x = time, y = value, colour = name, linetype = method)) +
@@ -876,20 +927,27 @@ the different methods (other then timestep) result in identical results!!
 :LOGBOOK:
 - State "SOME"       from              [2023-03-29 Wed 12:03]
 :END:
-do we mean the value at time == 0?
+do we mean the value at time == 0? -> no! It's going back from 0 to -time
 #+begin_src R
   fin <- out[nrow(out), ]
   ## fin <- out[1, ]
   u <- as.vector(c(fin[2], fin[3], fin[4]))
-  message(glue::glue("Final values s[1][2][3]; s-error = |s|-1:\n {paste(fin[2], fin[3], fin[4])}\n {sqrt(pracma::dot(u, u))-1}"))
+  message(glue::glue("Final values s[1][2][3]; s-error = |s|-1:\n {paste(fin[2], fin[3], fin[4])}\n {sqrt(abs(pracma::dot(u, u)))-1}"))
 #+end_src
 
 #+RESULTS:
 : Final values s[1][2][3]; s-error = |s|-1:
-: 0.355962306701157 0.286673811800495 0.88938337284608
-: -5.30903796420734e-05
+: 0.404197400723194 -0.0537088738295803 0.91303387030935
+: -5.44863786333671e-05
 
-** NEXT unwrap function
+This is what it should look like compared to the C-routine:
+#+begin_example
+@ Final values s[1][2][3]; s-error = |s|-1:
+ 0.404360548210294 -0.053622586775944  0.913026378223150
+ 1.046379e-09
+#+end_example
+
+** unwrap function
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
@@ -899,23 +957,27 @@ I used some help by chatgpt for the next few functions to explain the c-code
 #+begin_src R
   #' unwrap angle.
   #'
-  #' unwrap angle. maps jumps greater than pi to their 2pi complement.
+  #' Unwrap angle. Maps jumps greater than pi to their 2pi complement.
+  #'
+  #' @param y Input vector in degrees.
+  #' @return Unwrapped vector in degrees.
   unwrap <- function(y) {
-    # massive jumps
-    ## y <- c(-600, -200, 0, 69, 490)
-    ## y <- c(0, 20, -200, 30, 40)
-    # more expected jumps
-    ## y <- c(0, 20, -170, 30, 40)
+    # let's stop being smart and just build it like Richard did in C
+    cv <- rep(0, length(y)) # to make them the same length
 
-    dy <- c(0, diff(y)) / R2D
-
-    dy[dy > pi] <- dy[dy > pi] - 2 * pi
-    dy[dy < -pi] <- dy[dy < -pi] + 2 * pi
-    dy <- cumsum(dy)
-
-    yu <- y
-    yu <- cumsum(yu + dy * R2D)
-    yu
+    # vectorized ## dy <- diff(y) / R2D
+    for(i in 2:length(y)){
+      dy <- (y[i] - y[i-1])/R2D # vectorized
+      if(dy > pi){
+        c <- c - 2.*pi
+      } else
+        if(dy < -pi){
+          c <- c + 2.*pi
+        }
+      cv[i] <- c
+    }
+    # ok I'll vectorize this one...
+    yu <- y + cv*R2D
   }
 #+end_src
 
@@ -926,7 +988,7 @@ I used some help by chatgpt for the next few functions to explain the c-code
 :CREATED:  [2023-03-29 Wed 12:03]
 :END:
 unwrap lph, lan
-
+*** calculate the unwraps for lph and lan
 #+begin_src R
   dat <- dat |>
     mutate(lphu = unwrap(lph),
@@ -954,6 +1016,28 @@ lphu <- unwrap(lph, ls)
 #+RESULTS:
 [[file:test-unwrap.png]]
 
+*** inspect C unwrap output
+#+begin_src R :results output graphics file :file test-unwrap-vs-C.png
+  cunwrap <- read_table("snvec-3.7.5/out-wrap.dat",
+                        col_names = c("age", "lphu", "lanu", "x")) |>
+    select(-x)
+
+  dat |>
+    filter(age > -1e3) |>
+    ggplot(aes(x = -age, y = lph)) +
+    geom_line() +
+    geom_line(aes(y = lphu), colour = "blue") +
+    xlim(c(-1e3, 0)) +
+    ylim(c(-2e3, 2e2)) +
+    geom_line(aes(x = age, y = lphu),
+              data = cunwrap |>
+                filter(age > -1e3),
+              col = "red")
+#+end_src
+
+#+RESULTS:
+[[file:test-unwrap-vs-C.png]]
+
 ** interpolate the orbital solution
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:04]
@@ -963,15 +1047,15 @@ back onto output timescale
   out <- out |>
     as_tibble() |>
     mutate(
-      ## m = min(round(abs(time / )))
-      ## dx = diff(time),
-      nnx = qinterp(dat, nnx)(time),
-      nny = qinterp(dat, nny)(time),
-      nnz = qinterp(dat, nnz)(time),
-      eei = qinterp(dat, ee)(time),
-      inci = qinterp(dat, inc)(time),
-      lphi = qinterp(dat, lphu)(time),
-      lani = qinterp(dat, lanu)(time)
+      m = min(round(abs(time / dts)+1), nrow(dat)),
+      dx = time - dat$t[m],
+      nnx = qinterp(dat$nnx, dts, dx, m),
+      nny = qinterp(dat$nny, dts, dx, m),
+      nnz = qinterp(dat$nnz, dts, dx, m),
+      eei = qinterp(dat$ee, dts, dx, m),
+      inci = qinterp(dat$inc, dts, dx, m),
+      lphi = qinterp(dat$lphu, dts, dx, m),
+      lani = qinterp(dat$lanu, dts, dx, m)
     )
 #+end_src
 
@@ -986,13 +1070,21 @@ back onto output timescale
     # for each row, extract sx, sy, sz, and nnx, nny, nnz as vectors
     rowwise() |>
     mutate(u = list(as.vector(c(sx, sy, sz))),
-           nni = list(as.vector(c(nnx, nny, nnz)))) |>
+           nv = list(as.vector(c(nnx, nny, nnz)))) |>
     # and calculate the dotproduct, richard's vvdot
-    mutate(tmp = pracma::dot(u, nni),
+    mutate(tmp = pracma::dot(u, nv),
            epl = acos(tmp))
 #+end_src
 
 #+RESULTS:
+: Warning message:
+: [1m[22mThere were 944 warnings in `mutate()`.
+: The first warning was:
+: [1m[22m[36mℹ[39m In argument: `epl = acos(tmp)`.
+: [36mℹ[39m In row 281.
+: Caused by warning in `acos()`:
+: [33m![39m NaNs produced
+: [1m[22m[36mℹ[39m Run `dplyr::last_dplyr_warnings()` to see the 943 remaining warnings.
 
 ** NEXT calculate precession and climatic precession
 :PROPERTIES:
@@ -1004,19 +1096,14 @@ back onto output timescale
       # coords: fixed HCI => moving orbit plane
       up = list(euler(u, inci / R2D, lani / R2D, 0)),
       # coords: relative to phi(t=0)=0 at J2000
-      up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0)),
+      up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0) |> as.vector())) |>
       # get 2nd and 1st column of up
-      ## phi = atan2(up[, 2], up[, 1]),
-      ## phi = phi - ,
+      ## phi = list(map(up, ~ atan2(.x[2], .x[1]))),
       ## cp = eei * sin((lphi + OMT) / R2D - phi)
-    )
+    ## )
 #+end_src
 
 #+RESULTS:
-: Error: unexpected ',' in:
-: "    phi = atan2(up[, 2], up[, 1]),
-:     phi = phi - ,"
-: Error: unexpected ')' in "    cp = eei * sin((lphi + OMT) / R2D - phi))"
 
 *** NEXT fix phi
 :PROPERTIES:
@@ -1032,10 +1119,8 @@ back onto output timescale
 #+end_src
 
 #+RESULTS:
-: [1m[33mError[39m in `out[nrow(out), "phi"]`:[22m
-: [33m![39m Can't subset columns that don't exist.
-: [31m✖[39m Column `phi` doesn't exist.
-: [90mRun `rlang::last_trace()` to see where the error occurred.[39m
+: Final values obliquity, precession (rad):
+: 1.5167803858454 5
 
 ** write output files
 :PROPERTIES:
@@ -1046,7 +1131,7 @@ back onto output timescale
 :END:
 for now write the rds output
 #+begin_src R :eval query
-  write_rds(out, "out/2023-03-29_out.rds")
+  write_rds(out, "out/2023-04-04_out.rds")
 #+end_src
 
 #+RESULTS:
@@ -1441,36 +1526,53 @@ CLOSED: [2023-03-29 Wed 12:01]
 
 #+RESULTS:
 [[file:compare_c-R.png]]
-
-* COMMENT step-by-step
+* tasks
 :PROPERTIES:
-:CREATED:  [2023-03-28 Tue 15:33]
+:CREATED:  [2023-04-04 Tue 09:27]
 :END:
-
-** read in the orbital solution
-
-** make them a function of time
+** DONE play around with the different ODE solver algorithms to figure out which one is fastest
+CLOSED: [2023-04-04 Tue 09:28]
+** DONE make the R routine visually return the same spin vector as the C routine
+CLOSED: [2023-04-04 Tue 09:27]
+** NEXT make the R routine return machine precision close to identical results to the C routine
 :PROPERTIES:
-:CREATED:  [2023-03-30 Thu 09:32]
+:CREATED:  [2023-04-04 Tue 09:27]
 :END:
-
-** specify constants
-
-** specify input values
-- tend
-- Ed
-- Td
-
-** calculate global variables
-ndn, wdw, k0d
-from Td and Ed
-
-** set up the initial spin vector s
-transform them: s, n in HCI, s' and n' in ECLIPJ2000
-using the euler function
-
-f(s0, nn, ep0, inct, omt)
-
-** set up the system of differential equations
-spin vector s = y
-as a function of t, y, and y'
+- hmm it's not the fact that in the C routine he doesn't interpolate the results for hh and kk
+- check for a long run if the error stays 1e-3 or if it accumulates -> it accumulates, see figs:
+   [[file:2023-04-04_compare-c-to-R_56-54Ma.png]]
+   [[file:2023-04-04_compare-c-to-R_81-78Ma.png]]
+   [[file:2023-04-04_compare-c-to-R_100-97Ma.png]]
+- compare C-code to this with times
+** NEXT make the R routine return the same values for precession and obliquity
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 09:29]
+:END:
+** NEXT make a function out of snvec so it's easy to vary Td and Ed
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 09:28]
+:END:
+** NEXT calculate for grids of Td and Ed
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 09:29]
+:END:
+** NEXT visualize results: a heat map?
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 09:29]
+:END:
+** SOME make the La2011 solution obl + precession available?
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 10:35]
+:END:
+:LOGBOOK:
+- State "SOME"       from "NEXT"       [2023-04-04 Tue 10:36]
+:END:
+but NOT the 2004 solutions! divergence times at ~40 Ma with 2011 or ZB18a
+** SOME check out the Wu paper / acycle
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 10:37]
+:END:
+:LOGBOOK:
+- State "SOME"       from "NEXT"       [2023-04-04 Tue 10:39]
+:END:
+they apply the Laskar fortran routine from 92/93 to calculate precession/obliquity for the La2011 but that's in the ecliptic reference plane rather than the intertial reference frame.
