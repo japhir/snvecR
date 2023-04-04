@@ -466,8 +466,8 @@ use finits to get initial conditions in transformed ECLIPJ2000
 http://desolve.r-forge.r-project.org/ has an article on time-varying inputs
 we can use approxfun to generate a function that approximates =col= for timestep t.
 
-#+begin_src R :eval never
-  old_qinterp <- function(dat, col = ee) {
+#+begin_src R
+  approxdat <- function(dat, col = ee) {
     dat |>
      select(t, {{col}}) |>
      approxfun(rule = 2)
@@ -540,7 +540,7 @@ to how Richard does it in C.
 **** time how long it takes
 #+begin_src R :results output graphics file :file benchmark_qinterp.png :width 800 :eval never
   bm_qi <- microbenchmark::microbenchmark(
-                  old_qinterp(dat, qq)(-146100),
+                  approxdat(dat, qq)(-146100),
                   qinterp(dat$qq,-146100,-48700,4)
                   )
   autoplot(bm_qi)
@@ -1016,17 +1016,82 @@ lphu <- unwrap(lph, ls)
 #+RESULTS:
 [[file:test-unwrap.png]]
 
-*** inspect C unwrap output
-#+begin_src R :results output graphics file :file test-unwrap-vs-C.png
-  cunwrap <- read_table("snvec-3.7.5/out-wrap.dat",
-                        col_names = c("age", "lphu", "lanu", "x")) |>
-    select(-x)
+** interpolate the orbital solution
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 12:04]
+:END:
+back onto output timescale
+#+begin_src R
+  fin <- out |>
+    as_tibble() |>
+    mutate(
+      age = -time / KY2D,
+      nnx = approxdat(dat, nnx)(time),
+      nny = approxdat(dat, nny)(time),
+      nnz = approxdat(dat, nnz)(time),
+      eei = approxdat(dat, ee)(time),
+      inci = approxdat(dat, inc)(time),
+      lphi = approxdat(dat, lphu)(time),
+      lani = approxdat(dat, lanu)(time)
+    )
+#+end_src
 
+#+RESULTS:
+
+using qinterp in this case isn't faster because we need to apply it to the full record anyway
+#+begin_src R :eval never
+  m = min(round(abs(time / dts)+1), nrow(dat)),
+  dx = time - dat$t[m],
+  age = -time / KY2D,
+  nnx = qinterp(dat$nnx, dts, dx, m),
+  nny = qinterp(dat$nny, dts, dx, m),
+  nnz = qinterp(dat$nnz, dts, dx, m),
+  eei = qinterp(dat$ee, dts, dx, m),
+  inci = qinterp(dat$inc, dts, dx, m),
+  lphi = qinterp(dat$lphu, dts, dx, m),
+  lani = qinterp(dat$lanu, dts, dx, m)
+#+end_src
+** inspect C nni and unwrap output
+#+begin_src R
+  cunwrap <- read_table("snvec-3.7.5/out-wrap.dat",
+                        col_names = c("age", "nnx", "nny", "nnz", "lphu", "lanu", "x")) |>
+    select(-x)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+[36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+cols(
+  age = [32mcol_double()[39m,
+  nnx = [32mcol_double()[39m,
+  nny = [32mcol_double()[39m,
+  nnz = [32mcol_double()[39m,
+  lphu = [32mcol_double()[39m,
+  lanu = [32mcol_double()[39m,
+  x = [33mcol_logical()[39m
+)
+#+end_example
+
+#+begin_src R :results output graphics file :file test-nni-vs-C.png
+  cunwrap |>
+    ggplot(aes(x = age, y = nnx)) +
+    geom_line() +
+    geom_line(aes(x = -age), colour = "red", data = fin)
+#+end_src
+
+#+RESULTS:
+[[file:test-nni-vs-C.png]]
+
+#+begin_src R :results output graphics file :file test-unwrap-vs-C.png
   dat |>
     filter(age > -1e3) |>
     ggplot(aes(x = -age, y = lph)) +
     geom_line() +
+    # unwrapped data
     geom_line(aes(y = lphu), colour = "blue") +
+    # interpolated data
+    geom_line(aes(y = lphi), colour = "blue", data = fin) +
     xlim(c(-1e3, 0)) +
     ylim(c(-2e3, 2e2)) +
     geom_line(aes(x = age, y = lphu),
@@ -1038,74 +1103,80 @@ lphu <- unwrap(lph, ls)
 #+RESULTS:
 [[file:test-unwrap-vs-C.png]]
 
-** interpolate the orbital solution
-:PROPERTIES:
-:CREATED:  [2023-03-29 Wed 12:04]
-:END:
-back onto output timescale
-#+begin_src R
-  out <- out |>
-    as_tibble() |>
-    mutate(
-      m = min(round(abs(time / dts)+1), nrow(dat)),
-      dx = time - dat$t[m],
-      nnx = qinterp(dat$nnx, dts, dx, m),
-      nny = qinterp(dat$nny, dts, dx, m),
-      nnz = qinterp(dat$nnz, dts, dx, m),
-      eei = qinterp(dat$ee, dts, dx, m),
-      inci = qinterp(dat$inc, dts, dx, m),
-      lphi = qinterp(dat$lphu, dts, dx, m),
-      lani = qinterp(dat$lanu, dts, dx, m)
-    )
-#+end_src
 
-#+RESULTS:
-
-** NEXT calculate obliquity
+** calculate obliquity
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:12]
 :END:
 #+begin_src R
-  out <- out |>
-    # for each row, extract sx, sy, sz, and nnx, nny, nnz as vectors
-    rowwise() |>
-    mutate(u = list(as.vector(c(sx, sy, sz))),
-           nv = list(as.vector(c(nnx, nny, nnz)))) |>
-    # and calculate the dotproduct, richard's vvdot
-    mutate(tmp = pracma::dot(u, nv),
+  fin <- fin |>
+    # calculate the dotproduct, richard's vvdot
+    mutate(tmp = sx*nnx + sy*nny + sz*nnz,
            epl = acos(tmp))
 #+end_src
 
 #+RESULTS:
-: Warning message:
-: [1m[22mThere were 944 warnings in `mutate()`.
-: The first warning was:
-: [1m[22m[36mℹ[39m In argument: `epl = acos(tmp)`.
-: [36mℹ[39m In row 281.
-: Caused by warning in `acos()`:
-: [33m![39m NaNs produced
-: [1m[22m[36mℹ[39m Run `dplyr::last_dplyr_warnings()` to see the 943 remaining warnings.
 
-** NEXT calculate precession and climatic precession
+** COMMENT inspect c tmp and epl
+#+begin_src R :eval never
+  tmpepl <- read_table("snvec-3.7.5/out-tmp-epl.dat",
+                        col_names = c("age", "tmp", "epl", "x")) |>
+    select(-x)
+#+end_src
+
+#+RESULTS:
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+: cols(
+:   age = [32mcol_double()[39m,
+:   tmp = [32mcol_double()[39m,
+:   epl = [32mcol_double()[39m,
+:   x = [33mcol_logical()[39m
+: )
+
+#+begin_src R :results output graphics file :file 2023-04-04_test-tmp-epl.png :eval never
+  tmpepl |>
+    ggplot(aes(x = age, y = tmp)) +
+    geom_line() +
+    geom_line(aes(x = -age, y = tmp), colour = "red", data = fin)
+#+end_src
+
+#+RESULTS:
+[[file:2023-04-04_test-tmp-epl.png]]
+
+** calculate precession and climatic precession
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:14]
 :END:
 #+begin_src R
-  out <- out |>
+  fin <- fin |>
+    # for each row,
+    rowwise() |>
+    # create list columns of matrices
+    # extract sx, sy, sz, and nnx, nny, nnz
+    mutate(u = list(matrix(c(sx, sy, sz), ncol = 1, nrow = 3)),
+           nv = list(matrix(c(nnx, nny, nnz), ncol = 1, nrow = 3)),
+           # coords: fixed HCI => moving orbit plane
+           up = list(euler(u, inci / R2D, lani / R2D, 0)),
+           # coords: relative to phi(t=0)=0 at J2000
+           up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0)),
+           # get 2nd and 1st column of up
+           phi = map2_dbl(up[2, ], up[1, ], atan2)) |>
+    ungroup() |>
     mutate(
-      # coords: fixed HCI => moving orbit plane
-      up = list(euler(u, inci / R2D, lani / R2D, 0)),
-      # coords: relative to phi(t=0)=0 at J2000
-      up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0) |> as.vector())) |>
-      # get 2nd and 1st column of up
-      ## phi = list(map(up, ~ atan2(.x[2], .x[1]))),
-      ## cp = eei * sin((lphi + OMT) / R2D - phi)
-    ## )
+           # normalize to first value of phi
+           phi = phi - first(phi),
+           cp = eei * sin((lphi + OMT) / R2D - phi - first(phi)),
+           # phi is now mapped between 0 and 2 pi, whereas RZ's output is wrapped
+           # between -pi and pi
+           phi = ifelse(phi > pi, phi - 2*pi, phi)
+           )
 #+end_src
 
 #+RESULTS:
 
-*** NEXT fix phi
+*** DONE fix phi
+CLOSED: [2023-04-04 Tue 12:30]
 :PROPERTIES:
 :CREATED:  [2023-03-31 Fri 13:06]
 :END:
@@ -1119,8 +1190,7 @@ back onto output timescale
 #+end_src
 
 #+RESULTS:
-: Final values obliquity, precession (rad):
-: 1.5167803858454 5
+: Error in out[nrow(out), "epl"] : subscript out of bounds
 
 ** write output files
 :PROPERTIES:
@@ -1130,8 +1200,8 @@ back onto output timescale
 - State "SOME"       from              [2023-03-29 Wed 12:23]
 :END:
 for now write the rds output
-#+begin_src R :eval query
-  write_rds(out, "out/2023-04-04_out.rds")
+#+begin_src R
+  write_rds(fin, "out/2023-04-04_fin.rds")
 #+end_src
 
 #+RESULTS:
@@ -1142,8 +1212,7 @@ for now write the rds output
 :END:
 *** epl
 #+begin_src R :results output graphics file :file final_epl.png :width 700
-  out |>
-   mutate(age = -time/KY2D) |>
+  fin |>
    ggplot(aes(x = age, y = epl)) +
    geom_line() +
    geom_point() +
@@ -1155,8 +1224,7 @@ for now write the rds output
 
 *** phi
 #+begin_src R :results output graphics file :file final_phi.png :width 700
-  out |>
-   mutate(age = -time / KY2D) |>
+  fin |>
    ggplot(aes(x = age, y = phi)) +
    geom_hline(yintercept = c(-pi, pi), col = "red") +
    geom_line() +
@@ -1166,6 +1234,18 @@ for now write the rds output
 
 #+RESULTS:
 [[file:final_phi.png]]
+
+*** cp
+#+begin_src R :results output graphics file :file final_cp.png :width 700
+  fin |>
+   ggplot(aes(x = age, y = cp)) +
+   geom_line() +
+   geom_point() +
+   scale_x_reverse()
+#+end_src
+
+#+RESULTS:
+[[file:final_cp.png]]
 
 * snvec.c
 :PROPERTIES:
@@ -1361,7 +1441,7 @@ calculating the right-hand side derivative, while SOLVER is the name
 of the stepper routine to be used.
 
 *** write outputs
-*** [#A] inspect the c output
+*** [#A] inspect the C output
 **** read in the raw spin vector s
 the raw spin vector s, added as something that we write to file myself (not sure if correct!)
 #+begin_src R
@@ -1412,7 +1492,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 
 #+RESULTS:
 :
-: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────[39m
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 : cols(
 :   t = [32mcol_double()[39m,
 :   epl = [32mcol_double()[39m,
@@ -1516,11 +1596,10 @@ CLOSED: [2023-03-29 Wed 12:01]
 #+begin_src R :results output graphics file :file compare_c-R.png :width 700
   pl_ref +
     geom_line(aes(x = time / KY2D),
-              data = out |>
-                select(time, epl# ## phi, cp
-                       ) |>
-                pivot_longer(cols = c(epl, ## phi, cp
-                                      )),
+              data = fin |>
+                select(time, epl, phi, cp) |>
+                mutate(epl = as.double(epl)) |>
+                pivot_longer(cols = c(epl, phi, cp)),
               col = "red")
 #+end_src
 
@@ -1538,16 +1617,28 @@ CLOSED: [2023-04-04 Tue 09:27]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
+:LOGBOOK:
+- State "NEXT"       from "WAIT"       [2023-04-04 Tue 13:39]
+- State "WAIT"       from "NEXT"       [2023-04-04 Tue 12:51]
+:END:
 - hmm it's not the fact that in the C routine he doesn't interpolate the results for hh and kk
 - check for a long run if the error stays 1e-3 or if it accumulates -> it accumulates, see figs:
    [[file:2023-04-04_compare-c-to-R_56-54Ma.png]]
    [[file:2023-04-04_compare-c-to-R_81-78Ma.png]]
    [[file:2023-04-04_compare-c-to-R_100-97Ma.png]]
 - compare C-code to this with times
-** NEXT make the R routine return the same values for precession and obliquity
+- almost good enough. For more direct comparison:
+- [ ] interpolate C results into R timegrid
+- [ ] calculate the difference
+- [ ] plot the difference
+** DONE [3/3] make the R routine return the same values for precession and obliquity
+CLOSED: [2023-04-04 Tue 13:38]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
 :END:
+- [X] epl
+- [X] cp
+- [X] phi => there's something weird going on with the mapping to -pi to pi, but it works if I fix that manually
 ** NEXT make a function out of snvec so it's easy to vary Td and Ed
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:28]
