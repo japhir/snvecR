@@ -17,6 +17,7 @@ snvec: Pre-computed Precession-Tilt solutions and C code.
 *** NEXT citation
 still need to include this in the DESCRIPTION etc.
 or there was a package loading thing?
+
 #+begin_quote
 When using snvec, cite as:
 
@@ -43,6 +44,7 @@ email: zeebe@soest.hawaii.edu
   # we use dplyr and ggplot2 mostly
   library(deSolve)
   # make sure you have `glue` for the info messages
+  devtools::load_all()
 #+end_src
 
 *** SOME reduce dependencies
@@ -1850,8 +1852,15 @@ CLOSED: [2023-04-04 Tue 09:27]
 #+end_src
 
 #+RESULTS:
-: i Only orbital solutions: ZB18a and La11 are supported.
-: Error: x Orbital solution: 1e-10 not supported.
+: This is snvec.r VERSION: 3.7.5 2023-03-29
+: Richard E. Zeebe
+: Ilja J. Kocken
+: Integration parameters:
+:  tend = -1e+05 kyr
+:  tres = 0.4 kyr
+:  Ed = 1
+:  Td = 0
+<it's going at it!>
 
 ** DONE [3/3] make the R routine return the same values for precession and obliquity
 CLOSED: [2023-04-04 Tue 13:38]
@@ -1922,3 +1931,29 @@ they apply the Laskar fortran routine from 92/93 to calculate precession/obliqui
 - State "SOME"       from              [2023-04-04 Tue 18:23]
 :END:
 https://github.com/r-lib/progress#readme
+** NEXT document all function parameters correctly
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:45]
+:END:
+https://style.tidyverse.org/documentation.html#documenting-parameters
+** NEXT add return docs to each function
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:46]
+:END:
+** docs tips from pkgs
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:48]
+:END:
+https://r-pkgs.org/man.html
+** NEXT write nice error messages in the tidyverse style
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:44]
+:END:
+https://style.tidyverse.org/error-messages.html
+** SOME move the code out of here for reals -> pkg structure is single source of truth
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:49]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-04-04 Tue 18:49]
+:END:
