@@ -187,7 +187,11 @@ to make the naming consistent with the C code
 *** save the data
 #+begin_src R
   ZB18a <- dat
-  usethis::use_data(ZB18a)
+  usethis::use_data(ZB18a, overwrite = TRUE, version = 3,
+                    ## compress = "bzip2" # 13M
+                    ## compress = "gzip" # 14M
+                    compress = "xz" # 12M
+                    )
 #+end_src
 
 #+RESULTS:
