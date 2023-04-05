@@ -14,7 +14,9 @@ This project aims to make the =snvec= C-code more readily available to R-users.
 snvec: Pre-computed Precession-Tilt solutions and C code.
 
 ** setup
-*** citation
+*** NEXT citation
+still need to include this in the DESCRIPTION etc.
+or there was a package loading thing?
 #+begin_quote
 When using snvec, cite as:
 
@@ -54,6 +56,7 @@ email: zeebe@soest.hawaii.edu
 *** set the version
 :PROPERTIES:
 :CREATED:  [2023-03-28 Tue 13:32]
+:header-args:R: :tangle R/globals.R
 :END:
 #+begin_src R
  VER <- "snvec.r VERSION: 3.7.5 2023-03-29"
@@ -62,6 +65,9 @@ email: zeebe@soest.hawaii.edu
 #+RESULTS:
 
 *** global variables
+:PROPERTIES:
+:header-args:R: :tangle R/globals.R
+:END:
 #+begin_src R
   AU <- 1.49597870700e11 # m
   GM <- 1.32712440041e20 # m3/s2
@@ -109,12 +115,17 @@ email: zeebe@soest.hawaii.edu
 #+end_src
 
 #+RESULTS:
+: 23.4392911111111
 
 ** read in the orbital solution ZB18a
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
-:header-args:R: :tangle data-raw/ZB18a.R :comments org
+:header-args:R: :tangle data-raw/ZB18a.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
+*** notes on how to include data in an R package
+see https://r-pkgs.org/data.html for how to include data in an R package
+Generally, package data should be smaller than a megabyte - if it’s larger you’ll need to argue for an exemption. This is usually easier to do if the data is in its own package and won’t be updated frequently, i.e. if you approach this as a dedicated “data package”.
+*** for our use-case, the file is
 [[file:snvec-3.7.5/ems-plan3.dat]]
 
 the top of the file has some lines specifying which columns were used
@@ -183,98 +194,37 @@ to make the naming consistent with the C code
 #+end_src
 
 #+RESULTS:
-: rename: renamed 8 variables (t, aa, ee, inc, lph, …)
-*** save the data
-#+begin_src R
-  ZB18a <- dat
-  usethis::use_data(ZB18a, overwrite = TRUE, version = 3,
-                    ## compress = "bzip2" # 13M
-                    ## compress = "gzip" # 14M
-                    compress = "xz" # 12M
-                    )
-#+end_src
 
-#+RESULTS:
-: [32m✔[39m Adding [34m'R'[39m to [32mDepends[39m field in DESCRIPTION
-: [32m✔[39m Creating [34m'data/'[39m
-: [32m✔[39m Setting [32mLazyData[39m to [34m'true'[39m in [34m'DESCRIPTION'[39m
-: [32m✔[39m Saving [34m'ZB18a'[39m to [34m'data/ZB18a.rda'[39m
-: [31m•[39m Document your data (see [34m'https://r-pkgs.org/data.html'[39m)
-*** document the data
-#+begin_src R :tangle R/data.R
-  #' Astronomical Solution from Zeebe et al., 2018
-  #'
-  #' The HNBody output of [@cite:Zeebe2018].
-  #'
-  #' The wikipedia page on [Orbital elements](https://en.wikipedia.org/wiki/Orbital_elements)
-  #' describes what the components relate to to uniquely specify an orbital plane.
-  #'
-  #' @format ## `ZB18a`
-  #' A data frame with 250,001 rows and 8 columns:
-  #' \describe{
-  #'   \item{t}{Time}
-  #'   \item{aa}{Semimajor axis}
-  #'   \item{ee}{Eccentricity}
-  #'   \item{inc}{Inclination}
-  #'   \item{lph}{Long periapse}
-  #'   \item{lan}{Long ascending node}
-  #'   \item{arp}{Argument of periapse}
-  #'   \item{mna}{Mean anomaly}
-  #' }
-  #' @source <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html>
-  "ZB18a"
-#+end_src
-
-** input parameters of the final function/program
-*** set the inputs
-#+begin_src R
-  ed <- 1
-  td <- 0
-  ## tend <- -1e3 # quick tester, defaults for C
-  tend <- -1e5 # full solution
-#+end_src
-
-#+RESULTS:
-
-*** check inputs
+*** calculate the unwraps for lph and lan
 :PROPERTIES:
-:CREATED:  [2023-03-29 Wed 11:56]
+:CREATED:  [2023-03-29 Wed 12:03]
 :END:
+unwrap lph, lan
 #+begin_src R
-  if (tend >= 0) {
-    stop(glue::glue("`tend` must be < 0, but tend = {tend}"))
-  }
-  if (tend < min(dat$t / KY2D)) {
-    stop(glue::glue("`tend` must be > the orbital solution {min(dat$t)/KY2D}, but tend = {tend}."))
-  }
+  dat <- dat |>
+    mutate(lphu = unwrap(lph),
+           lanu = unwrap(lan))
 #+end_src
 
 #+RESULTS:
 
-*** message user about inputs
+**** inspect the unwrap
 :PROPERTIES:
-:CREATED:  [2023-03-28 Tue 13:31]
+:CREATED:  [2023-03-30 Thu 13:18]
 :END:
-#+begin_src R
-  message(glue::glue("This is {VER}"))
-  message("Richard E. Zeebe")
-  message("Ilja J. Kocken")
-  message("Integration parameters:")
-  message(glue::glue(" tend = {tend} kyr"))
-  message(glue::glue(" Ed = {ed}"))
-  message(glue::glue(" Td = {td}"))
+
+#+begin_src R :results output graphics file :file imgs/test-unwrap.png :eval never :tangle no
+  dat |>
+    filter(age < 500) |>
+    ggplot(aes(x = age, y = lph)) +
+    scale_x_reverse() +
+    geom_line() +
+    geom_line(aes(y = lphu), col = "red")
 #+end_src
 
 #+RESULTS:
-: This is snvec.r VERSION: 3.7.5 2023-03-29
-: Richard E. Zeebe
-: Ilja J. Kocken
-: Integration parameters:
-:  tend = -1e+05 kyr
-:  Ed = 1
-:  Td = 0
+[[file:imgs/test-unwrap.png]]
 
-** prepare variables
 *** calculate helper parameters
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
 helper parameters as new columns of dat
@@ -295,27 +245,166 @@ helper parameters as new columns of dat
 
 #+RESULTS:
 
-*** SOME I've just changed nnx nny nnz to a single list of vectors nn
-:PROPERTIES:
-:CREATED:  [2023-03-30 Thu 12:26]
-:END:
-:LOGBOOK:
-- State "SOME"       from "NEXT"       [2023-03-30 Thu 12:34]
-:END:
-#+begin_src R :eval never
-    ## rowwise() |> # this makes it very slow already, without vectors
-  # SOME: do it as a list of vectors in stead?
-           ## nn = list(c(sin(inc / R2D) * sin(lan / R2D),
-           ##             -sin(inc / R2D) * cos(lan / R2D),
-           ##             cos(inc / R2D))))
+*** save the data
+#+begin_src R
+  ZB18a <- dat
+  usethis::use_data(ZB18a, overwrite = TRUE, version = 3,
+                    ## compress = "bzip2" # 13M
+                    ## compress = "gzip" # 14M
+                    compress = "xz" # 12M
+                    )
 #+end_src
 
-*** COMMENT plot orbital solution input
+#+RESULTS:
+: [32m✔[39m Saving [34m'ZB18a'[39m to [34m'data/ZB18a.rda'[39m
+: [31m•[39m Document your data (see [34m'https://r-pkgs.org/data.html'[39m)
+*** document the data
+#+begin_src R :tangle R/data.R
+  #' Astronomical Solution from Zeebe et al., 2018
+  #'
+  #' The HNBody output of [@cite:Zeebe2018].
+  #'
+  #' The wikipedia page on [Orbital elements](https://en.wikipedia.org/wiki/Orbital_elements)
+  #' describes what the components relate to to uniquely specify an orbital plane.
+  #'
+  #' @format ## `ZB18a`
+  #' A data frame with 250,001 rows and 8 columns:
+  #' \describe{
+  #'   \item{t}{Time in days.}
+  #'   \item{age}{Age in thousands of years (kyr) before present.}
+  #'   \item{aa}{Semimajor axis.}
+  #'   \item{ee}{Eccentricity}
+  #'   \item{inc}{Inclination}
+  #'   \item{lph}{Long periapse}
+  #'   \item{lan}{Long ascending node}
+  #'   \item{arp}{Argument of periapse}
+  #'   \item{mna}{Mean anomaly}
+  #'   \item{hh}{helper hh}
+  #'   \item{kk}{helper hk}
+  #'   \item{pp}{helper pp}
+  #'   \item{qq}{helper qq}
+  #'   \item{cc}{helper cc}
+  #'   \item{dd}{helper dd}
+  #'   \item{nnx, nny, nnz}{Vector of Earth's orbit normal.}
+  #' }
+  #' @source <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html>
+  "ZB18a"
+#+end_src
+
+** input parameters of the final function/program
+:PROPERTIES:
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
+:END:
+*** start the function
+#+begin_src R
+  ##' snvec
+  ##'
+  ##' This function computes precession and tilt/obliquity from an astronomical
+  ##' solution input and parameter values for dynamical ellipticity and tidal
+  ##' dissipation.
+  ##'
+  ##' @param tend [double(1)] The final timestep in -kyr. Defaults to -1000 years.
+  ##' @param ed [double(1)] Dynamical ellipticity. Defaults to 1.0.
+  ##' @param td [double(1)] Tidal dissipation. Defaults to 0.0.
+  ##' @param orbital_solution [character(1)] The orbital solution to use. See details.
+  ##' @param tres [double(1)] The output timestep resolution in kyr. Defaults to 0.4.
+  ##' @param tolerance [double(1)] The numerical tolerance passed to deSolve::ode's rtol and atol.
+  ##' @param quiet [logical(1)] Do not print diagnostics to terminal.
+  ##' @author Ilja J. Kocken and Richard E. Zeebe
+  ##' @details Currently only the "ZB18a" orbital solution is supported.
+  ##' @export
+  snvec <- function(tend = -1e3,
+                    ed = 1,
+                    td = 0,
+                    orbital_solution = "ZB18a",
+                    tres = 0.4,
+                    tolerance = 1e-7,
+                    quiet = FALSE) {
+#+end_src
+
+#+RESULTS:
+
+*** set the inputs
+#+begin_src R :tangle no
+  ## ed <- 1
+  ## td <- 0
+  ## tend <- -1e3 # quick tester, defaults for C
+  ## tend <- -1e5 # full solution
+#+end_src
+
+#+RESULTS:
+*** check inputs
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 11:56]
+:END:
+**** select the desired orbital solution
+#+begin_src R
+  solutions <- c("ZB18a", "La11")
+  if (!orbital_solution %in% solutions) {
+    message(glue::glue("Only orbital solutions: {glue::glue_collapse(solutions, sep = ' ', last = ' and ')} are supported."))
+    stop(glue::glue("Orbital solution: {orbital_solution} not supported."),
+         call. = FALSE)
+  }
+  if (orbital_solution == "La11") {
+    stop("Orbital solution: La11 currently not supported. Pull requests welcome.",
+         call. = FALSE)
+  }
+  if (orbital_solution == "ZB18a") {
+    dat <- ZB18a
+  }
+#+end_src
+
+**** tend
+#+begin_src R
+  if (tend >= 0) {
+    stop(glue::glue("`tend` must be < 0, but tend = {tend}"))
+  }
+  if (tend < min(dat$t / KY2D)) {
+    stop(glue::glue("`tend` must be > the orbital solution {min(dat$t)/KY2D}, but tend = {tend}."))
+  }
+#+end_src
+
+#+RESULTS:
+
+**** tres
+a quick dumb input test for now
+#+begin_src R
+  if (tres < tend) {
+    stop(glue::glue("Time resolution `tres` {tres} is larger than `tend` {tend}."))
+  }
+#+end_src
+*** message user about inputs
+:PROPERTIES:
+:CREATED:  [2023-03-28 Tue 13:31]
+:END:
+#+begin_src R
+  if (!quiet) {
+    message(glue::glue("This is {VER}"))
+    message("Richard E. Zeebe")
+    message("Ilja J. Kocken")
+    message("Integration parameters:")
+    message(glue::glue(" tend = {tend} kyr"))
+    message(glue::glue(" tres = {tres} kyr"))
+    message(glue::glue(" Ed = {ed}"))
+    message(glue::glue(" Td = {td}"))
+  }
+#+end_src
+
+#+RESULTS:
+: This is snvec.r VERSION: 3.7.5 2023-03-29
+: Richard E. Zeebe
+: Ilja J. Kocken
+: Integration parameters:
+:  tend = -1e+05 kyr
+:  Ed = 1
+:  Td = 0
+
+** COMMENT plot orbital solution input
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 14:20]
 :END:
 *** ee
-#+begin_src R :results output graphics file :file input_ee.png :width 700 :eval never
+#+begin_src R :results output graphics file :file imgs/input_ee.png :width 700 :eval never
   dat |>
    ggplot(aes(x = age / 1e3, y = ee)) +
    labs(x = "Age (Ma)", y = "Eccentricity") +
@@ -324,10 +413,10 @@ helper parameters as new columns of dat
 #+end_src
 
 #+RESULTS:
-[[file:input_ee.png]]
+[[file:imgs/input_ee.png]]
 
 *** inc
-#+begin_src R :results output graphics file :file input_inc.png :width 700 :eval never
+#+begin_src R :results output graphics file :file imgs/input_inc.png :width 700 :eval never
   dat |>
    ggplot(aes(x = age / 1e3, y = inc)) +
    labs(x = "Age (Ma)", y = "Inclination") +
@@ -336,10 +425,10 @@ helper parameters as new columns of dat
 #+end_src
 
 #+RESULTS:
-[[file:input_inc.png]]
+[[file:imgs/input_inc.png]]
 
 *** lph
-#+begin_src R :results output graphics file :file input_lph.png :width 700
+#+begin_src R :results output graphics file :file imgs/input_lph.png :width 700
   dat |>
    ggplot(aes(x = age / 1e3, y = lph)) +
    labs(x = "Age (Ma)", y = "Long Periapse") +
@@ -351,10 +440,10 @@ helper parameters as new columns of dat
 #+end_src
 
 #+RESULTS:
-[[file:input_lph.png]]
+[[file:imgs/input_lph.png]]
 
 *** lan
-#+begin_src R :results output graphics file :file input_lan.png :width 700
+#+begin_src R :results output graphics file :file imgs/input_lan.png :width 700
   dat |>
    ggplot(aes(x = age / 1e3, y = lan)) +
    labs(x = "Age (Ma)", y = "Long Ascending Node") +
@@ -366,10 +455,10 @@ helper parameters as new columns of dat
 #+end_src
 
 #+RESULTS:
-[[file:input_lan.png]]
+[[file:imgs/input_lan.png]]
 
 *** h, k, p, q
-#+begin_src R :results output graphics file :file input_hkpq.png :width 700 :eval never
+#+begin_src R :results output graphics file :file imgs/input_hkpq.png :width 700 :eval never
   dat |>
     select(age, hh, kk, pp, qq, cc, dd) |>
     pivot_longer(hh:dd) |>
@@ -382,11 +471,12 @@ helper parameters as new columns of dat
 #+end_src
 
 #+RESULTS:
-[[file:input_hkpq.png]]
+[[file:imgs/input_hkpq.png]]
 
-*** calculate global vars ndn, wdw, k0d from Td and Ed
+** calculate global vars ndn, wdw, k0d from Td and Ed
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:40]
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
 #+begin_src R
@@ -404,6 +494,7 @@ helper parameters as new columns of dat
 *** the euler transformation
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 15:14]
+:header-args:R: :tangle R/euler.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
 #+begin_src R
@@ -500,6 +591,7 @@ use finits to get initial conditions in transformed ECLIPJ2000
 *** our inputs change as a function of time, so we need a function to describe them
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 09:06]
+:header-args:R: :tangle R/interpolation.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
 
@@ -508,19 +600,27 @@ http://desolve.r-forge.r-project.org/ has an article on time-varying inputs
 we can use approxfun to generate a function that approximates =col= for timestep t.
 
 #+begin_src R
+  ##' approxdat
+  ##'
+  ##' Linearly interpolate on a dataframe.
+  ##'
+  ##' @param dat The dataframe.
+  ##' @param col The column we want to interpolate on.
   approxdat <- function(dat, col = ee) {
+    # I'm not putting any input checks because it's an internal function
     dat |>
      select(t, {{col}}) |>
      approxfun(rule = 2)
   }
 #+end_src
 
-#+RESULTS:
-
 this is very slow though, so we use a quicker interpolation algorithm, closer
 to how Richard does it in C.
 
 **** implement qinterp similar to the C-routine
+:PROPERTIES:
+:header-args:R: :tangle R/interpolation.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
+:END:
 #+begin_src R
   ##' qinterp
   ##'
@@ -543,7 +643,7 @@ to how Richard does it in C.
 #+RESULTS:
 
 **** double-check that the interpolation is working
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   input <- dat |>
     select(time, ee) |>
     approxfun(rule = 2)
@@ -558,7 +658,7 @@ to how Richard does it in C.
 
 > I created the approxfun function
 
-#+begin_src R :results output graphics file :file qinterp_test.png
+#+begin_src R :results output graphics file :file imgs/qinterp_test.png :tangle no
   t <- -.45 * KY2D
   m <- min(round(abs(t / dts) + 1), nrow(dat))
   dx <- t - dat$t[m];
@@ -576,10 +676,10 @@ to how Richard does it in C.
 #+end_src
 
 #+RESULTS:
-[[file:qinterp_test.png]]
+[[file:imgs/qinterp_test.png]]
 
 **** time how long it takes
-#+begin_src R :results output graphics file :file benchmark_qinterp.png :width 800 :eval never
+#+begin_src R :results output graphics file :file imgs/benchmark_qinterp.png :width 800 :eval never :tangle no
   bm_qi <- microbenchmark::microbenchmark(
                   approxdat(dat, qq)(-146100),
                   qinterp(dat$qq,-146100,-48700,4)
@@ -588,14 +688,14 @@ to how Richard does it in C.
 #+end_src
 
 #+RESULTS:
-[[file:benchmark_qinterp.png]]
+[[file:imgs/benchmark_qinterp.png]]
 
 yeah that's ... 4 orders of magnitude faster...
-
 
 ** solve the system of ODEs
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:11]
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 
 *** the differential equations
@@ -608,23 +708,8 @@ see [[derivs]]
   # derivatives. RHS of DEQs for spin vector s = y
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
-
-      # K0, beta0 changing with Td, Ed
-      ## kb <- k0d * (1 + 1 * wdw * t) * (1 + BET0 * (1 + 2 * ndn * t))
-      # we leave qinterp on, so ff is used for kb
-
-      # set time index of solution
-      ## t <- dat$t[5] # e.g.
       m <- min(round(abs(t / dts) + 1), nrow(dat))
 
-      # for interpolation we can use t directly
-      ## if (qinterp) {
-      # we call on global dat for now
-      ## qqi <- qinterp(dat, qq)(t)
-      ## ppi <- qinterp(dat, pp)(t)
-      ## cci <- qinterp(dat, cc)(t)
-      ## ddi <- qinterp(dat, dd)(t)
-      ## }
       dx <- t - dat$t[m];
       qqi <- qinterp(dat$qq,dts,dx,m)
       ppi <- qinterp(dat$pp,dts,dx,m)
@@ -671,17 +756,13 @@ see [[derivs]]
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 14:08]
 :END:
-:LOGBOOK:
-- Note taken on [2023-03-31 Fri 16:55] \\
-  i just changed this so from by = 1 * KY2D to 0.2*KY2D making it 5 times more high-res to see if that's the cause of the discrepancy
-:END:
 
 **** a linear sequence of steps
 #+begin_src R
   ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
   times <- seq(0, tend * KY2D,
                ## length.out = 2523L # the length of the C-output
-               by = - 0.4 * KY2D # ~ the average diff in the C-output
+               by = - tres * KY2D # ~ the average diff in the C-output
                # snv_sout$time |> diff() |> median() = 0.396013
                )
 #+end_src
@@ -691,7 +772,7 @@ see [[derivs]]
 **** let's use the exact same timesteps as the C-routine
 [[file:~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/README.org::*inspect the c output][inspect the c output]]
 
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   times <- snv_sout$time * KY2D
   # what if I offset it by a few steps?
   ## times <- times - 0.1 * KY2D
@@ -699,12 +780,6 @@ see [[derivs]]
 #+end_src
 
 #+RESULTS:
-*** DONE use qinterp on hh and kk as well
-CLOSED: [2023-04-01 Sat 11:10]
-:PROPERTIES:
-:CREATED:  [2023-03-31 Fri 12:39]
-:END:
-
 *** solve it
 [[file:snvec-3.7.5/snvec-3.7.5.c::%%% solver][odeint()]]
 #+begin_src R
@@ -723,7 +798,7 @@ CLOSED: [2023-04-01 Sat 11:10]
                ## "daspk", # = very stiff
                # play around with machine precision: default is 1e-6
                ## rtol = 1e-5, atol = 1e-5 # rougher = faster?
-               rtol = 1e-7, atol = 1e-7 # based on EPSLVR
+               rtol = tolerance, atol = tolerance # based on EPSLVR
                ## rtol = 1e-12, atol = 1e-12
                )
   ))
@@ -752,7 +827,7 @@ CLOSED: [2023-04-01 Sat 11:10]
 | [2023-04-03 Mon] |   29.969 |   0.000 |   30.073 | bdf    |   2501 | rtol = atol = 1e-12                  |                           |
 | [2023-04-03 Mon] |   18.229 |   0.026 |   18.338 | bdf    | 250001 | bdf                                  | rtol = 1e-7, full 100 Myr |
 
-#+begin_src R
+#+begin_src R :tangle no
   lubridate::as.duration(c(0.147, 100, 500, 1000, 2000, 3000))
 #+end_src
 
@@ -769,7 +844,7 @@ CLOSED: [2023-04-01 Sat 11:10]
 
 *** COMMENT save the output
 this is no longer needed now that I have implemented the fast qinterp algorithm and it solves it almost instantly
-#+begin_src R
+#+begin_src R :tangle no
   ## write_rds(out, "out/2023-03-30_out.rds") # rk4, 1000 steps
   ## write_rds(out, "out/2023-03-31_out.rds") # ode23 5001 steps, intended for non-stiff problems!
   ## write_rds(out, "out/2023-04-01_out-ode45.rds") # ode45 5001 steps
@@ -790,7 +865,7 @@ this is no longer needed now that I have implemented the fast qinterp algorithm 
 #+RESULTS:
 
 *** COMMENT read in the main result
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   out <- read_rds("out/2023-04-03_out-works.rds")
 #+end_src
 
@@ -800,7 +875,7 @@ this is no longer needed now that I have implemented the fast qinterp algorithm 
 :PROPERTIES:
 :CREATED:  [2023-04-03 Mon 14:38]
 :END:
-#+begin_src R
+#+begin_src R :tangle no
   diagnostics(out)
 #+end_src
 
@@ -839,7 +914,7 @@ RSTATE values
 #+end_example
 
 ** COMMENT read in previous results
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   make_combinable <- function(dat, method) {
     dat |>
      as_tibble() |>
@@ -850,7 +925,7 @@ RSTATE values
 
 #+RESULTS:
 
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   ## out <- read_rds("out/2023-03-29_out.rds")
   rk4 <- read_rds("out/2023-03-30_out.rds") |> make_combinable("rk4") # rk4, 1000 steps
   ode23 <- read_rds("out/2023-03-31_out.rds") |> make_combinable("ode23")# ode23 5001 steps, intended for non-stiff problems!
@@ -862,7 +937,7 @@ RSTATE values
 
 #+RESULTS:
 
-#+begin_src R
+#+begin_src R :tangle no :eval never
   allout <- bind_rows(rk4, ode23, ode45, bdf, daspk, lsoda)
 #+end_src
 
@@ -896,7 +971,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 
 
 *** plot the spin vector s together with the C-routine for easy inspection
-#+begin_src R :results output graphics file :output graphics file :file 2023-03-29_output.png :width 700
+#+begin_src R :results output graphics file :output graphics file :file imgs/2023-03-29_output.png :width 700
   comb <- snv_sout |>
     mutate(code = "C") |>
     bind_rows(
@@ -924,7 +999,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+end_src
 
 #+RESULTS:
-[[file:2023-03-29_output.png]]
+[[file:imgs/2023-03-29_output.png]]
 
 **** SOME make a plot of the difference between the two
 :LOGBOOK:
@@ -946,7 +1021,7 @@ but they're not on the same timesteps so that would be annoying...
 :END:
 the different methods (other then timestep) result in identical results!!
 
-#+begin_src R :results output graphics file :output graphics file :file 2023-04-02_all-output.png :width 700 :eval never
+#+begin_src R :results output graphics file :output graphics file :file imgs/2023-04-02_all-output.png :width 700 :eval never
   allout |>
     pivot_longer(cols = sx:sz) |>
     ggplot(aes(x = time, y = value, colour = name, linetype = method)) +
@@ -963,18 +1038,21 @@ the different methods (other then timestep) result in identical results!!
 #+end_src
 
 #+RESULTS:
-[[file:2023-04-02_all-output.png]]
+[[file:imgs/2023-04-02_all-output.png]]
 
 ** print the final values for s
-:LOGBOOK:
-- State "SOME"       from              [2023-03-29 Wed 12:03]
+:PROPERTIES:
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 do we mean the value at time == 0? -> no! It's going back from 0 to -time
 #+begin_src R
   fin <- out[nrow(out), ]
   ## fin <- out[1, ]
   u <- as.vector(c(fin[2], fin[3], fin[4]))
-  message(glue::glue("Final values s[1][2][3]; s-error = |s|-1:\n {paste(fin[2], fin[3], fin[4])}\n {sqrt(abs(pracma::dot(u, u)))-1}"))
+
+  if (!quiet) {
+    message(glue::glue("Final values s[1][2][3]; s-error = |s|-1:\n {paste(fin[2], fin[3], fin[4])}\n {sqrt(abs(pracma::dot(u, u)))-1}"))
+  }
 #+end_src
 
 #+RESULTS:
@@ -984,6 +1062,7 @@ do we mean the value at time == 0? -> no! It's going back from 0 to -time
 
 This is what it should look like compared to the C-routine:
 for default settings
+
 #+begin_example
 @ Final values s[1][2][3]; s-error = |s|-1:
  0.404360548210294 -0.053622586775944  0.913026378223150
@@ -998,6 +1077,9 @@ for ./snvec.x -1e5 1.0 0.0
 #+end_example
 
 ** unwrap function
+:PROPERTIES:
+:header-args:R: :tangle R/unwrap.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
+:END:
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
@@ -1014,15 +1096,16 @@ for ./snvec.x -1e5 1.0 0.0
     cv <- rep(0, length(y)) # to make them the same length
 
     # vectorized ## dy <- diff(y) / R2D
+    cx <- 0
     for(i in 2:length(y)){
-      dy <- (y[i] - y[i-1])/R2D # vectorized
+      dy <- (y[i] - y[i-1]) / R2D # vectorized
       if(dy > pi){
-        c <- c - 2.*pi
+        cx <- cx - 2.*pi
       } else
         if(dy < -pi){
-          c <- c + 2.*pi
+          cx <- cx + 2.*pi
         }
-      cv[i] <- c
+      cv[i] <- cx
     }
     # ok I'll vectorize this one...
     yu <- y + cv*R2D
@@ -1031,40 +1114,10 @@ for ./snvec.x -1e5 1.0 0.0
 
 #+RESULTS:
 
-** unwrap
-:PROPERTIES:
-:CREATED:  [2023-03-29 Wed 12:03]
-:END:
-unwrap lph, lan
-*** calculate the unwraps for lph and lan
-#+begin_src R
-  dat <- dat |>
-    mutate(lphu = unwrap(lph),
-           lanu = unwrap(lan))
-#+end_src
-
-#+RESULTS:
-
-*** inspect the unwrap
-:PROPERTIES:
-:CREATED:  [2023-03-30 Thu 13:18]
-:END:
-
-#+begin_src R :results output graphics file :file test-unwrap.png :eval never
-  dat |>
-    filter(age < 500) |>
-    ggplot(aes(x = age, y = lph)) +
-    scale_x_reverse() +
-    geom_line() +
-    geom_line(aes(y = lphu), col = "red")
-#+end_src
-
-#+RESULTS:
-[[file:test-unwrap.png]]
-
 ** interpolate the orbital solution
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:04]
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 back onto output timescale
 #+begin_src R
@@ -1085,7 +1138,7 @@ back onto output timescale
 #+RESULTS:
 
 using qinterp in this case isn't faster because we need to apply it to the full record anyway
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   m = min(round(abs(time / dts)+1), nrow(dat)),
   dx = time - dat$t[m],
   age = -time / KY2D,
@@ -1098,7 +1151,7 @@ using qinterp in this case isn't faster because we need to apply it to the full 
   lani = qinterp(dat$lanu, dts, dx, m)
 #+end_src
 ** inspect C nni and unwrap output
-#+begin_src R :eval never
+#+begin_src R :eval never :tangle no
   cunwrap <- read_table("snvec-3.7.5/out-wrap.dat",
                         col_names = c("age", "nnx", "nny", "nnz", "lphu", "lanu", "x")) |>
     select(-x)
@@ -1119,7 +1172,7 @@ cols(
 )
 #+end_example
 
-#+begin_src R :results output graphics file :file test-nni-vs-C.png :eval never
+#+begin_src R :results output graphics file :file imgs/test-nni-vs-C.png :eval never  :tangle no
   cunwrap |>
     ggplot(aes(x = age, y = nnx)) +
     geom_line() +
@@ -1127,9 +1180,9 @@ cols(
 #+end_src
 
 #+RESULTS:
-[[file:test-nni-vs-C.png]]
+[[file:imgs/test-nni-vs-C.png]]
 
-#+begin_src R :results output graphics file :file test-unwrap-vs-C.png :eval never
+#+begin_src R :results output graphics file :file imgs/test-unwrap-vs-C.png :eval never :tangle no
   dat |>
     filter(age > -1e3) |>
     ggplot(aes(x = -age, y = lph)) +
@@ -1147,12 +1200,13 @@ cols(
 #+end_src
 
 #+RESULTS:
-[[file:test-unwrap-vs-C.png]]
+[[file:imgs/test-unwrap-vs-C.png]]
 
 
 ** calculate obliquity
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:12]
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 #+begin_src R
   fin <- fin |>
@@ -1180,7 +1234,7 @@ cols(
 :   x = [33mcol_logical()[39m
 : )
 
-#+begin_src R :results output graphics file :file 2023-04-04_test-tmp-epl.png :eval never
+#+begin_src R :results output graphics file :file imgs/2023-04-04_test-tmp-epl.png :eval never
   tmpepl |>
     ggplot(aes(x = age, y = tmp)) +
     geom_line() +
@@ -1188,11 +1242,12 @@ cols(
 #+end_src
 
 #+RESULTS:
-[[file:2023-04-04_test-tmp-epl.png]]
+[[file:imgs/2023-04-04_test-tmp-epl.png]]
 
 ** calculate precession and climatic precession
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:14]
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 #+begin_src R
   fin <- fin |>
@@ -1231,9 +1286,12 @@ CLOSED: [2023-04-04 Tue 12:30]
 ** message user about final values
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 12:18]
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 #+begin_src R
-  message(glue::glue("Final values obliquity, precession (rad): \n {paste(fin[nrow(fin), 'epl'], fin[nrow(fin), 'phi'])}"))
+  if (!quiet) {
+    message(glue::glue("Final values obliquity, precession (rad): \n {paste(fin[nrow(fin), 'epl'], fin[nrow(fin), 'phi'])}"))
+  }
 #+end_src
 
 #+RESULTS:
@@ -1260,12 +1318,29 @@ for now write the rds output
 
 #+RESULTS:
 
+** end of the function
+:PROPERTIES:
+:header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
+:END:
+#+begin_src R
+   # return fin
+   fin
+  }
+#+end_src
+
+*** SOME make it possible to return out and quit early
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 17:01]
+:END:
+:LOGBOOK:
+- State "SOME"       from "NEXT"       [2023-04-04 Tue 17:02]
+:END:
 ** plot final values
 :PROPERTIES:
 :CREATED:  [2023-03-29 Wed 14:14]
 :END:
 *** epl
-#+begin_src R :results output graphics file :file final_epl.png :width 700
+#+begin_src R :results output graphics file :file imgs/final_epl.png :width 700
   fin |>
    ggplot(aes(x = age, y = epl)) +
    geom_line() +
@@ -1274,10 +1349,10 @@ for now write the rds output
 #+end_src
 
 #+RESULTS:
-[[file:final_epl.png]]
+[[file:imgs/final_epl.png]]
 
 *** phi
-#+begin_src R :results output graphics file :file final_phi.png :width 700
+#+begin_src R :results output graphics file :file imgs/final_phi.png :width 700
   fin |>
    ggplot(aes(x = age, y = phi)) +
    geom_hline(yintercept = c(-pi, pi), col = "red") +
@@ -1287,10 +1362,10 @@ for now write the rds output
 #+end_src
 
 #+RESULTS:
-[[file:final_phi.png]]
+[[file:imgs/final_phi.png]]
 
 *** cp
-#+begin_src R :results output graphics file :file final_cp.png :width 700
+#+begin_src R :results output graphics file :file imgs/final_cp.png :width 700
   fin |>
    ggplot(aes(x = age, y = cp)) +
    geom_line() +
@@ -1299,13 +1374,13 @@ for now write the rds output
 #+end_src
 
 #+RESULTS:
-[[file:final_cp.png]]
+[[file:imgs/final_cp.png]]
 
 * snvec.c
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
 :END:
-[[file:snvec-3.7.5/snvec-3.7.5.c]]
+[[file:imgs/snvec-3.7.5/snvec-3.7.5.c]]
 
 *** define global variables
 once we turn this into a package, best to define them using a function
@@ -1482,7 +1557,7 @@ derivs = function(t, *y, *yp)
 stiff = ??
 
 *** odeint
-[[file:snvec-3.7.5/fun/solver.c]]
+[[file:imgs/snvec-3.7.5/fun/solver.c]]
 Runge-Kutta driver. calls derivs and SOLVER.
 Runge-Kutta driver with adaptive stepsize control. Integrate starting
 values ystart[1..nvar] from x1 to x2 with accuracy eps, storing
@@ -1518,7 +1593,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 : )
 
 **** plot the raw spin vector s
-#+begin_src R :results output graphics file :file c-output_s.png :width 700
+#+begin_src R :results output graphics file :file imgs/c-output_s.png :width 700
   pl_refs <- snv_sout |>
     pivot_longer(cols = sx:sz) |>
     ggplot(aes(time, value, col = name)) +
@@ -1532,7 +1607,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+end_src
 
 #+RESULTS:
-[[file:c-output_s.png]]
+[[file:imgs/c-output_s.png]]
 
 **** read the final eccentricity, phi, precession
 #+begin_src R
@@ -1544,19 +1619,8 @@ the raw spin vector s, added as something that we write to file myself (not sure
 
 #+end_src
 
-#+RESULTS:
-:
-: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
-: cols(
-:   t = [32mcol_double()[39m,
-:   epl = [32mcol_double()[39m,
-:   phi = [32mcol_double()[39m,
-:   cp = [32mcol_double()[39m,
-:   x = [33mcol_logical()[39m
-: )
-
 **** plot the final eccentricity, phi, precession
-#+begin_src R :results output graphics file :file c-output_ee.png :width 700
+#+begin_src R :results output graphics file :file imgs/c-output_ee.png :width 700
   pl_ref <- snv_out |>
     pivot_longer(cols = epl:cp) |>
     ggplot(aes(t, value)) +
@@ -1566,14 +1630,14 @@ the raw spin vector s, added as something that we write to file myself (not sure
     ## geom_point() +
     # fix the xlim so that when we add other data it doesn't rescale
     ## xlim(c(-1e3, 0))
-  pl_ref
+  ## pl_ref
 #+end_src
 
 #+RESULTS:
-[[file:c-output_ee.png]]
+[[file:imgs/imgs/c-output_ee.png]]
 
 **** plot a histogram of the timesteps in the C-output
-#+begin_src R :results output graphics file :file c-output_dt.png :width 700
+#+begin_src R :results output graphics file :file imgs/c-output_dt.png :width 700
   snv_out |>
     mutate(dt = t - lag(t)) |>
     ggplot(aes(dt)) +
@@ -1581,7 +1645,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+end_src
 
 #+RESULTS:
-[[file:c-output_dt.png]]
+[[file:imgs/imgs/c-output_dt.png]]
 
 *** debug specific functions
 [[file:snvec-3.7.5/snvec-3.7.5.c::Ilja's debugging scheme][Ilja's debugging scheme]]
@@ -1613,7 +1677,7 @@ CLOSED: [2023-03-29 Wed 12:01]
 :PROPERTIES:
 :CREATED:  [2023-03-30 Thu 11:30]
 :END:
-[[file:~/Downloads/compiledCode.pdf::25]]
+[[file:imgs/~/Downloads/compiledCode.pdf::25]]
 
 #+begin_src R
   library(deSolve)
@@ -1651,7 +1715,7 @@ CLOSED: [2023-03-29 Wed 12:01]
   ## pl_both_young
   pl_both <- pl_ref +
     geom_line(aes(x = time / KY2D),
-              data = fin |>
+              data = lowtol |>
                 select(time, tmp, epl, phi, cp) |>
                 mutate(epl = as.double(epl)) |>
                 pivot_longer(cols = c(epl, phi, cp)),
@@ -1661,13 +1725,15 @@ CLOSED: [2023-03-29 Wed 12:01]
   pl_both_old <- pl_both + xlim(c(-1e5, -9.9e4))
 #+end_src
 
-#+begin_src R :results output graphics file :file compare_c-R.png :width 700
+#+RESULTS:
+
+#+begin_src R :results output graphics file :file imgs/compare_c-R.png :width 700
   ## pl_both_young
   pl_both_mid
 #+end_src
 
 #+RESULTS:
-[[file:compare_c-R.png]]
+[[file:imgs/compare_c-R.png]]
 ** interpolate C-output onto R grid and calculate differences
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 13:41]
@@ -1731,15 +1797,15 @@ CLOSED: [2023-03-29 Wed 12:01]
 
   #+RESULTS:
 
-  #+begin_src R :results output graphics file :file compare_c-R-diff.png :width 700
+  #+begin_src R :results output graphics file :file imgs/compare_c-R-diff.png :width 700
     pl_diff_mid
     ## pl_diff_old
 #+end_src
 
 #+RESULTS:
-[[file:compare_c-R-diff.png]]
+[[file:imgs/compare_c-R-diff.png]]
 
-#+begin_src R :results output graphics file :file compare_c-R-full.png :width 1920 :height 1080
+#+begin_src R :results output graphics file :file imgs/compare_c-R-full.png :width 1920 :height 1080
   library(patchwork)
   pl_both /
    (pl_both_old + pl_both_mid + pl_both_young) /
@@ -1748,7 +1814,7 @@ CLOSED: [2023-03-29 Wed 12:01]
 #+end_src
 
 #+RESULTS:
-[[file:compare_c-R-full.png]]
+[[file:imgs/compare_c-R-full.png]]
 
 * tasks
 :PROPERTIES:
@@ -1758,7 +1824,7 @@ CLOSED: [2023-03-29 Wed 12:01]
 CLOSED: [2023-04-04 Tue 09:28]
 ** DONE make the R routine visually return the same spin vector as the C routine
 CLOSED: [2023-04-04 Tue 09:27]
-** WAIT [4/4] make the R routine return machine precision close to identical results to the C routine
+** WAIT [4/6] make the R routine return machine precision close to identical results to the C routine
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1769,15 +1835,24 @@ CLOSED: [2023-04-04 Tue 09:27]
 :END:
 - hmm it's not the fact that in the C routine he doesn't interpolate the results for hh and kk
 - check for a long run if the error stays 1e-3 or if it accumulates -> it accumulates, see figs:
-   [[file:2023-04-04_compare-c-to-R_56-54Ma.png]]
-   [[file:2023-04-04_compare-c-to-R_81-78Ma.png]]
-   [[file:2023-04-04_compare-c-to-R_100-97Ma.png]]
+   [[file:imgs/2023-04-04_compare-c-to-R_56-54Ma.png]]
+   [[file:imgs/2023-04-04_compare-c-to-R_81-78Ma.png]]
+   [[file:imgs/2023-04-04_compare-c-to-R_100-97Ma.png]]
 - compare C-code to this with times
 - almost good enough. For more direct comparison:
 - [X] interpolate C results into R timegrid
 - [X] calculate the difference
 - [X] plot the difference
 - [X] do the same for the full solar system solution
+- [ ] now do the long run but with a lower tolerance
+#+begin_src R
+  lowtol <- snvec(-1e5, 1, 0, tolerance = 1e-10)
+#+end_src
+
+#+RESULTS:
+: i Only orbital solutions: ZB18a and La11 are supported.
+: Error: x Orbital solution: 1e-10 not supported.
+
 ** DONE [3/3] make the R routine return the same values for precession and obliquity
 CLOSED: [2023-04-04 Tue 13:38]
 :PROPERTIES:
@@ -1786,10 +1861,35 @@ CLOSED: [2023-04-04 Tue 13:38]
 - [X] epl
 - [X] cp
 - [X] phi => there's something weird going on with the mapping to -pi to pi, but it works if I fix that manually
-** NEXT make a function out of snvec so it's easy to vary Td and Ed
+** DONE make a function out of snvec so it's easy to vary Td and Ed
+CLOSED: [2023-04-04 Tue 18:10]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:28]
 :END:
+#+begin_src R
+  ## devtools::load_all()
+  test <- snvec(-1e3, 1, 0)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+This is snvec.r VERSION: 3.7.5 2023-03-29
+Richard E. Zeebe
+Ilja J. Kocken
+Integration parameters:
+ tend = -1000 kyr
+ tres = 0.4 kyr
+ Ed = 1
+ Td = 0
+   user  system elapsed
+  0.288   0.014   0.303
+Final values s[1][2][3]; s-error = |s|-1:
+0.404197400723194 -0.0537088738295803 0.91303387030935
+-5.44863786333671e-05
+Final values obliquity, precession (rad):
+0.413056573207875 -0.562236553023642
+#+end_example
+
 ** NEXT calculate for grids of Td and Ed
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
@@ -1814,3 +1914,11 @@ but NOT the 2004 solutions! divergence times at ~40 Ma with 2011 or ZB18a
 - State "SOME"       from "NEXT"       [2023-04-04 Tue 10:39]
 :END:
 they apply the Laskar fortran routine from 92/93 to calculate precession/obliquity for the La2011 but that's in the ecliptic reference plane rather than the intertial reference frame.
+** SOME add a progress bar
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:23]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-04-04 Tue 18:23]
+:END:
+https://github.com/r-lib/progress#readme
