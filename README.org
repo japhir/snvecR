@@ -189,8 +189,8 @@ to make the naming consistent with the C code
 #+begin_src R
   ed <- 1
   td <- 0
-  tend <- -1e3 # quick tester, defaults for C
-  ## tend <- -1e5 # full solution
+  ## tend <- -1e3 # quick tester, defaults for C
+  tend <- -1e5 # full solution
 #+end_src
 
 #+RESULTS:
@@ -229,7 +229,7 @@ to make the naming consistent with the C code
 : Richard E. Zeebe
 : Ilja J. Kocken
 : Integration parameters:
-:  tend = -1000 kyr
+:  tend = -1e+05 kyr
 :  Ed = 1
 :  Td = 0
 
@@ -691,7 +691,7 @@ CLOSED: [2023-04-01 Sat 11:10]
 
 #+RESULTS:
 :    user  system elapsed
-:   0.223   0.000   0.224
+:  18.267   0.003  18.317
 
 *** older results notes
 | date             |     user |  system |  elapsed | method |  steps | notes                                |                           |
@@ -728,7 +728,7 @@ CLOSED: [2023-04-01 Sat 11:10]
 
 *** COMMENT save the output
 this is no longer needed now that I have implemented the fast qinterp algorithm and it solves it almost instantly
-#+begin_src R :eval never
+#+begin_src R
   ## write_rds(out, "out/2023-03-30_out.rds") # rk4, 1000 steps
   ## write_rds(out, "out/2023-03-31_out.rds") # ode23 5001 steps, intended for non-stiff problems!
   ## write_rds(out, "out/2023-04-01_out-ode45.rds") # ode45 5001 steps
@@ -742,7 +742,8 @@ this is no longer needed now that I have implemented the fast qinterp algorithm 
   ## write_rds(out, "out/2023-04-03_out-tollow.rds")    # daspk 2523 atol rtol = 1e-10
   ## write_rds(out, "out/2023-04-03_out-bdf.rds")    # bdf 2523 atol rtol = 1e-10
   ## write_rds(out, "out/2023-04-03_out-works.rds")    # bdf 2501 time in different order
-  write_rds(out, "out/2023-04-04_out-tol.rds")    # bdf 2501 rtol = atol = 1e-12
+  ## write_rds(out, "out/2023-04-04_out-tol.rds")    # bdf 2501 rtol = atol = 1e-12
+  write_rds(out, "out/2023-04-04_out-full.rds")    # bdf 250001 rtol = atol = 1e-7
 #+end_src
 
 #+RESULTS:
@@ -777,22 +778,22 @@ INTEGER values
 --------------------
 
   1 The return code : 2
-  2 The number of steps taken for the problem so far: 2539
-  3 The number of function evaluations for the problem so far: 3194
+  2 The number of steps taken for the problem so far: 250064
+  3 The number of function evaluations for the problem so far: 311277
   5 The method order last used (successfully): 5
   6 The order of the method to be attempted on the next step: 5
   7 If return flag =-4,-5: the largest component in error vector 0
   8 The length of the real work array actually required: 58
   9 The length of the integer work array actually required: 23
- 14 The number of Jacobian evaluations and LU decompositions so far: 132
+ 14 The number of Jacobian evaluations and LU decompositions so far: 12539
 
 --------------------
 RSTATE values
 --------------------
 
-  1 The step size in t last used (successfully): -146100
-  2 The step size to be attempted on the next step: -146100
-  3 The current value of the independent variable which the solver has reached: -365307400
+  1 The step size in t last used (successfully): -8.504139e-06
+  2 The step size to be attempted on the next step: -8.504139e-06
+  3 The current value of the independent variable which the solver has reached: -3.6525e+10
   4 Tolerance scale factor > 1.0 computed when requesting too much accuracy: 0
 #+end_example
 
@@ -891,7 +892,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 but they're not on the same timesteps so that would be annoying...
 
 *** make the figure interactive in the browser
-#+begin_src R
+#+begin_src R :eval never
   plotly::toWebGL(plotly::ggplotly(pl_s, dynamicTicks = TRUE))
 #+end_src
 
@@ -937,22 +938,28 @@ do we mean the value at time == 0? -> no! It's going back from 0 to -time
 
 #+RESULTS:
 : Final values s[1][2][3]; s-error = |s|-1:
-: 0.404197400723194 -0.0537088738295803 0.91303387030935
-: -5.44863786333671e-05
+: -0.181186234717299 0.377666080230894 0.902100420308931
+: -0.00539189218589675
 
 This is what it should look like compared to the C-routine:
+for default settings
 #+begin_example
 @ Final values s[1][2][3]; s-error = |s|-1:
  0.404360548210294 -0.053622586775944  0.913026378223150
  1.046379e-09
 #+end_example
 
+for ./snvec.x -1e5 1.0 0.0
+#+begin_example
+@ Final values s[1][2][3]; s-error = |s|-1:
+-0.334888085237340  0.020083244496882  0.942043775052535
+ -7.977066e-08
+#+end_example
+
 ** unwrap function
 :LOGBOOK:
 - State "SOME"       from              [2023-03-24 Fri 14:38]
 :END:
-I used some help by chatgpt for the next few functions to explain the c-code
-
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
 #+begin_src R
   #' unwrap angle.
@@ -997,14 +1004,12 @@ unwrap lph, lan
 
 #+RESULTS:
 
-lphu <- unwrap(lph, ls)
-
 *** inspect the unwrap
 :PROPERTIES:
 :CREATED:  [2023-03-30 Thu 13:18]
 :END:
 
-#+begin_src R :results output graphics file :file test-unwrap.png
+#+begin_src R :results output graphics file :file test-unwrap.png :eval never
   dat |>
     filter(age < 500) |>
     ggplot(aes(x = age, y = lph)) +
@@ -1052,7 +1057,7 @@ using qinterp in this case isn't faster because we need to apply it to the full 
   lani = qinterp(dat$lanu, dts, dx, m)
 #+end_src
 ** inspect C nni and unwrap output
-#+begin_src R
+#+begin_src R :eval never
   cunwrap <- read_table("snvec-3.7.5/out-wrap.dat",
                         col_names = c("age", "nnx", "nny", "nnz", "lphu", "lanu", "x")) |>
     select(-x)
@@ -1073,7 +1078,7 @@ cols(
 )
 #+end_example
 
-#+begin_src R :results output graphics file :file test-nni-vs-C.png
+#+begin_src R :results output graphics file :file test-nni-vs-C.png :eval never
   cunwrap |>
     ggplot(aes(x = age, y = nnx)) +
     geom_line() +
@@ -1083,7 +1088,7 @@ cols(
 #+RESULTS:
 [[file:test-nni-vs-C.png]]
 
-#+begin_src R :results output graphics file :file test-unwrap-vs-C.png
+#+begin_src R :results output graphics file :file test-unwrap-vs-C.png :eval never
   dat |>
     filter(age > -1e3) |>
     ggplot(aes(x = -age, y = lph)) +
@@ -1150,7 +1155,7 @@ cols(
 :END:
 #+begin_src R
   fin <- fin |>
-    # for each row,
+    # for each row, NOTE this makes it very slow!!
     rowwise() |>
     # create list columns of matrices
     # extract sx, sy, sz, and nnx, nny, nnz
@@ -1165,8 +1170,9 @@ cols(
     ungroup() |>
     mutate(
            # normalize to first value of phi
-           phi = phi - first(phi),
-           cp = eei * sin((lphi + OMT) / R2D - phi - first(phi)),
+           tmp = first(phi),
+           phi = phi - tmp,
+           cp = eei * sin((lphi + OMT) / R2D - phi),
            # phi is now mapped between 0 and 2 pi, whereas RZ's output is wrapped
            # between -pi and pi
            phi = ifelse(phi > pi, phi - 2*pi, phi)
@@ -1186,11 +1192,18 @@ CLOSED: [2023-04-04 Tue 12:30]
 :CREATED:  [2023-03-29 Wed 12:18]
 :END:
 #+begin_src R
-  message(glue::glue("Final values obliquity, precession (rad): \n {paste(out[nrow(out), 'epl'], out[nrow(out), 'phi'])}"))
+  message(glue::glue("Final values obliquity, precession (rad): \n {paste(fin[nrow(fin), 'epl'], fin[nrow(fin), 'phi'])}"))
 #+end_src
 
 #+RESULTS:
-: Error in out[nrow(out), "epl"] : subscript out of bounds
+: Final values obliquity, precession (rad):
+: 0.389933827834007 1.98203205323792
+
+for ./snvec.x -1e5 1.0 0.0
+#+begin_example
+@ Final values obliquity, precession (rad):
+ 0.391122130387012  3.068854702909980
+#+end_example
 
 ** write output files
 :PROPERTIES:
@@ -1201,7 +1214,7 @@ CLOSED: [2023-04-04 Tue 12:30]
 :END:
 for now write the rds output
 #+begin_src R
-  write_rds(fin, "out/2023-04-04_fin.rds")
+  write_rds(fin, "out/2023-04-04_fin_full.rds")
 #+end_src
 
 #+RESULTS:
@@ -1508,10 +1521,10 @@ the raw spin vector s, added as something that we write to file myself (not sure
     ggplot(aes(t, value)) +
     facet_grid(rows = vars(name), scales = "free_y") +
     ## scale_x_reverse() +
-    geom_line() +
-    geom_point() +
+    geom_line() #+
+    ## geom_point() +
     # fix the xlim so that when we add other data it doesn't rescale
-    xlim(c(-1e3, 0))
+    ## xlim(c(-1e3, 0))
   pl_ref
 #+end_src
 
@@ -1593,18 +1606,109 @@ CLOSED: [2023-03-29 Wed 12:01]
 :PROPERTIES:
 :CREATED:  [2023-03-31 Fri 10:24]
 :END:
-#+begin_src R :results output graphics file :file compare_c-R.png :width 700
-  pl_ref +
+#+begin_src R
+  ## pl_both_young
+  pl_both <- pl_ref +
     geom_line(aes(x = time / KY2D),
               data = fin |>
-                select(time, epl, phi, cp) |>
+                select(time, tmp, epl, phi, cp) |>
                 mutate(epl = as.double(epl)) |>
                 pivot_longer(cols = c(epl, phi, cp)),
-              col = "red")
+              col = "red") #+
+  pl_both_young <- pl_both + xlim(c(-1e3, 0))
+  pl_both_mid <- pl_both + xlim(c(-6.6e4, -6.5e4))
+  pl_both_old <- pl_both + xlim(c(-1e5, -9.9e4))
+#+end_src
+
+#+begin_src R :results output graphics file :file compare_c-R.png :width 700
+  ## pl_both_young
+  pl_both_mid
 #+end_src
 
 #+RESULTS:
 [[file:compare_c-R.png]]
+** interpolate C-output onto R grid and calculate differences
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 13:41]
+:END:
+#+begin_src R
+  comp <- fin |>
+    mutate(
+      C_epl = approxdat(snv_out, epl)(-age),
+      C_phi = approxdat(snv_out, phi)(-age),
+      C_cp = approxdat(snv_out, cp)(-age),
+      ) |>
+    mutate(
+      epl_diff = epl - C_epl,
+      phi_diff = phi - C_phi,
+      cp_diff = cp - C_cp,
+      epl_pc = epl_diff / max(epl),
+      phi_pc = phi_diff / max(phi),
+      cp_pc = cp_diff / max(cp)
+    )
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
+  ## pl_diff_young
+  breaks_fun <- function(x, big = TRUE) {
+    if (max(x) > 6.2) { # phi_diff
+        out <- seq(-3, 6, 3)
+    } else if (max(x) > 0.04) { # cp_diff
+        out <- seq(-0.060, 0.060, 0.03)
+    } else if (max(x) > 0.015) { # epl_diff
+        out <- seq(-0.02, 0.02, 0.01)
+    }
+    if (!big) {
+      out <- seq(min(out),max(out), diff(out)[1]/10)
+    }
+    out
+  }
+
+  pl_diff <- comp |>
+    # absolute diffs
+    mutate(epl_diff = as.double(epl_diff)) |>
+    pivot_longer(ends_with("_diff")) |>
+    # diff / max(x)
+    ## mutate(epl_pc = as.double(epl_pc)) |>
+    ## pivot_longer(ends_with("_pc")) |>
+    ggplot(aes(x = -age, y = value)) +
+    geom_line() +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    labs(x = "Age (ka)",
+         ## y = "error / max(x)"
+         y = "R - C"
+         ) +
+    scale_y_continuous(breaks = breaks_fun, minor_breaks= ~breaks_fun(.x, FALSE))
+    ## scale_y_continuous(breaks = seq(0,100,1), minor_breaks=seq(-100,100,0.1))
+
+  pl_diff_old <- pl_diff + xlim(c(-1e5, -9.9e4))
+  pl_diff_mid <- pl_diff + xlim(c(-6.6e4, -6.5e4))
+  pl_diff_young <- pl_diff + xlim(c(-1e3, 0))
+  #+end_src
+
+  #+RESULTS:
+
+  #+begin_src R :results output graphics file :file compare_c-R-diff.png :width 700
+    pl_diff_mid
+    ## pl_diff_old
+#+end_src
+
+#+RESULTS:
+[[file:compare_c-R-diff.png]]
+
+#+begin_src R :results output graphics file :file compare_c-R-full.png :width 1920 :height 1080
+  library(patchwork)
+  pl_both /
+   (pl_both_old + pl_both_mid + pl_both_young) /
+  pl_diff /
+   (pl_diff_old + pl_diff_mid + pl_diff_young)
+#+end_src
+
+#+RESULTS:
+[[file:compare_c-R-full.png]]
+
 * tasks
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
@@ -1613,11 +1717,12 @@ CLOSED: [2023-03-29 Wed 12:01]
 CLOSED: [2023-04-04 Tue 09:28]
 ** DONE make the R routine visually return the same spin vector as the C routine
 CLOSED: [2023-04-04 Tue 09:27]
-** NEXT make the R routine return machine precision close to identical results to the C routine
+** WAIT [4/4] make the R routine return machine precision close to identical results to the C routine
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
 :LOGBOOK:
+- State "WAIT"       from "NEXT"       [2023-04-04 Tue 15:33]
 - State "NEXT"       from "WAIT"       [2023-04-04 Tue 13:39]
 - State "WAIT"       from "NEXT"       [2023-04-04 Tue 12:51]
 :END:
@@ -1628,9 +1733,10 @@ CLOSED: [2023-04-04 Tue 09:27]
    [[file:2023-04-04_compare-c-to-R_100-97Ma.png]]
 - compare C-code to this with times
 - almost good enough. For more direct comparison:
-- [ ] interpolate C results into R timegrid
-- [ ] calculate the difference
-- [ ] plot the difference
+- [X] interpolate C results into R timegrid
+- [X] calculate the difference
+- [X] plot the difference
+- [X] do the same for the full solar system solution
 ** DONE [3/3] make the R routine return the same values for precession and obliquity
 CLOSED: [2023-04-04 Tue 13:38]
 :PROPERTIES:
