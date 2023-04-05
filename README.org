@@ -14,7 +14,7 @@ This project aims to make the =snvec= C-code more readily available to R-users.
 snvec: Pre-computed Precession-Tilt solutions and C code.
 
 ** setup
-*** NEXT citation
+*** NEXT include proper way to cite the package
 still need to include this in the DESCRIPTION etc.
 or there was a package loading thing?
 
@@ -43,7 +43,8 @@ email: zeebe@soest.hawaii.edu
   library(tidyverse)
   # we use dplyr and ggplot2 mostly
   library(deSolve)
-  # make sure you have `glue` for the info messages
+  # we use glue for info messages -> cli
+  # as well as lubridate
   devtools::load_all()
 #+end_src
 
@@ -312,8 +313,19 @@ helper parameters as new columns of dat
   ##' @param tres [double(1)] The output timestep resolution in kyr. Defaults to 0.4.
   ##' @param tolerance [double(1)] The numerical tolerance passed to deSolve::ode's rtol and atol.
   ##' @param quiet [logical(1)] Do not print diagnostics to terminal.
+  ##' @return A tibble with all the computed results.
+  ##'
   ##' @author Ilja J. Kocken and Richard E. Zeebe
+  ##'
   ##' @details Currently only the "ZB18a" orbital solution is supported.
+  ##'
+  ##' @examples
+  ##' # default call
+  ##' snvec()
+  ##'
+  ##' # a quick one with few timesteps, low resolution, high tolerance
+  ##' snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
+  ##'
   ##' @export
   snvec <- function(tend = -1e3,
                     ed = 1,
@@ -343,13 +355,12 @@ helper parameters as new columns of dat
 #+begin_src R
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {
-    message(glue::glue("Only orbital solutions: {glue::glue_collapse(solutions, sep = ' ', last = ' and ')} are supported."))
-    stop(glue::glue("Orbital solution: {orbital_solution} not supported."),
-         call. = FALSE)
+    cli::cli_abort(c("{.var orbital_solution} must be one of: {.or {.q {solutions}}}",
+                     "x" = "You've supplied {.q {orbital_solution}}"))
   }
   if (orbital_solution == "La11") {
-    stop("Orbital solution: La11 currently not supported. Pull requests welcome.",
-         call. = FALSE)
+    cli::cli_abort(c("Orbital solution: La11 currently not supported.",
+                     "i" = "Pull requests welcome."))
   }
   if (orbital_solution == "ZB18a") {
     dat <- ZB18a
@@ -359,10 +370,12 @@ helper parameters as new columns of dat
 **** tend
 #+begin_src R
   if (tend >= 0) {
-    stop(glue::glue("`tend` must be < 0, but tend = {tend}"))
+    cli::cli_abort(c("{.var tend} must be < 0",
+                     "x" = "You've supplied {tend}"))
   }
   if (tend < min(dat$t / KY2D)) {
-    stop(glue::glue("`tend` must be > the orbital solution {min(dat$t)/KY2D}, but tend = {tend}."))
+    cli::cli_abort(c("{.var tend} must be > the orbital solution {min(dat$t)/KY2D}",
+                     "x" = "You've supplied {tend}"))
   }
 #+end_src
 
@@ -371,8 +384,10 @@ helper parameters as new columns of dat
 **** tres
 a quick dumb input test for now
 #+begin_src R
-  if (tres < tend) {
-    stop(glue::glue("Time resolution `tres` {tres} is larger than `tend` {tend}."))
+  if (abs(tres) < tend) {
+    cli::cli_abort(c("|{.var tres}| must be < {.var tend}.",
+                     "i" = "{.var tres} = {tres}",
+                     "i" = "{.var tend} = {tend}"))
   }
 #+end_src
 *** message user about inputs
@@ -381,14 +396,19 @@ a quick dumb input test for now
 :END:
 #+begin_src R
   if (!quiet) {
-    message(glue::glue("This is {VER}"))
-    message("Richard E. Zeebe")
-    message("Ilja J. Kocken")
-    message("Integration parameters:")
-    message(glue::glue(" tend = {tend} kyr"))
-    message(glue::glue(" tres = {tres} kyr"))
-    message(glue::glue(" Ed = {ed}"))
-    message(glue::glue(" Td = {td}"))
+    startdate <- lubridate::now()
+    cli::cli_inform(c(
+           ## "This is {VER}",
+           ## "Richard E. Zeebe",
+           ## "Ilja J. Kocken",
+           "Integration parameters:",
+           "*" = "{.var tend} = {tend} kyr",
+           "*" = "{.var ed} = {ed}",
+           "*" = "{.var td} = {td}",
+           "*" = "{.var orbital_solution} = {.q {orbital_solution}}",
+           "*" = "{.var tres} = {tres} kyr",
+           "*" = "{.var tolerance} = {tolerance}",
+           "i" = "started at {.q {startdate}}"))
   }
 #+end_src
 
@@ -1053,14 +1073,17 @@ do we mean the value at time == 0? -> no! It's going back from 0 to -time
   u <- as.vector(c(fin[2], fin[3], fin[4]))
 
   if (!quiet) {
-    message(glue::glue("Final values s[1][2][3]; s-error = |s|-1:\n {paste(fin[2], fin[3], fin[4])}\n {sqrt(abs(pracma::dot(u, u)))-1}"))
+    cli::cli_inform(c(
+           "Final values:",
+           "*" = "s[1][2][3]: {paste(fin[2], fin[3], fin[4])}",
+           "*" = "s-error = |s|-1: {sqrt(abs(pracma::dot(u, u)))-1}"))
   }
 #+end_src
 
 #+RESULTS:
-: Final values s[1][2][3]; s-error = |s|-1:
-: -0.181186234717299 0.377666080230894 0.902100420308931
-: -0.00539189218589675
+: Error: object 'out' not found
+: Error in as.vector(c(fin[2], fin[3], fin[4])) : object 'fin' not found
+: Error: object 'quiet' not found
 
 This is what it should look like compared to the C-routine:
 for default settings
@@ -1292,7 +1315,12 @@ CLOSED: [2023-04-04 Tue 12:30]
 :END:
 #+begin_src R
   if (!quiet) {
-    message(glue::glue("Final values obliquity, precession (rad): \n {paste(fin[nrow(fin), 'epl'], fin[nrow(fin), 'phi'])}"))
+    cli::cli_inform(
+           c("Final values:",
+             "*" = "obliquity: {fin[nrow(fin), 'epl']} rad",
+             "*" = "precession: {fin[nrow(fin), 'phi']} rad",
+             "i" = "stopped at {.q {lubridate::now()}}",
+             "i" = "total duration:  {lubridate::as.duration(round(lubridate::now() - startdate, 2))}"))
   }
 #+end_src
 
@@ -1612,23 +1640,23 @@ the raw spin vector s, added as something that we write to file myself (not sure
 [[file:imgs/c-output_s.png]]
 
 **** read the final eccentricity, phi, precession
-#+begin_src R
+#+begin_src R :results none
   snv_out <- read_table("snvec-3.7.5/out.dat",
                         col_names = c("t", "epl", "phi", "cp", "x")) |>
     # this is because there's some whitespace there?
     # note that t is in tmv / KY2D = in kyr
     select(-x)
-
 #+end_src
 
 **** plot the final eccentricity, phi, precession
 #+begin_src R :results output graphics file :file imgs/c-output_ee.png :width 700
   pl_ref <- snv_out |>
     pivot_longer(cols = epl:cp) |>
-    ggplot(aes(t, value)) +
+    ggplot(aes(- t / KY2D / 1e3, value)) +
     facet_grid(rows = vars(name), scales = "free_y") +
-    ## scale_x_reverse() +
-    geom_line() #+
+    scale_x_reverse() +
+    geom_line() +
+    labs(x = "Age (Ma)")
     ## geom_point() +
     # fix the xlim so that when we add other data it doesn't rescale
     ## xlim(c(-1e3, 0))
@@ -1636,7 +1664,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+end_src
 
 #+RESULTS:
-[[file:imgs/imgs/c-output_ee.png]]
+[[file:imgs/c-output_ee.png]]
 
 **** plot a histogram of the timesteps in the C-output
 #+begin_src R :results output graphics file :file imgs/c-output_dt.png :width 700
@@ -1647,7 +1675,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
 #+end_src
 
 #+RESULTS:
-[[file:imgs/imgs/c-output_dt.png]]
+[[file:imgs/c-output_dt.png]]
 
 *** debug specific functions
 [[file:snvec-3.7.5/snvec-3.7.5.c::Ilja's debugging scheme][Ilja's debugging scheme]]
@@ -1713,6 +1741,25 @@ CLOSED: [2023-03-29 Wed 12:01]
 :PROPERTIES:
 :CREATED:  [2023-03-31 Fri 10:24]
 :END:
+** read in previous runs
+#+begin_src R
+  tol_1e07 <- read_rds("out/2023-04-04_normtol_1e-7.rds") |>
+    mutate(tol = 1e-07) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  tol_1e10 <- read_rds("out/2023-04-04_lowtol.rds") |>
+    mutate(tol = 1e-10) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  tol_1e12 <- read_rds("out/2023-04-04_superlowtol_1e-12.rds") |>
+    mutate(tol = 1e-12) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  tol_1e03 <- read_rds("out/2023-04-05_hightol_1e-3.rds") |>
+    mutate(tol = 1e-03) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+#+end_src
+
+#+RESULTS:
+
+** create plot
 #+begin_src R
   ## pl_both_young
   pl_both <- pl_ref +
@@ -1728,6 +1775,11 @@ CLOSED: [2023-03-29 Wed 12:01]
 #+end_src
 
 #+RESULTS:
+: Error in select(lowtol, time, tmp, epl, phi, cp) :
+:   object 'lowtol' not found
+: Error: object 'pl_both' not found
+: Error: object 'pl_both' not found
+: Error: object 'pl_both' not found
 
 #+begin_src R :results output graphics file :file imgs/compare_c-R.png :width 700
   ## pl_both_young
@@ -1741,16 +1793,25 @@ CLOSED: [2023-03-29 Wed 12:01]
 :CREATED:  [2023-04-04 Tue 13:41]
 :END:
 #+begin_src R
-  comp <- fin |>
+  comp <- bind_rows(
+    # combine all tolerance experiments
+    tol_1e03,
+    tol_1e07,
+    tol_1e10,
+    tol_1e12
+  ) |>
     mutate(
+      # add the interpolated C-output
       C_epl = approxdat(snv_out, epl)(-age),
       C_phi = approxdat(snv_out, phi)(-age),
       C_cp = approxdat(snv_out, cp)(-age),
       ) |>
     mutate(
+      # calculate differences
       epl_diff = epl - C_epl,
       phi_diff = phi - C_phi,
       cp_diff = cp - C_cp,
+      # calculate difference as a fraction of the max value
       epl_pc = epl_diff / max(epl),
       phi_pc = phi_diff / max(phi),
       cp_pc = cp_diff / max(cp)
@@ -1777,37 +1838,64 @@ CLOSED: [2023-03-29 Wed 12:01]
 
   pl_diff <- comp |>
     # absolute diffs
-    mutate(epl_diff = as.double(epl_diff)) |>
     pivot_longer(ends_with("_diff")) |>
     # diff / max(x)
     ## mutate(epl_pc = as.double(epl_pc)) |>
     ## pivot_longer(ends_with("_pc")) |>
-    ggplot(aes(x = -age, y = value)) +
+    ggplot(aes(x = age / 1e3, y = value, col = factor(tol))) +
     geom_line() +
     facet_grid(rows = vars(name), scales = "free_y") +
-    labs(x = "Age (ka)",
-         ## y = "error / max(x)"
-         y = "R - C"
-         ) +
+    labs(y = "R - C") +
     scale_y_continuous(breaks = breaks_fun, minor_breaks= ~breaks_fun(.x, FALSE))
     ## scale_y_continuous(breaks = seq(0,100,1), minor_breaks=seq(-100,100,0.1))
 
-  pl_diff_old <- pl_diff + xlim(c(-1e5, -9.9e4))
-  pl_diff_mid <- pl_diff + xlim(c(-6.6e4, -6.5e4))
-  pl_diff_young <- pl_diff + xlim(c(-1e3, 0))
+  pl_diff_old <- pl_diff + xlim(c(100, 99))
+  pl_diff_mid <- pl_diff + xlim(c(66, 65))
+  pl_diff_young <- pl_diff + xlim(c(1, 0))
   #+end_src
 
   #+RESULTS:
 
   #+begin_src R :results output graphics file :file imgs/compare_c-R-diff.png :width 700
-    pl_diff_mid
-    ## pl_diff_old
+    ## pl_diff_mid
+    pl_diff_old
 #+end_src
 
 #+RESULTS:
 [[file:imgs/compare_c-R-diff.png]]
 
-#+begin_src R :results output graphics file :file imgs/compare_c-R-full.png :width 1920 :height 1080
+#+begin_src R :results output graphics file :file imgs/compare_c-R-diff_hist.png :width 900
+  comp |>
+    pivot_longer(ends_with("_diff")) |>
+    ggplot(aes(x = abs(value), fill = factor(tol))) +
+    ## geom_density(alpha = .3) +
+    ## geom_histogram(alpha = .3) +
+    ## stat_summary(aes(y = 0), fun = mean_cl_normal) +
+    ## ggridges::geom_density_ridges() +
+    ggdist::stat_halfeye(aes(group = factor(tol),
+                             ## colour = factor(tol)
+                             ),
+                         position = "dodge",
+                         alpha = .4) +
+    scale_x_sqrt() +
+    ## scale_x_log10() +
+    facet_grid(#rows = vars(factor(tol)),
+               cols = vars(name),
+               scales = "free", space = "free_y") +
+    coord_cartesian(ylim = c(-.5, .6)) +
+    theme(axis.title.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank()) +
+    labs(fill = "Tolerance",
+         x = "abs(diff) (note sqrt transform)")
+#+end_src
+
+#+RESULTS:
+[[file:imgs/compare_c-R-diff_hist.png]]
+
+#+begin_src R :results output graphics file :file imgs/compare_c-R-full_1e-10.png :width 1920 :height 1080
   library(patchwork)
   pl_both /
    (pl_both_old + pl_both_mid + pl_both_young) /
@@ -1826,29 +1914,33 @@ CLOSED: [2023-03-29 Wed 12:01]
 CLOSED: [2023-04-04 Tue 09:28]
 ** DONE make the R routine visually return the same spin vector as the C routine
 CLOSED: [2023-04-04 Tue 09:27]
-** WAIT [4/6] make the R routine return machine precision close to identical results to the C routine
+** WAIT [12/12] make the R routine return machine precision close to identical results to the C routine
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
 :LOGBOOK:
+- State "WAIT"       from "DONE"       [2023-04-05 Wed 11:02]
+- State "DONE"       from "WAIT"       [2023-04-05 Wed 11:02]
 - State "WAIT"       from "NEXT"       [2023-04-04 Tue 15:33]
 - State "NEXT"       from "WAIT"       [2023-04-04 Tue 13:39]
 - State "WAIT"       from "NEXT"       [2023-04-04 Tue 12:51]
 :END:
-- hmm it's not the fact that in the C routine he doesn't interpolate the results for hh and kk
-- check for a long run if the error stays 1e-3 or if it accumulates -> it accumulates, see figs:
+- [X] hmm it's not the fact that in the C routine he doesn't interpolate the results for hh and kk
+- [X] check for a long run if the error stays 1e-3 or if it accumulates -> it accumulates, see figs:
    [[file:imgs/2023-04-04_compare-c-to-R_56-54Ma.png]]
    [[file:imgs/2023-04-04_compare-c-to-R_81-78Ma.png]]
    [[file:imgs/2023-04-04_compare-c-to-R_100-97Ma.png]]
-- compare C-code to this with times
+- [X] compare C-code to this with times
 - almost good enough. For more direct comparison:
 - [X] interpolate C results into R timegrid
 - [X] calculate the difference
 - [X] plot the difference
 - [X] do the same for the full solar system solution
-- [ ] now do the long run but with a lower tolerance
+- [X] now do the long run but with a lower tolerance
+  - [X] 1e-10
 #+begin_src R
   lowtol <- snvec(-1e5, 1, 0, tolerance = 1e-10)
+  write_rds(lowtol, "out/2023-04-04_lowtol.rds")
 #+end_src
 
 #+RESULTS:
@@ -1860,8 +1952,88 @@ CLOSED: [2023-04-04 Tue 09:27]
 :  tres = 0.4 kyr
 :  Ed = 1
 :  Td = 0
-<it's going at it!>
+: Final values s[1][2][3]; s-error = |s|-1:
+: -0.164426067894575 0.406888350901304 0.898597654927192
+: 3.59030270373761e-05
+: Final values obliquity, precession (rad):
+: 0.3899853310553 1.88486960858406
 
+  - [X] 1e-12
+#+begin_src R
+  superlowtol <- snvec(-1e5, 1, 0, tolerance = 1e-12)
+  write_rds(superlowtol, "out/2023-04-04_superlowtol_1e-12.rds")
+#+end_src
+
+#+RESULTS:
+: This is snvec.r VERSION: 3.7.5 2023-03-29
+: Richard E. Zeebe
+: Ilja J. Kocken
+: Integration parameters:
+: tend = -1e+05 kyr
+: tres = 0.4 kyr
+: Ed = 1
+: Td = 0
+:     user   system  elapsed
+: 3246.787    0.342 3255.612
+: Final values s[1][2][3]; s-error = |s|-1:
+: -0.143109361596917 0.419908122882867 0.896212779992251
+: 2.34030537171748e-07
+: Final values obliquity, precession (rad):
+: 0.390596711702826 1.8189284314666
+
+  - [X] 1e-7
+#+begin_src R
+  normtol <- snvec(-1e5, 1, 0, tolerance = 1e-7)
+  write_rds(normtol, "out/2023-04-04_normtol_1e-7.rds")
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Integration parameters:
+ tend = -1e+05 kyr
+ Ed = 1
+ Td = 0
+ orbital_solution = ZB18a
+ tres = 0.4 kyr
+ tolerance = 1e-07
+starting at Wed Apr  5 09:55:48 2023
+   user  system elapsed
+ 24.575   0.010  24.699
+Final values s[1][2][3]; s-error = |s|-1:
+-0.181186234717299 0.377666080230894 0.902100420308931
+-0.00539189218589675
+Final values obliquity, precession (rad):
+0.389933827834007 1.96689170415452
+stopped at Wed Apr  5 09:56:46 2023
+#+end_example
+- [X] 1e-3
+#+begin_src R
+  hightol <- snvec(-1e5, 1, 0, tolerance = 1e-3)
+  write_rds(hightol, "out/2023-04-05_hightol_1e-3.rds")
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Integration parameters:
+ tend = -1e+05 kyr
+ Ed = 1
+ Td = 0
+ orbital_solution = ZB18a
+ tres = 0.4 kyr
+ tolerance = 0.001
+started at 2023-04-05 10:12:39
+   user  system elapsed
+ 22.583   0.000  22.659
+Final values s[1][2][3]; s-error = |s|-1:
+-0.1069277059072 0.423122991463078 0.893789976171586
+-0.00535075443649757
+Final values obliquity, precession (rad):
+0.392041645216932 1.72794012401827
+stopped at Wed Apr  5 10:13:33 2023
+total duration 54.119035243988
+#+end_example
+
+- [X] make the comparison between resolutions
 ** DONE [3/3] make the R routine return the same values for precession and obliquity
 CLOSED: [2023-04-04 Tue 13:38]
 :PROPERTIES:
@@ -1870,6 +2042,8 @@ CLOSED: [2023-04-04 Tue 13:38]
 - [X] epl
 - [X] cp
 - [X] phi => there's something weird going on with the mapping to -pi to pi, but it works if I fix that manually
+  rldpeace
+
 ** DONE make a function out of snvec so it's easy to vary Td and Ed
 CLOSED: [2023-04-04 Tue 18:10]
 :PROPERTIES:
@@ -1882,31 +2056,98 @@ CLOSED: [2023-04-04 Tue 18:10]
 
 #+RESULTS:
 #+begin_example
-This is snvec.r VERSION: 3.7.5 2023-03-29
-Richard E. Zeebe
-Ilja J. Kocken
 Integration parameters:
  tend = -1000 kyr
- tres = 0.4 kyr
  Ed = 1
  Td = 0
+ orbital_solution = ZB18a
+ tres = 0.4 kyr
+ tolerance = 1e-07
+starting at Tue Apr  4 23:06:34 2023
    user  system elapsed
-  0.288   0.014   0.303
+  0.211   0.000   0.213
 Final values s[1][2][3]; s-error = |s|-1:
 0.404197400723194 -0.0537088738295803 0.91303387030935
 -5.44863786333671e-05
 Final values obliquity, precession (rad):
 0.413056573207875 -0.562236553023642
+stopped at Tue Apr  4 23:06:35 2023
 #+end_example
 
-** NEXT calculate for grids of Td and Ed
+rldpeace
+
+** WAIT calculate for grids of Td and Ed
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
 :END:
+:LOGBOOK:
+- State "WAIT"       from "DONE"       [2023-04-05 Wed 13:16]
+:END:
+
+*** create the desired grid for Td and Ed
+:PROPERTIES:
+:CREATED:  [2023-04-05 Wed 11:03]
+:END:
+#+begin_src R
+  # same grid as in Zeebe & Lourens 2022 table 2: 10.1029/2021PA004349
+  biggrid <- expand.grid(Td = c(0, 0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2),
+              Ed = c(1.000, 0.998, 1.005, 1.012)) |>
+    # that's 32 rows
+    as_tibble() |>
+    # for now only for 1000 years so it's fast
+    ## mutate(tol = 1e-4, tend = -1e3) |>
+    # the real deal, full results at medium tolerance
+    mutate(tol = 1e-7, tend = -1e5) |>
+    # apply our new function!
+    mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, tolerance = tol),
+                      snvec))
+  write_rds("out/biggrid.rds")
+
+  # unnest the new list column
+  expanded <- biggrid |>
+    # must first make them all doubles because deSolve class doesn't have vctr attributes
+    mutate(sol = map(sol,
+                     ~ .x |> mutate(across(c(time, sx, sy, sz, age, epl), as.numeric)))) |>
+    # then unnest it
+    unnest(sol)
+#+end_src
+
+#+begin_src R :results output graphics file :file imgs/2023-04-05_experimental-grid_full.png :width 1920 :height 1080
+  # then make a plot
+  expanded |>
+    ggplot(aes(x = age, y = cp,
+               colour = factor(Td),
+               linetype = factor(Ed))) +
+    scale_x_reverse("Age (ka)", xlim = c(100, 99)) +
+    ## facet_grid(rows = vars(Ed)) +
+    facet_grid(rows = vars(Td)) +
+    geom_line() +
+    geom_line(aes(y = eei))
+#+end_src
+
+#+RESULTS:
+[[file:imgs/2023-04-05_experimental-grid.png]]
+
+#+begin_src R :results output graphics file :file imgs/2023-04-05_experimental-grid_phi.png :width 1920 :height 1080
+  # then make a plot
+  expanded |>
+    ggplot(aes(x = age, y = phi,
+               colour = factor(Td),
+               linetype = factor(Ed))) +
+    scale_x_reverse("Age (ka)") +
+    ## facet_grid(rows = vars(Ed)) +
+    facet_grid(rows = vars(Td)) +
+    geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:imgs/2023-04-05_experimental-grid_phi.png]]
+
 ** NEXT visualize results: a heat map?
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
 :END:
+for that I'd need to have the difference function with a record
 ** SOME make the La2011 solution obl + precession available?
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 10:35]
@@ -1940,16 +2181,27 @@ https://style.tidyverse.org/documentation.html#documenting-parameters
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:46]
 :END:
+** SOME make it possible for snvec to write to file
+:LOGBOOK:
+- State "SOME"       from              [2023-04-05 Wed 13:20]
+:END:
+add a file = NULL argument
+at the end
+#+begin_src R :eval never :tangle no
+if(!is.null(file)) { readr::write_rds(fin, file = file) }
+#+end_src
 ** docs tips from pkgs
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:48]
 :END:
 https://r-pkgs.org/man.html
-** NEXT write nice error messages in the tidyverse style
+** DONE write nice error messages in the tidyverse style
+CLOSED: [2023-04-05 Wed 12:27]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:44]
 :END:
 https://style.tidyverse.org/error-messages.html
+and info messages
 ** SOME move the code out of here for reals -> pkg structure is single source of truth
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:49]
