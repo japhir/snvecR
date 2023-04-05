@@ -113,6 +113,7 @@ email: zeebe@soest.hawaii.edu
 ** read in the orbital solution ZB18a
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
+:header-args:R: :tangle data-raw/ZB18a.R :comments org
 :END:
 [[file:snvec-3.7.5/ems-plan3.dat]]
 
@@ -183,6 +184,42 @@ to make the naming consistent with the C code
 
 #+RESULTS:
 : rename: renamed 8 variables (t, aa, ee, inc, lph, …)
+*** save the data
+#+begin_src R
+  ZB18a <- dat
+  usethis::use_data(ZB18a)
+#+end_src
+
+#+RESULTS:
+: [32m✔[39m Adding [34m'R'[39m to [32mDepends[39m field in DESCRIPTION
+: [32m✔[39m Creating [34m'data/'[39m
+: [32m✔[39m Setting [32mLazyData[39m to [34m'true'[39m in [34m'DESCRIPTION'[39m
+: [32m✔[39m Saving [34m'ZB18a'[39m to [34m'data/ZB18a.rda'[39m
+: [31m•[39m Document your data (see [34m'https://r-pkgs.org/data.html'[39m)
+*** document the data
+#+begin_src R :tangle R/data.R
+  #' Astronomical Solution from Zeebe et al., 2018
+  #'
+  #' The HNBody output of [@cite:Zeebe2018].
+  #'
+  #' The wikipedia page on [Orbital elements](https://en.wikipedia.org/wiki/Orbital_elements)
+  #' describes what the components relate to to uniquely specify an orbital plane.
+  #'
+  #' @format ## `ZB18a`
+  #' A data frame with 250,001 rows and 8 columns:
+  #' \describe{
+  #'   \item{t}{Time}
+  #'   \item{aa}{Semimajor axis}
+  #'   \item{ee}{Eccentricity}
+  #'   \item{inc}{Inclination}
+  #'   \item{lph}{Long periapse}
+  #'   \item{lan}{Long ascending node}
+  #'   \item{arp}{Argument of periapse}
+  #'   \item{mna}{Mean anomaly}
+  #' }
+  #' @source <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html>
+  "ZB18a"
+#+end_src
 
 ** input parameters of the final function/program
 *** set the inputs
@@ -669,7 +706,7 @@ CLOSED: [2023-04-01 Sat 11:10]
 #+begin_src R
   print(system.time(
   ## microbenchmark::microbenchmark(
-    out <- ode(y = state,
+    out <- deSolve::ode(y = state,
                times = times,
                func = eqns,
                parms = parameters,
