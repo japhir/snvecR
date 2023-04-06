@@ -16,8 +16,8 @@
 approxdat <- function(dat, col) {
   # I'm not putting any input checks because it's an internal function
   dat |>
-   dplyr::select(.data$t, {{col}}) |>
-   approxfun(rule = 2)
+    dplyr::select(.data$t, {{ col }}) |>
+    approxfun(rule = 2)
 }
 
 ## implement qinterp similar to the C-routine
@@ -43,11 +43,15 @@ approxdat <- function(dat, col) {
 ##' @seealso [approxdat()] for linear interpolation of the full astronomical solution.
 ##' @noRd
 qinterp <- function(y, ds, dx, m) {
-  yi <- y[m]; dy <- 0; dsa <- abs(ds); dxa <- abs(dx); mm <- 1L
+  yi <- y[m]
+  dy <- 0
+  dsa <- abs(ds)
+  dxa <- abs(dx)
+  mm <- 1L
   ## if (dxa > 0) {
-    mm <- m - as.integer(sign(dx))
-    dy <- y[mm] - y[m]
-    yi <- yi + dy * dxa / dsa
+  mm <- m - as.integer(sign(dx))
+  dy <- y[mm] - y[m]
+  yi <- yi + dy * dxa / dsa
   ## }
   return(yi)
 }

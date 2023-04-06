@@ -19,11 +19,15 @@
 #' @returns The transformed vector in the instant orbit plane.
 #' @noRd
 euler <- function(s, inc, lan, inv = FALSE) {
-  a <- matrix(c( cos(lan), sin(lan), 0,
-                -cos(inc) * sin(lan), cos(inc) * cos(lan), sin(inc),
-                 sin(inc) * sin(lan), -sin(inc) * cos(lan), cos(inc)),
-               ncol = 3,
-               byrow = TRUE)
+  a <- matrix(
+    c(
+      cos(lan), sin(lan), 0,
+      -cos(inc) * sin(lan), cos(inc) * cos(lan), sin(inc),
+      sin(inc) * sin(lan), -sin(inc) * cos(lan), cos(inc)
+    ),
+    ncol = 3,
+    byrow = TRUE
+  )
   if (inv) a <- t(a)
   a %*% s
 }

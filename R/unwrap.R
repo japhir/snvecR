@@ -20,16 +20,15 @@ unwrap <- function(y) {
 
   # vectorized ## dy <- diff(y) / R2D
   cx <- 0
-  for(i in 2:length(y)){
-    dy <- (y[i] - y[i-1]) / R2D # vectorized
-    if(dy > pi){
-      cx <- cx - 2.*pi
-    } else
-      if(dy < -pi){
-        cx <- cx + 2.*pi
-      }
+  for (i in 2:length(y)) {
+    dy <- (y[i] - y[i - 1]) / R2D # vectorized
+    if (dy > pi) {
+      cx <- cx - 2. * pi
+    } else if (dy < -pi) {
+      cx <- cx + 2. * pi
+    }
     cv[i] <- cx
   }
   # ok I'll vectorize this one...
-  yu <- y + cv*R2D
+  yu <- y + cv * R2D
 }
