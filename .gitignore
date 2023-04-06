@@ -4,3 +4,10 @@
 .Rdata
 .httr-oauth
 .DS_Store
+*.R#
+*.org_archive
+/deSolve.org
+/imgs/
+/out/
+/snvec-3.7.5/
+/snvec-julia.org

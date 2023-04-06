@@ -1,0 +1,14 @@
+citHeader("To cite snvecR in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title = {snvecR: calculate climatic precession and obliquity from OS, Td, and Ed},
+  author = {Kocken, Ilja J. and Zeebe, Richard E.},
+  journal = {CRAN / JOSS??},
+  year = {2023},
+  volume = {n/a},
+  number = {n/a},
+  pages = {},
+  doi = {TODO},
+  url = {TODO},
+)

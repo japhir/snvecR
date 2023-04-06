@@ -1,0 +1,33 @@
+Package: snvecR
+Title: snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed
+Version: 3.7.5.9000
+Authors@R:
+    c(person("Ilja", "Kocken", , "ikocken@hawaii.edu", role = c("aut", "cre"),
+             comment = c(ORCID = "0000-0003-2196-8718")),
+      person("Richard", "Zeebe", , "zeebe@hawaii.edu", role = c("aut"),
+             comment = c(ORCID = "0000-0003-0806-8387"))
+    )
+Description: This package makes it easy to calculate precession and obliquity from an orbital solution (defaults to RZ18a) and assumed or reconstructed values for tidal dissipation (td) and dynamical ellipticity (ed).
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
+Suggests:
+    ggplot2,
+    testthat,
+    microbenchmark,
+    roxygen2
+Imports:
+    cli (>= 3.4.0),
+    deSolve,
+    dplyr,
+    tibble,
+    purrr,
+    readr,
+    lubridate,
+    rlang (>= 0.4.11)
+Config/testthat/edition: 3
+Depends:
+    R (>= 3.5.0)
+LazyData: true
+LazyDataCompression: xz

@@ -205,7 +205,7 @@ to make the naming consistent with the C code
 unwrap lph, lan
 #+begin_src R
   dat <- dat |>
-    mutate(lphu = unwrap(lph),
+    dplyr::mutate(lphu = unwrap(lph),
            lanu = unwrap(lan))
 #+end_src
 
@@ -233,8 +233,8 @@ unwrap lph, lan
 helper parameters as new columns of dat
 #+begin_src R
   dat <- dat |>
-    mutate(age = - t / KY2D, .after = t) |>
-    mutate(hh = ee * sin(lph / R2D),
+    dplyr::mutate(age = - t / KY2D, .after = t) |>
+    dplyr::mutate(hh = ee * sin(lph / R2D),
            kk = ee * cos(lph / R2D),
            pp = 2 * sin(0.5 * inc / R2D) * sin(lan / R2D),
            qq = 2 * sin(0.5 * inc / R2D) * cos(lan / R2D),
@@ -265,7 +265,7 @@ helper parameters as new columns of dat
 #+begin_src R :tangle R/data.R
   #' Astronomical Solution from Zeebe et al., 2018
   #'
-  #' The HNBody output of [@cite:Zeebe2018].
+  #' The HNBody output of Zeebe & Lourens 2019 \url{10.1126/science.aax0612}.
   #'
   #' The wikipedia page on [Orbital elements](https://en.wikipedia.org/wiki/Orbital_elements)
   #' describes what the components relate to to uniquely specify an orbital plane.
@@ -300,20 +300,20 @@ helper parameters as new columns of dat
 :END:
 *** start the function
 #+begin_src R
-  ##' snvec
+  ##' Calculate climatic precession and obliquity from OS, Td, and Ed.
   ##'
-  ##' This function computes precession and tilt/obliquity from an astronomical
-  ##' solution input and parameter values for dynamical ellipticity and tidal
-  ##' dissipation.
+  ##' Computes precession and tilt/obliquity from an astronomical solution input
+  ##' and parameter values for dynamical ellipticity and tidal dissipation.
+  ##' It fits a set of ordinary differential equations.
   ##'
-  ##' @param tend [double(1)] The final timestep in -kyr. Defaults to -1000 years.
-  ##' @param ed [double(1)] Dynamical ellipticity. Defaults to 1.0.
-  ##' @param td [double(1)] Tidal dissipation. Defaults to 0.0.
-  ##' @param orbital_solution [character(1)] The orbital solution to use. See details.
-  ##' @param tres [double(1)] The output timestep resolution in kyr. Defaults to 0.4.
-  ##' @param tolerance [double(1)] The numerical tolerance passed to deSolve::ode's rtol and atol.
-  ##' @param quiet [logical(1)] Do not print diagnostics to terminal.
-  ##' @return A tibble with all the computed results.
+  ##' @param tend The final timestep in -kyr. Defaults to `-1000` years.
+  ##' @param ed Dynamical ellipticity. Defaults to `1.0`.
+  ##' @param td Tidal dissipation. Defaults to `0.0`.
+  ##' @param orbital_solution The orbital solution to use. See details.
+  ##' @param tres The output timestep resolution in kyr. Defaults to `0.4`.
+  ##' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol` and `atol`.
+  ##' @param quiet If quiet, do not print info messages.
+  ##' @returns A [tibble][tibble::tibble-package] with all the computed results.
   ##'
   ##' @author Ilja J. Kocken and Richard E. Zeebe
   ##'
@@ -363,7 +363,7 @@ helper parameters as new columns of dat
                      "i" = "Pull requests welcome."))
   }
   if (orbital_solution == "ZB18a") {
-    dat <- ZB18a
+    dat <- snvecR::ZB18a
   }
 #+end_src
 
@@ -411,15 +411,6 @@ a quick dumb input test for now
            "i" = "started at {.q {startdate}}"))
   }
 #+end_src
-
-#+RESULTS:
-: This is snvec.r VERSION: 3.7.5 2023-03-29
-: Richard E. Zeebe
-: Ilja J. Kocken
-: Integration parameters:
-:  tend = -1e+05 kyr
-:  Ed = 1
-:  Td = 0
 
 ** COMMENT plot orbital solution input
 :PROPERTIES:
@@ -520,16 +511,19 @@ a quick dumb input test for now
 :END:
 [[file:snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
 #+begin_src R
-  #' Euler transformation.
+  #' Euler transformation of spin vector
   #'
-  #' s* = A * s, where spin vector s is in invariable plane and s* in instant
-  #' orbit plane. inv = 1 gives inverse transformation (A^-1 = A' =
-  #' transpose(A)).
+  #' `euler()` transforms a spin vector s from the invariable plane to the
+  #' instant orbit plane. It uses the formula $s* = A * s$. Setting `inv = TRUE`
+  #' gives inverse transformation (A^-1 = A' = transpose(A)).
   #'
-  #' @param s The vector to be transformed.
+  #' @param s The spin vector to be transformed.
   #' @param inc  The inclination.
-  #' @param lan  The Long Ascending Node
+  #' @param lan  The long ascending node.
   #' @param inv  Invert the output.
+  #'
+  #' @returns The transformed vector in the instant orbit plane.
+  #' @noRd
   euler <- function(s, inc, lan, inv = FALSE) {
     a <- matrix(c( cos(lan), sin(lan), 0,
                   -cos(inc) * sin(lan), cos(inc) * cos(lan), sin(inc),
@@ -560,8 +554,8 @@ use finits to get initial conditions in transformed ECLIPJ2000
   # first row of nn -> needs to be a vector
   # orbit normal at t=0
   ninit <- dat |>
-    filter(t == 0) |>
-    select(nnx, nny, nnz) |>
+    dplyr::filter(.data$t == 0) |>
+    dplyr::select(.data$nnx, .data$nny, .data$nnz) |>
     as.matrix() |>
     as.vector()
 
@@ -622,16 +616,20 @@ http://desolve.r-forge.r-project.org/ has an article on time-varying inputs
 we can use approxfun to generate a function that approximates =col= for timestep t.
 
 #+begin_src R
-  ##' approxdat
-  ##'
-  ##' Linearly interpolate on a dataframe.
+  ##' Linearly interpolate a dataframe.
   ##'
   ##' @param dat The dataframe.
   ##' @param col The column we want to interpolate on.
-  approxdat <- function(dat, col = ee) {
+  ##' @returns A function that predicts `col` as a function of `t` in `dat`.
+  ##'
+  ##' @seealso [qinterp()] for quick interpolation of a single timestep.
+  ##' @importFrom stats approxfun
+  ##' @importFrom dplyr select
+  ##' @noRd
+  approxdat <- function(dat, col) {
     # I'm not putting any input checks because it's an internal function
     dat |>
-     select(t, {{col}}) |>
+     dplyr::select(.data$t, {{col}}) |>
      approxfun(rule = 2)
   }
 #+end_src
@@ -644,13 +642,23 @@ to how Richard does it in C.
 :header-args:R: :tangle R/interpolation.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
 :END:
 #+begin_src R
-  ##' qinterp
+  ##' Quickly interpolate a single value.
+  ##'
+  ##' `qinterp()` is a custom linear interpolation algorithm that is much faster
+  ##' than using the full vectorized `[approx()]` or `[approxfun()]`, because it
+  ##' only interpolates the single value of the current timestep.
   ##'
   ##' @param y The vector to interpolate.
   ##' @param ds The difference in timestep in the astronomical solution.
   ##' @param dx The difference between the current timestep and the timestep in the astronomical solution.
   ##' @param m The index variable of the current position in the astronomical solution.
-  ##' @return The vector of interpolated results
+  ##' @returns The vector of interpolated results.
+  ##' @examples
+  ##' # interpolate ZB18a$lph[[1:4]]
+  ##' qinterp(ZB18a$lph[[1:4]], ds = -146100, dx =  -18262.5, m = 2)
+  ##'
+  ##' @seealso [approxdat()] for linear interpolation of the full astronomical solution.
+  ##' @noRd
   qinterp <- function(y, ds, dx, m) {
     yi <- y[m]; dy <- 0; dsa <- abs(ds); dxa <- abs(dx); mm <- 1L
     ## if (dxa > 0) {
@@ -1115,7 +1123,8 @@ for ./snvec.x -1e5 1.0 0.0
   #' Unwrap angle. Maps jumps greater than pi to their 2pi complement.
   #'
   #' @param y Input vector in degrees.
-  #' @return Unwrapped vector in degrees.
+  #' @returns Unwrapped vector in degrees.
+  #' @noRd
   unwrap <- function(y) {
     # let's stop being smart and just build it like Richard did in C
     cv <- rep(0, length(y)) # to make them the same length
@@ -1147,16 +1156,16 @@ for ./snvec.x -1e5 1.0 0.0
 back onto output timescale
 #+begin_src R
   fin <- out |>
-    as_tibble() |>
-    mutate(
-      age = -time / KY2D,
-      nnx = approxdat(dat, nnx)(time),
-      nny = approxdat(dat, nny)(time),
-      nnz = approxdat(dat, nnz)(time),
-      eei = approxdat(dat, ee)(time),
-      inci = approxdat(dat, inc)(time),
-      lphi = approxdat(dat, lphu)(time),
-      lani = approxdat(dat, lanu)(time)
+    tibble::as_tibble() |>
+    dplyr::mutate(
+      age = -.data$time / KY2D,
+      nnx = approxdat(dat, .data$nnx)(.data$time),
+      nny = approxdat(dat, .data$nny)(.data$time),
+      nnz = approxdat(dat, .data$nnz)(.data$time),
+      eei = approxdat(dat, .data$ee)(.data$time),
+      inci = approxdat(dat, .data$inc)(.data$time),
+      lphi = approxdat(dat, .data$lphu)(.data$time),
+      lani = approxdat(dat, .data$lanu)(.data$time)
     )
 #+end_src
 
@@ -1236,8 +1245,8 @@ cols(
 #+begin_src R
   fin <- fin |>
     # calculate the dotproduct, richard's vvdot
-    mutate(tmp = sx*nnx + sy*nny + sz*nnz,
-           epl = acos(tmp))
+    dplyr::mutate(tmp = .data$sx*.data$nnx + .data$sy*.data$nny + .data$sz*.data$nnz,
+           epl = acos(.data$tmp))
 #+end_src
 
 #+RESULTS:
@@ -1277,26 +1286,26 @@ cols(
 #+begin_src R
   fin <- fin |>
     # for each row, NOTE this makes it very slow!!
-    rowwise() |>
+    dplyr::rowwise() |>
     # create list columns of matrices
     # extract sx, sy, sz, and nnx, nny, nnz
-    mutate(u = list(matrix(c(sx, sy, sz), ncol = 1, nrow = 3)),
-           nv = list(matrix(c(nnx, nny, nnz), ncol = 1, nrow = 3)),
+    dplyr::mutate(u = list(matrix(c(.data$sx, .data$sy, .data$sz), ncol = 1, nrow = 3)),
+           nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
            # coords: fixed HCI => moving orbit plane
-           up = list(euler(u, inci / R2D, lani / R2D, 0)),
+           up = list(euler(.data$u, .data$inci / R2D, .data$lani / R2D, 0)),
            # coords: relative to phi(t=0)=0 at J2000
-           up = list(euler(up, 0, -(lani + OMT) / R2D - pi / 2, 0)),
+           up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D - pi / 2, 0)),
            # get 2nd and 1st column of up
-           phi = map2_dbl(up[2, ], up[1, ], atan2)) |>
-    ungroup() |>
-    mutate(
+           phi = map2_dbl(.data$up[2, ], .data$up[1, ], atan2)) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(
            # normalize to first value of phi
-           tmp = first(phi),
-           phi = phi - tmp,
-           cp = eei * sin((lphi + OMT) / R2D - phi),
+           tmp = first(.data$phi),
+           phi = .data$phi - .data$tmp,
+           cp = .data$eei * sin((.data$lphi + OMT) / R2D - .data$phi),
            # phi is now mapped between 0 and 2 pi, whereas RZ's output is wrapped
            # between -pi and pi
-           phi = ifelse(phi > pi, phi - 2*pi, phi)
+           phi = ifelse(.data$phi > pi, .data$phi - 2*pi, .data$phi)
            )
 #+end_src
 
@@ -1906,7 +1915,7 @@ CLOSED: [2023-03-29 Wed 12:01]
 #+RESULTS:
 [[file:imgs/compare_c-R-full.png]]
 
-* tasks
+* [9/18] tasks
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1914,7 +1923,7 @@ CLOSED: [2023-03-29 Wed 12:01]
 CLOSED: [2023-04-04 Tue 09:28]
 ** DONE make the R routine visually return the same spin vector as the C routine
 CLOSED: [2023-04-04 Tue 09:27]
-** WAIT [12/12] make the R routine return machine precision close to identical results to the C routine
+** WAIT [1/1] make the R routine return machine precision close to identical results to the C routine
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1936,8 +1945,9 @@ CLOSED: [2023-04-04 Tue 09:27]
 - [X] calculate the difference
 - [X] plot the difference
 - [X] do the same for the full solar system solution
-- [X] now do the long run but with a lower tolerance
-  - [X] 1e-10
+*** DONE now do the long run but with a lower tolerance
+CLOSED: [2023-04-05 Wed 13:47]
+**** 1e-10
 #+begin_src R
   lowtol <- snvec(-1e5, 1, 0, tolerance = 1e-10)
   write_rds(lowtol, "out/2023-04-04_lowtol.rds")
@@ -1958,7 +1968,7 @@ CLOSED: [2023-04-04 Tue 09:27]
 : Final values obliquity, precession (rad):
 : 0.3899853310553 1.88486960858406
 
-  - [X] 1e-12
+**** 1e-12
 #+begin_src R
   superlowtol <- snvec(-1e5, 1, 0, tolerance = 1e-12)
   write_rds(superlowtol, "out/2023-04-04_superlowtol_1e-12.rds")
@@ -1981,7 +1991,7 @@ CLOSED: [2023-04-04 Tue 09:27]
 : Final values obliquity, precession (rad):
 : 0.390596711702826 1.8189284314666
 
-  - [X] 1e-7
+**** 1e-07
 #+begin_src R
   normtol <- snvec(-1e5, 1, 0, tolerance = 1e-7)
   write_rds(normtol, "out/2023-04-04_normtol_1e-7.rds")
@@ -2006,7 +2016,7 @@ Final values obliquity, precession (rad):
 0.389933827834007 1.96689170415452
 stopped at Wed Apr  5 09:56:46 2023
 #+end_example
-- [X] 1e-3
+**** 1e-03
 #+begin_src R
   hightol <- snvec(-1e5, 1, 0, tolerance = 1e-3)
   write_rds(hightol, "out/2023-04-05_hightol_1e-3.rds")
@@ -2033,7 +2043,7 @@ stopped at Wed Apr  5 10:13:33 2023
 total duration 54.119035243988
 #+end_example
 
-- [X] make the comparison between resolutions
+**** make the comparison between resolutions
 ** DONE [3/3] make the R routine return the same values for precession and obliquity
 CLOSED: [2023-04-04 Tue 13:38]
 :PROPERTIES:
@@ -2076,11 +2086,13 @@ stopped at Tue Apr  4 23:06:35 2023
 
 rldpeace
 
-** WAIT calculate for grids of Td and Ed
+** DONE calculate for grids of Td and Ed
+CLOSED: [2023-04-05 Wed 15:55]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
 :END:
 :LOGBOOK:
+- State "DONE"       from "WAIT"       [2023-04-05 Wed 15:13]
 - State "WAIT"       from "DONE"       [2023-04-05 Wed 13:16]
 :END:
 
@@ -2088,7 +2100,16 @@ rldpeace
 :PROPERTIES:
 :CREATED:  [2023-04-05 Wed 11:03]
 :END:
-#+begin_src R
+#+begin_src R :output none
+  snvec_tail <- function(...) {
+      # do the fit with the parameters in ...
+      snvec(...) |>
+      # save only the last 1000 values, that's where the differences are the worst
+      tail(n = 1000) |>
+      # convert deSolve columns to numerics for easy combinations
+      mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  }
+
   # same grid as in Zeebe & Lourens 2022 table 2: 10.1029/2021PA004349
   biggrid <- expand.grid(Td = c(0, 0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2),
               Ed = c(1.000, 0.998, 1.005, 1.012)) |>
@@ -2097,28 +2118,30 @@ rldpeace
     # for now only for 1000 years so it's fast
     ## mutate(tol = 1e-4, tend = -1e3) |>
     # the real deal, full results at medium tolerance
+    # this will run but will run out of memory too...
+    # limit results to final 1 kyr or so?
     mutate(tol = 1e-7, tend = -1e5) |>
     # apply our new function!
     mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, tolerance = tol),
-                      snvec))
-  write_rds("out/biggrid.rds")
+                      .f = snvec_tail)) |>
+    write_rds("out/2023-04-05_biggrid.rds")
+#+end_src
 
+#+begin_src R
   # unnest the new list column
   expanded <- biggrid |>
-    # must first make them all doubles because deSolve class doesn't have vctr attributes
-    mutate(sol = map(sol,
-                     ~ .x |> mutate(across(c(time, sx, sy, sz, age, epl), as.numeric)))) |>
-    # then unnest it
     unnest(sol)
 #+end_src
 
+#+RESULTS:
+*** plot the results
 #+begin_src R :results output graphics file :file imgs/2023-04-05_experimental-grid_full.png :width 1920 :height 1080
   # then make a plot
   expanded |>
     ggplot(aes(x = age, y = cp,
                colour = factor(Td),
                linetype = factor(Ed))) +
-    scale_x_reverse("Age (ka)", xlim = c(100, 99)) +
+    scale_x_reverse("Age (ka)") +
     ## facet_grid(rows = vars(Ed)) +
     facet_grid(rows = vars(Td)) +
     geom_line() +
@@ -2126,8 +2149,9 @@ rldpeace
 #+end_src
 
 #+RESULTS:
-[[file:imgs/2023-04-05_experimental-grid.png]]
+[[file:imgs/2023-04-05_experimental-grid_full.png]]
 
+*** plot the results for phi
 #+begin_src R :results output graphics file :file imgs/2023-04-05_experimental-grid_phi.png :width 1920 :height 1080
   # then make a plot
   expanded |>
@@ -2143,9 +2167,27 @@ rldpeace
 #+RESULTS:
 [[file:imgs/2023-04-05_experimental-grid_phi.png]]
 
-** NEXT visualize results: a heat map?
+*** bin the results
+#+begin_src R :results output graphics file :file imgs/2023-04-05_experimental-grid_full_bin.png :width 700
+  expanded |>
+    ggplot(aes(x = cp,
+               fill = factor(Td)## ,
+               ## group = factor(Ed)
+               )) +
+    ## facet_grid(rows = vars(Td)) +
+    ## geom_histogram() +
+    ggdist::stat_halfeye(alpha = .4)
+#+end_src
+
+#+RESULTS:
+[[file:imgs/2023-04-05_experimental-grid_full_bin.png]]
+
+** SOME visualize results: a heat map?
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
+:END:
+:LOGBOOK:
+- State "SOME"       from "NEXT"       [2023-04-05 Wed 15:55]
 :END:
 for that I'd need to have the difference function with a record
 ** SOME make the La2011 solution obl + precession available?
@@ -2172,12 +2214,14 @@ they apply the Laskar fortran routine from 92/93 to calculate precession/obliqui
 - State "SOME"       from              [2023-04-04 Tue 18:23]
 :END:
 https://github.com/r-lib/progress#readme
-** NEXT document all function parameters correctly
+** DONE document all function parameters correctly
+CLOSED: [2023-04-05 Wed 13:45]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:45]
 :END:
 https://style.tidyverse.org/documentation.html#documenting-parameters
-** NEXT add return docs to each function
+** DONE add return docs to each function
+CLOSED: [2023-04-05 Wed 13:45]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:46]
 :END:
@@ -2202,6 +2246,12 @@ CLOSED: [2023-04-05 Wed 12:27]
 :END:
 https://style.tidyverse.org/error-messages.html
 and info messages
+** NEXT [#B] fix unwrap tests
+:PROPERTIES:
+:CREATED:  [2023-04-05 Wed 13:45]
+:END:
+[[file:tests/testthat/test-unwrap.R]]
+
 ** SOME move the code out of here for reals -> pkg structure is single source of truth
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:49]
@@ -2209,3 +2259,9 @@ and info messages
 :LOGBOOK:
 - State "SOME"       from              [2023-04-04 Tue 18:49]
 :END:
+
+** NEXT update CITATION to cite the package on CRAN itself
+:PROPERTIES:
+:CREATED:  [2023-04-05 Wed 15:55]
+:END:
+[[file:~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/inst/CITATION][file:~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/inst/CITATION]]

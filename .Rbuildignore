@@ -1,0 +1,5 @@
+^LICENSE\.md$
+^data-raw$
+^snvec-3\.7\.5/*
+^imgs/*
+^out/*
