@@ -15,20 +15,21 @@
 #' @returns Unwrapped vector in degrees.
 #' @noRd
 unwrap <- function(y) {
-  # let's stop being smart and just build it like Richard did in C
-  cv <- rep(0, length(y)) # to make them the same length
 
-  # vectorized ## dy <- diff(y) / R2D
-  cx <- 0
-  for (i in 2:length(y)) {
-    dy <- (y[i] - y[i - 1]) / R2D # vectorized
-    if (dy > pi) {
-      cx <- cx - 2. * pi
-    } else if (dy < -pi) {
-      cx <- cx + 2. * pi
-    }
-    cv[i] <- cx
-  }
-  # ok I'll vectorize this one...
-  yu <- y + cv * R2D
+  y <- ZB18a$lan[1:6]
+
+  tibble::tibble(y = y) |>
+    dplyr::mutate(dy = y - dplyr::lead(y, default = 0),
+                  cv = 0,
+           dz = ifelse(dy > 180, cv - 360,
+                       ifelse(dy < -180, vc + 360, 0)),
+           yu = y + cumsum(dz)) |>
+    pull(yu)
+
+  dy <- c(0, diff(y))
+  dz <- dy
+  dz[dy > 180] <- dy[dy > 180] - 360
+  dz[dy < -180] <- dy[dy < -180] + 360
+  yu <- y + cumsum(dy)
+  yu
 }
