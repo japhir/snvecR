@@ -1,32 +1,34 @@
-## start the function
-
-##' Calculate climatic precession and obliquity from OS, Td, and Ed.
-##'
-##' Computes precession and tilt/obliquity from an astronomical solution input
-##' and parameter values for dynamical ellipticity and tidal dissipation.
-##' It fits a set of ordinary differential equations.
-##'
-##' @param tend The final timestep in -kyr. Defaults to `-1000` years.
-##' @param ed Dynamical ellipticity. Defaults to `1.0`.
-##' @param td Tidal dissipation. Defaults to `0.0`.
-##' @param orbital_solution The orbital solution to use. See details.
-##' @param tres The output timestep resolution in kyr. Defaults to `0.4`.
-##' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol` and `atol`.
-##' @param quiet If quiet, do not print info messages.
-##' @returns A [tibble][tibble::tibble-package] with all the computed results.
-##'
-##' @author Ilja J. Kocken and Richard E. Zeebe
-##'
-##' @details Currently only the "ZB18a" orbital solution is supported.
-##'
-##' @examples
-##' # default call
-##' snvec()
-##'
-##' # a quick one with few timesteps, low resolution, high tolerance
-##' snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
-##'
-##' @export
+#' Calculate precession and obliquity from an OS, Td, and Ed.
+#'
+#' Computes climatic precession and obliquity (or tilt) from an orbital
+#' solution (OS) input and input values for dynamical ellipticity (Ed) and
+#' tidal dissipation (Td). It fits a set of ordinary differential equations.
+#'
+#' @param tend The final timestep in -kyr. Defaults to `-1000` years.
+#' @param ed Dynamical ellipticity. Defaults to `1.0`.
+#' @param td Tidal dissipation. Defaults to `0.0`.
+#' @param orbital_solution The orbital solution to use. See details.
+#' @param tres The output timestep resolution in kyr. Defaults to `0.4`.
+#' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol` and `atol`.
+#' @param quiet If quiet, do not print info messages.
+#' @returns A [tibble][tibble::tibble-package] with all the computed results.
+#'
+#' @author Ilja J. Kocken and Richard E. Zeebe
+#'
+#' @details Currently only the "ZB18a" orbital solution is supported.
+#'
+#' @examples
+#' # default call
+#' snvec()
+#'
+#' # a quick one with few timesteps, low resolution, high tolerance
+#' snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
+#'
+#' @export
+#' @references Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’
+#'   Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to
+#'   Solar System Chaos. _The Astronomical Journal_, 164(3), 107.
+#'   <https://doi.org/10.3847/1538-3881/ac80f8>
 snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
@@ -230,7 +232,7 @@ snvec <- function(tend = -1e3,
   ## solve it
   ## [[file:snvec-3.7.5/snvec-3.7.5.c::%%% solver][odeint()]]
 
-  print(system.time(
+  ## print(system.time(
     ## microbenchmark::microbenchmark(
     out <- deSolve::ode(
       y = state,
@@ -249,7 +251,7 @@ snvec <- function(tend = -1e3,
       rtol = tolerance, atol = tolerance # based on EPSLVR
       ## rtol = 1e-12, atol = 1e-12
     )
-  ))
+  ## ))
   ## )
 
   ## print the final values for s

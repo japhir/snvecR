@@ -3,3 +3,10 @@
 ^snvec-3\.7\.5/*
 ^imgs/*
 ^out/*
+^README.org$
+.*_org.archive$
+^deSolve.org$
+^ltximg$
+^snvec-julia.org$
+^CITATION.cff$
+^.*\.zenodo.json$

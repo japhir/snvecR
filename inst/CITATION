@@ -1,14 +1,17 @@
-citHeader("To cite snvecR in publications use:")
-
-citEntry(
-  entry    = "Article",
-  title = {snvecR: calculate climatic precession and obliquity from OS, Td, and Ed},
-  author = {Kocken, Ilja J. and Zeebe, Richard E.},
-  journal = {CRAN / JOSS??},
-  year = {2023},
-  volume = {n/a},
-  number = {n/a},
-  pages = {},
-  doi = {TODO},
-  url = {TODO},
+bibentry(
+  bibtype = "Article",
+  header = "To cite snvecR in publications use:",
+  key = "KockenZeebe2023",
+  title = "snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed",
+  ## author = "Kocken, Ilja J. and Zeebe, Richard E.",
+  journal = "CRAN / JOSS??",
+  year = "2023",
+  ## volume = {n/a},
+  ## number = {n/a},
+  ## pages = {},
+  doi = "TODO", # put it on zenodo?
+  url = "TODO", # github page?
+  # textVersion is a mandatory field
+  ## textVersion = ""
+  # but ?bibentry recommends against specifying it
 )

@@ -8,5 +8,6 @@
 #' @importFrom readr write_rds read_rds read_table
 #' @importFrom purrr map2_dbl
 #' @importFrom rlang .data
+#' @importFrom pracma dot
 ## usethis namespace: end
 NULL

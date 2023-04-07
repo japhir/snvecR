@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+title: 'snvecR: snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and
+  Ed'
+version: 3.7.5.9000
+date-released: 2023-04-06
+abstract: This package makes it easy to calculate precession and obliquity from an
+  orbital solution (defaults to RZ18a) and assumed or reconstructed values for tidal
+  dissipation (td) and dynamical ellipticity (ed).
+authors:
+- family-names: Kocken
+  given-names: Ilja
+  email: ikocken@hawaii.edu
+  orcid: 0000-0003-2196-8718
+- family-names: Zeebe
+  given-names: Richard
+  email: zeebe@hawaii.edu
+  orcid: 0000-0003-0806-8387
+license: GPL (>= 3)
