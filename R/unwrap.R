@@ -15,21 +15,24 @@
 #' @returns Unwrapped vector in degrees.
 #' @noRd
 unwrap <- function(y) {
+  ## y <- ZB18a$lan[1:6]
+  cx <- 0.0 # single number, c in C but reserved namespace
+  dy <- 0.0 # single number
+  # vector
+  cv <- rep(0, length(y))
 
-  y <- ZB18a$lan[1:6]
-
-  tibble::tibble(y = y) |>
-    dplyr::mutate(dy = y - dplyr::lead(y, default = 0),
-                  cv = 0,
-           dz = ifelse(dy > 180, cv - 360,
-                       ifelse(dy < -180, vc + 360, 0)),
-           yu = y + cumsum(dz)) |>
-    pull(yu)
-
-  dy <- c(0, diff(y))
-  dz <- dy
-  dz[dy > 180] <- dy[dy > 180] - 360
-  dz[dy < -180] <- dy[dy < -180] + 360
-  yu <- y + cumsum(dy)
+  for (i in 2:length(y)) {
+    dy <- (y[i] - y[i - 1]) / R2D
+    if (dy > pi) {
+      cx <- cx - 2 * pi
+    } else if (dy < -pi) {
+      cx <- cx + 2 * pi
+    }
+    cv[i] <- cx
+  }
+  yu <- rep(0, length(y))
+  for (i in seq_along(y)) {
+    yu[i] <- y[i] + cv[i] * R2D
+  }
   yu
 }

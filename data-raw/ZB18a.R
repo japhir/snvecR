@@ -4,8 +4,8 @@
 ## the top of the file has some lines specifying which columns were used
 ## 0  7  8  9  12 10 11 15
 
-
 library(readr)
+library(snvecR) # for the unwrap function
 
 dat <- read_table("snvec-3.7.5/ems-plan3.dat",
   comment = "#",
@@ -64,8 +64,9 @@ dat <- dat |>
 
 dat <- dat |>
   dplyr::mutate(
-    lphu = unwrap(lph),
-    lanu = unwrap(lan)
+    # this function is not exported so we need to use three colons
+    lphu = snvecR:::unwrap(lph),
+    lanu = snvecR:::unwrap(lan)
   )
 
 ## calculate helper parameters

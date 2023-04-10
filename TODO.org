@@ -1,9 +1,569 @@
-* [10/21] get snvecR published on CRAN, github, zenodo
+#+TITLE: snvecR
+#+AUTHOR: Ilja J. Kocken
+#+EMAIL: ikocken@hawaii.edu
+written by Ilja J. Kocken [[https://orcid.org/0000-0003-2196-8718][orcid:0000-0003-2196-8718]]
+
+#+PROPERTY: header-args:R  :session *R:snvec-R* :exports both :results output :eval no-export
+
+This file is here for personal use to keep track of progress, for interactive sessions, and for posterity.
+
+* load libraries
 :PROPERTIES:
-:CREATED:  [2023-04-04 Tue 09:27]
+:CREATED:  [2023-03-30 Thu 09:14]
 :END:
-** DONE play around with the different ODE solver algorithms to figure out which one is fastest
-CLOSED: [2023-04-04 Tue 09:28]
+#+begin_src R :results none
+  library(tidyverse)
+  # we use dplyr and ggplot2 mostly
+  library(deSolve)
+  # we use glue for info messages -> cli
+  # as well as lubridate
+  devtools::load_all()
+#+end_src
+
+* DONE understand the C-code
+CLOSED: [2023-04-06 Thu 14:54]
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+I have the C-code from the [[https://doi.org/10.3847/1538-3881/ac80f8
+][Zeebe 2022 paper]] located in a subdirectory here. I ignore it for the R package (see [[file:.gitignore]] and [[file:.Rbuildignore]]).
+
+[[file:imgs/snvec-3.7.5/snvec-3.7.5.c]]
+
+*** define global variables
+once we turn this into a package, best to define them using a function
+#+begin_src R
+  ## def_globals <- function()
+#+end_src
+
+for now do it the simple way
+
+#+RESULTS:
+
+*** quick interpolation
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:38]
+:END:
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== qinterp()][qinterp()]]
+not sure if needed, could just use R's interp?
+#+begin_src R
+  qinterp <- function(y, ds, dx, m) {
+    yi <- y[m]
+    dy <- 0.
+    dsa <- abs(ds)
+    dxa <- abs(x)
+    mm <- 1L
+
+    if (dxa > DBL_EPSILON) {
+      mm <- m -
+    }
+  }
+#+end_src
+
+linear interpolation using approx
+#+begin_src R
+  x = c(41, 45, seq(48, 50, length.out = 8))
+  y = rnorm(length(x), 0, 1)
+  z = approx(x = x, y = y, xout = 41:50)$y
+
+  plot(x, y, type = "o")
+  points(41:50, z, col = "red", pch = 3)
+#+end_src
+
+#+RESULTS:
+: [1m[33mError[39m in `tibble()`:[22m
+: [1m[22m[33m![39m Tibble columns must have compatible sizes.
+: [36m•[39m Size 10: Existing data.
+: [36m•[39m Size 50: Column `z`.
+: [36mℹ[39m Only values of size one are recycled.
+: [90mRun `rlang::last_trace()` to see where the error occurred.[39m
+
+#+begin_src R
+    qinterp <- function(x) {
+    approx(x = x, y = y, xout = )
+  }
+#+end_src
+*** unwrap
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:38]
+:END:
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
+*** euler
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 14:39]
+:END:
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== euler()][euler()]]
+
+*** fvei
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== fvei()][fvei()]]
+calculates global h,k,p,q etc. from ecc,inc etc.
+
+#+begin_src R
+  #' fvei
+  #'
+  #' calculates global h,k,p,q etc. from ecc,inc etc.
+  fvei <- function(ee, inc, lph, lan, ls) {
+    hh <- ee * sin(lph / R2D)
+    kk <- ee * cos(lph / R2D)
+    pp <- 2. * sin(0.5 * inc / R2D) * sin(lan / R2D)
+    qq <- 2. * sin(0.5 * inc / R2D) * cos(lan / R2D)
+    cc <- cos(inc / R2D)
+    dd <- cos(inc / R2D/2.)
+    ## /* nn <- nvec(t): normal to orbit */
+    nn[1] <-  sin(inc / R2D) * sin(lan / R2D)
+    nn[2] <- -sin(inc / R2D) * cos(lan / R2D)
+    nn[3] <-  cos(inc / R2D)
+  }
+#+end_src
+
+for now put these values in a simple script below
+*** finargs
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== finargs()][finargs()]]
+ parse input arguments. arg list:
+ [1] tend
+ [2] Ed
+ [3] Td
+ [4] dir  OrbitSoln
+ [5] file OrbitSoln
+
+*** fedtd
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
+calculates global vars ndn,wdw,k0d from Td,Ed
+
+#+begin_src R
+  # as a function of ed, td
+  k0d <- ((3./2.)*GM*ED0*ed/(OM*AU3))*D2S # 1/s => 1/d
+  k0b0 <- k0d*(1.+BET0)
+  ndn <- -4.6e-18*D2S*td # 1/s => 1/d
+  wdw <- 51.*ndn*NW0 # Lambeck80, see PTman
+  tdg <- td # global Td
+#+end_src
+
+#+RESULTS:
+: Error: object 'ed' not found
+: Error: object 'k0d' not found
+: Error: object 'td' not found
+: Error: object 'ndn' not found
+: Error: object 'td' not found
+
+*** finits
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== finits() ][finits()]]
+init spin vector, transform to HCI
+s,n in HCI. s',n' in ECLIPJ2000
+
+calculates np
+s0p
+via euler transform
+
+*** derivs
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== derivs()][derivs()]]
+
+derivatives. RHS of DEQs for spin vector s = y
+
+uses quinterp
+#+begin_src R
+  derivs <- function(t, y, yp) {
+    kb <- ...
+    ...
+  }
+#+end_src
+
+yp[1]
+yp[2]
+yp[3] are the differential equations
+
+qq pp = g-modes and s-modes, direct
+cp derivs of h and k,
+h and k from g-modes, calculate from ecc and long perihelion
+
+these are prepped in fvei
+*** driver
+this is the one we want to study that does all the steps!
+
+[[file:snvec-3.7.5/snvec-3.7.5.c::=== driver()][driver()]]
+driver routine solving DEQs for spin vector s = y.
+
+this calls =odeint=
+
+odeint(y0,NEQ,t0,tfin,EPSLVR,h1,hmin,&nok,&nbad,derivs,stiff);
+
+where y0 = a vector of size 3 (simple matrix)
+NEQ = 3
+t0 = 0.0
+tfin = tfink * KY2D # days negative
+  tfink =  tend = TEND = -1e3 (see finargs)
+EPSLVR = 1e-7 global solver control
+h1 = 0.1*dxsav
+  dxsav = (tfin - t0)/kmax
+  kmax = floor(1000.*2.656*sckx)
+  sckx = fabs(tfink/1e3)
+hmin = 0.0
+&nok = ??
+&nbad = ??
+derivs = function(t, *y, *yp)
+stiff = ??
+
+*** odeint
+[[file:imgs/snvec-3.7.5/fun/solver.c]]
+Runge-Kutta driver. calls derivs and SOLVER.
+Runge-Kutta driver with adaptive stepsize control. Integrate starting
+values ystart[1..nvar] from x1 to x2 with accuracy eps, storing
+intermediate results in global variables. h1 should be set as a
+guessed first stepsize, hmin as the minimum allowed stepsize (can be
+zero). On output nok and nbad are the number of good and bad (but retried
+and fixed) steps taken, and ystart is replaced by values at the end of
+the integration interval. derivs is the user-supplied routine for
+calculating the right-hand side derivative, while SOLVER is the name
+of the stepper routine to be used.
+
+*** write outputs
+*** [#A] inspect the C output
+**** read in the raw spin vector s
+the raw spin vector s, added as something that we write to file myself (not sure if correct!)
+#+begin_src R
+  snv_sout <- read_table("snvec-3.7.5/s-out.dat",
+                        col_names = c("time", "sx", "sy", "sz", "x")) |>
+    # this is because there's some whitespace there?
+    # note that t is in tmv / KY2D = in kyr
+    select(-x)
+#+end_src
+
+#+RESULTS:
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────[39m
+: cols(
+:   time = [32mcol_double()[39m,
+:   sx = [32mcol_double()[39m,
+:   sy = [32mcol_double()[39m,
+:   sz = [32mcol_double()[39m,
+:   x = [33mcol_logical()[39m
+: )
+
+**** plot the raw spin vector s
+#+begin_src R :results output graphics file :file imgs/c-output_s.png :width 700
+  pl_refs <- snv_sout |>
+    pivot_longer(cols = sx:sz) |>
+    ggplot(aes(time, value, col = name)) +
+    ## facet_grid(rows = vars(name), scales = "free_y") +
+    ## scale_x_reverse() +
+    geom_line() +
+    ## geom_point() +
+    # fix the xlim so that when we add other data it doesn't rescale
+    xlim(c(-1e3, 0))
+  pl_refs
+#+end_src
+
+#+RESULTS:
+[[file:imgs/c-output_s.png]]
+
+**** [#A] read the final eccentricity, phi, precession
+#+begin_src R :results none
+  snv_out <- read_table("snvec-3.7.5/out.dat",
+                        col_names = c("t", "epl", "phi", "cp", "x")) |>
+    # this is because there's some whitespace there?
+    # note that t is in tmv / KY2D = in kyr
+    select(-x)
+#+end_src
+
+**** plot the final eccentricity, phi, precession
+#+begin_src R :results output graphics file :file imgs/c-output_ee.png :width 700
+  pl_ref <- snv_out |>
+    pivot_longer(cols = epl:cp) |>
+    ggplot(aes(t, value, colour = "Richard-C")) +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    scale_x_reverse() +
+    geom_line() +
+    labs(x = "Age (Ma)")
+    ## geom_point() +
+    # fix the xlim so that when we add other data it doesn't rescale
+    ## xlim(c(-1e3, 0))
+  pl_ref
+#+end_src
+
+#+RESULTS:
+[[file:imgs/c-output_ee.png]]
+
+**** plot a histogram of the timesteps in the C-output
+#+begin_src R :results output graphics file :file imgs/c-output_dt.png :width 700
+  snv_out |>
+    mutate(dt = t - lag(t)) |>
+    ggplot(aes(dt)) +
+    geom_histogram(binwidth = 0.001)
+#+end_src
+
+#+RESULTS:
+[[file:imgs/c-output_dt.png]]
+
+*** debug specific functions
+[[file:snvec-3.7.5/snvec-3.7.5.c::Ilja's debugging scheme][Ilja's debugging scheme]]
+
+* read up on the deSolve package for R
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 12:02]
+:END:
+https://cran.r-project.org/package=deSolve
+the implicit Runge-Kutta method RADAU (Hairer and Wanner 2010). The package contains also a de novo implementation of several Runge-Kutta methods (Butcher 1987; Press et al. 1992; Hairer, Norsett, and Wanner 2009).
+
+** DONE calculate precession and obliquity/tilt based on values for \(E_{d}\) and \(T_{d}\)
+CLOSED: [2023-03-29 Wed 14:09]
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+** DONE what are the parameters that are needed for the differential equations?
+CLOSED: [2023-03-29 Wed 12:01]
+:PROPERTIES:
+:CREATED:  [2023-03-24 Fri 13:54]
+:END:
+** DONE reproduce their C-implementation that uses an input
+CLOSED: [2023-04-06 Thu 16:33]
+:PROPERTIES:
+:CREATED:  [2023-03-30 Thu 11:30]
+:END:
+[[file:imgs/~/Downloads/compiledCode.pdf::25]]
+
+#+begin_src R
+  library(deSolve)
+  SPCmod <- function(t, x, parms, input) {
+    with(as.list(c(parms, x)), {
+      import <- input(t)
+      dS <- import - b * S * P + g * C # subtrate
+      dP <- c * S * P - d * C * P      # producer
+      dC <- e * P * C - f * C          # consumer
+      res <- c(dS, dP, dC)
+      list(res, signal = import)
+    })
+  }
+
+  parms <- c(b = .1, c = .1, d = .1, e = .1, f = .1, g = 0)
+
+  times <- seq(0, 100, .1)
+  signal <- as.data.frame(list(times = times,
+                               import = rep(0, length(times))))
+  signal$import <- ifelse((trunc(signal$times) %% 2 == 0), 0, 1)
+  sigimp <- approxfun(signal$times, signal$import, rule = 2)
+
+  xstart <- c(S = 1, P = 1, C = 1)
+  print(system.time(
+    out <- ode(y = xstart, times = times,
+               func = SPCmod, parms, input = sigimp)
+  ))
+  plot(out)
+#+end_src
+* [5/9] snvecR /works/                                        :prj:
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 14:52]
+:END:
+
+** compare c and R output
+:PROPERTIES:
+:CREATED:  [2023-03-31 Fri 10:24]
+:END:
+**** calculate snvec using the latest function
+:PROPERTIES:
+:CREATED:  [2023-04-10 Mon 10:24]
+:END:
+#+begin_src R
+  fin <- snvec(-1e5, 1, 0)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+[1m[22mIntegration parameters:
+[36m•[39m `tend` = -1e+05 kyr
+[36m•[39m `ed` = 1
+[36m•[39m `td` = 0
+[36m•[39m `orbital_solution` = "ZB18a"
+[36m•[39m `tres` = 0.4 kyr
+[36m•[39m `tolerance` = 1e-07
+[36mℹ[39m started at "2023-04-10 10:25:22"
+[1m[22mFinal values:
+[36m•[39m s[1][2][3]: -0.181186234717299 0.377666080230894 0.902100420308931
+[36m•[39m s-error = |s|-1: -0.00539189218589675
+[1m[22mFinal values:
+[36m•[39m obliquity: 0.389933827834007 rad
+[36m•[39m precession: 1.96689170415452 rad
+[36mℹ[39m stopped at "2023-04-10 10:27:19"
+[36mℹ[39m total duration: 117s (~1.95 minutes)
+#+end_example
+
+#+begin_src R
+  write_rds(fin, "out/2023-04-10_unwrap-fix.rds")
+#+end_src
+
+#+RESULTS:
+
+**** read in previous runs
+#+begin_src R
+  tol_1e07 <- read_rds("out/2023-04-04_normtol_1e-7.rds") |>
+    mutate(tol = 1e-07) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  tol_1e10 <- read_rds("out/2023-04-04_lowtol.rds") |>
+    mutate(tol = 1e-10) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  tol_1e12 <- read_rds("out/2023-04-04_superlowtol_1e-12.rds") |>
+    mutate(tol = 1e-12) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+  tol_1e03 <- read_rds("out/2023-04-05_hightol_1e-3.rds") |>
+    mutate(tol = 1e-03) |>
+    mutate(across(c(time, sx, sy, sz, age, epl), as.numeric))
+#+end_src
+
+#+RESULTS:
+**** create plot
+#+begin_src R
+  ## pl_both_young
+  pl_both <- pl_ref +
+    geom_line(aes(x = time / KY2D, colour = "Ilja-R"),
+              ## linetype = "dashed",
+              data = fin |>
+                select(time, tmp, epl, phi, cp) |>
+                mutate(epl = as.double(epl)) |>
+                pivot_longer(cols = c(epl, phi, cp)))
+  pl_both_young <- pl_both + xlim(c(-1e3, 0))
+  pl_both_mid <- pl_both + xlim(c(-6.6e4, -6.5e4))
+  pl_both_old <- pl_both + xlim(c(-1e5, -9.9e4))
+#+end_src
+
+#+RESULTS:
+: [1m[22mScale for [32mx[39m is already present.
+: Adding another scale for [32mx[39m, which will replace the existing scale.
+: [1m[22mScale for [32mx[39m is already present.
+: Adding another scale for [32mx[39m, which will replace the existing scale.
+: [1m[22mScale for [32mx[39m is already present.
+: Adding another scale for [32mx[39m, which will replace the existing scale.
+
+#+begin_src R :results output graphics file :file imgs/compare_c-R.png :width 700
+  ## pl_both_young
+  ## pl_both_mid
+  pl_both_old
+#+end_src
+
+#+RESULTS:
+[[file:imgs/compare_c-R.png]]
+**** interpolate C-output onto R grid and calculate differences
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 13:41]
+:END:
+#+begin_src R
+  comp <- #bind_rows(
+    # combine all tolerance experiments
+    ## tol_1e03,
+    ## tol_1e07,
+    ## tol_1e10,
+    ## tol_1e12
+  ## ) |>
+    fin |>
+      mutate(across(c(time, sx, sy, sz, age, epl), as.numeric)) |>
+    mutate(
+      # add the interpolated C-output
+      C_epl = approxdat(snv_out, epl)(-age),
+      C_phi = approxdat(snv_out, phi)(-age),
+      C_cp = approxdat(snv_out, cp)(-age),
+      ) |>
+    mutate(
+      # calculate differences
+      epl_diff = epl - C_epl,
+      phi_diff = phi - C_phi,
+      cp_diff = cp - C_cp,
+      # calculate difference as a fraction of the max value
+      epl_pc = epl_diff / max(epl),
+      phi_pc = phi_diff / max(phi),
+      cp_pc = cp_diff / max(cp)
+    )
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
+  # this is just to make the tickmarks and grid breaks different for each facet
+  breaks_fun <- function(x, big = TRUE) {
+    if (max(x) > 6.2) { # phi_diff
+        out <- seq(-3, 6, 3)
+    } else if (max(x) > 0.04) { # cp_diff
+        out <- seq(-0.060, 0.060, 0.03)
+    } else if (max(x) > 0.015) { # epl_diff
+        out <- seq(-0.02, 0.02, 0.01)
+    }
+    if (!big) {
+      out <- seq(min(out),max(out), diff(out)[1]/10)
+    }
+    out
+  }
+
+  # create the combined plot
+  pl_diff <- comp |>
+    # absolute diffs
+    pivot_longer(ends_with("_diff")) |>
+    # diff / max(x)
+    ## mutate(epl_pc = as.double(epl_pc)) |>
+    ## pivot_longer(ends_with("_pc")) |>
+    ggplot(aes(x = age / 1e3, y = value## , col = factor(tol)
+               )) +
+    geom_line() +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    labs(y = "R - C") +
+    scale_y_continuous(breaks = breaks_fun, minor_breaks= ~breaks_fun(.x, FALSE))
+    ## scale_y_continuous(breaks = seq(0,100,1), minor_breaks=seq(-100,100,0.1))
+
+  # create zoom-ins on the youngest, oldest, and Cretaceous 1 kyr
+  pl_diff_old <- pl_diff + xlim(c(100, 99))
+  pl_diff_mid <- pl_diff + xlim(c(66, 65))
+  pl_diff_young <- pl_diff + xlim(c(1, 0))
+  #+end_src
+
+  #+RESULTS:
+
+then render those 1 kyr
+  #+begin_src R :results output graphics file :file imgs/compare_c-R-diff.png :width 700
+    ## pl_diff_young
+    pl_diff_mid
+    ## pl_diff_old
+#+end_src
+
+#+RESULTS:
+[[file:imgs/compare_c-R-diff.png]]
+
+#+begin_src R :results output graphics file :file imgs/compare_c-R-diff_hist.png :width 900
+  comp |>
+    pivot_longer(ends_with("_diff")) |>
+    ggplot(aes(x = abs(value), fill = factor(tol))) +
+    ## geom_density(alpha = .3) +
+    ## geom_histogram(alpha = .3) +
+    ## stat_summary(aes(y = 0), fun = mean_cl_normal) +
+    ## ggridges::geom_density_ridges() +
+    ggdist::stat_halfeye(aes(group = factor(tol),
+                             ## colour = factor(tol)
+                             ),
+                         position = "dodge",
+                         alpha = .4) +
+    scale_x_sqrt() +
+    ## scale_x_log10() +
+    facet_grid(#rows = vars(factor(tol)),
+               cols = vars(name),
+               scales = "free", space = "free_y") +
+    coord_cartesian(ylim = c(-.5, .6)) +
+    theme(axis.title.y = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.y = element_blank()) +
+    labs(fill = "Tolerance",
+         x = "abs(diff) (note sqrt transform)")
+#+end_src
+
+#+RESULTS:
+[[file:imgs/compare_c-R-diff_hist.png]]
+
+#+begin_src R :results output graphics file :file imgs/compare_c-R-full_1e-10.png :width 1920 :height 1080
+  library(patchwork)
+  pl_both /
+   (pl_both_old + pl_both_mid + pl_both_young) /
+  pl_diff /
+   (pl_diff_old + pl_diff_mid + pl_diff_young)
+#+end_src
+
+#+RESULTS:
+[[file:imgs/compare_c-R-full.png]]
 ** DONE make the R routine visually return the same spin vector as the C routine
 CLOSED: [2023-04-04 Tue 09:27]
 ** WAIT [1/1] make the R routine return machine precision close to identical results to the C routine
@@ -28,7 +588,12 @@ CLOSED: [2023-04-04 Tue 09:27]
 - [X] calculate the difference
 - [X] plot the difference
 - [X] do the same for the full solar system solution
-*** DONE now do the long run but with a lower tolerance
+**** DONE fix the unwrap function
+CLOSED: [2023-04-10 Mon 10:36]
+:PROPERTIES:
+:CREATED:  [2023-04-10 Mon 09:39]
+:END:
+** DONE now do the long run but with a lower tolerance
 CLOSED: [2023-04-05 Wed 13:47]
 **** 1e-10
 #+begin_src R
@@ -272,6 +837,15 @@ CLOSED: [2023-04-05 Wed 15:55]
 #+RESULTS:
 [[file:imgs/2023-04-05_experimental-grid_full_bin.png]]
 
+*** NEXT migrate this to a vignette
+
+*** SOME share the computed output grids
+:PROPERTIES:
+:CREATED:  [2023-03-23 Thu 11:46]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-03-24 Fri 13:59]
+:END:
 ** SOME visualize results: a heat map?
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
@@ -280,69 +854,201 @@ CLOSED: [2023-04-05 Wed 15:55]
 - State "SOME"       from "NEXT"       [2023-04-05 Wed 15:55]
 :END:
 for that I'd need to have the difference function with a record
-** SOME make the La2011 solution obl + precession available?
+*** NEXT make the text of my plots bigger for Richard
 :PROPERTIES:
-:CREATED:  [2023-04-04 Tue 10:35]
+:CREATED:  [2023-04-05 Wed 20:19]
 :END:
-:LOGBOOK:
-- State "SOME"       from "NEXT"       [2023-04-04 Tue 10:36]
-:END:
-but NOT the 2004 solutions! divergence times at ~40 Ma with 2011 or ZB18a
-** SOME check out the Wu paper / acycle
-:PROPERTIES:
-:CREATED:  [2023-04-04 Tue 10:37]
-:END:
-:LOGBOOK:
-- State "SOME"       from "NEXT"       [2023-04-04 Tue 10:39]
-:END:
-they apply the Laskar fortran routine from 92/93 to calculate precession/obliquity for the La2011 but that's in the ecliptic reference plane rather than the intertial reference frame.
-** SOME add a progress bar
+
+** CANC add a progress bar
+CLOSED: [2023-04-06 Thu 14:35]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:23]
 :END:
 :LOGBOOK:
+- State "CANC"       from "SOME"       [2023-04-06 Thu 14:35]
 - State "SOME"       from              [2023-04-04 Tue 18:23]
 :END:
 https://github.com/r-lib/progress#readme
-** DONE document all function parameters correctly
+this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
+* [19/28] snvecR is published on CRAN, github, zenodo
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 09:27]
+:END:
+** DONE double-check if we like the name
+CLOSED: [2023-04-06 Thu 16:41]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:41]
+:END:
+#+begin_src R
+available::available("snvecR")
+#+end_src
+
+#+RESULTS:
+#+begin_example
+── snvecR ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Name valid: ✔
+Available on CRAN: ✔
+Available on Bioconductor: ✔
+Available on GitHub:  ✔
+Abbreviations: http://www.abbreviations.com/snvec
+Wikipedia: https://en.wikipedia.org/wiki/snvec
+Wiktionary: https://en.wiktionary.org/wiki/snvec
+Sentiment:???
+#+end_example
+** DONE [0/0] write good documentation                  :prj:
+CLOSED: [2023-04-06 Thu 16:37]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 14:51]
+:END:
+*** DONE document all function parameters correctly
 CLOSED: [2023-04-05 Wed 13:45]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:45]
 :END:
 https://style.tidyverse.org/documentation.html#documenting-parameters
-** DONE add return docs to each function
-CLOSED: [2023-04-05 Wed 13:45]
-:PROPERTIES:
-:CREATED:  [2023-04-04 Tue 18:46]
-:END:
-** SOME make it possible for snvec to write to file
-:LOGBOOK:
-- State "SOME"       from              [2023-04-05 Wed 13:20]
-:END:
-add a file = NULL argument
-at the end
-#+begin_src R :eval never :tangle no
-if(!is.null(file)) { readr::write_rds(fin, file = file) }
-#+end_src
-** docs tips from pkgs
-:PROPERTIES:
-:CREATED:  [2023-04-04 Tue 18:48]
-:END:
-https://r-pkgs.org/man.html
-** DONE write nice error messages in the tidyverse style
+*** DONE write nice error messages in the tidyverse style
 CLOSED: [2023-04-05 Wed 12:27]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:44]
 :END:
 https://style.tidyverse.org/error-messages.html
 and info messages
-** NEXT [#B] fix unwrap tests
+*** docs tips from pkgs
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:48]
+:END:
+https://r-pkgs.org/man.html
+*** DONE add return docs to each function
+CLOSED: [2023-04-05 Wed 13:45]
+:PROPERTIES:
+:CREATED:  [2023-04-04 Tue 18:46]
+:END:
+** DONE [3/3] make a good README rmd -> md file
+CLOSED: [2023-04-06 Thu 16:37]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:14]
+:END:
+*** DONE I've just done use_readme_rmd and filled out the basics
+CLOSED: [2023-04-06 Thu 16:14]
+#+begin_src R
+  usethis::use_readme_rmd()
+#+end_src
+*** DONE reander to md
+CLOSED: [2023-04-06 Thu 16:15]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:14]
+:END:
+#+begin_src R
+  devtools::build_readme()
+#+end_src
+*** DONE use badges
+CLOSED: [2023-04-06 Thu 16:19]
+#+begin_src R
+  usethis::use_cran_badge()
+#+end_src
+** DONE [0/0] add github actions
+CLOSED: [2023-04-06 Thu 16:37]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:19]
+:END:
+#+begin_src R
+  use_github_action("check-standard")
+#+end_src
+
+#+RESULTS:
+: [32m✔[39m Creating [34m'.github/'[39m
+: [32m✔[39m Adding [34m'^\\.github$'[39m to [34m'.Rbuildignore'[39m
+: [32m✔[39m Adding [34m'*.html'[39m to [34m'.github/.gitignore'[39m
+: [32m✔[39m Creating [34m'.github/workflows/'[39m
+: [32m✔[39m Saving [34m'r-lib/actions/examples/check-standard.yaml@v2'[39m to [34m'.github/workflows/check-standard.yaml'[39m
+: [31m•[39m Learn more at <https://github.com/r-lib/actions/blob/v2/examples/README.md>.
+
+learn more at
+https://github.com/r-lib/actions/blob/v2/examples/README.md
+** [5/8] write tests for each component                     :prj:
+*** DONE test qinterp
+CLOSED: [2023-04-06 Thu 16:38]
+*** DONE tests euler
+CLOSED: [2023-04-06 Thu 16:38]
+*** DONE [#B] fix unwrap tests
+CLOSED: [2023-04-10 Mon 10:44]
 :PROPERTIES:
 :CREATED:  [2023-04-05 Wed 13:45]
 :END:
 [[file:tests/testthat/test-unwrap.R]]
+**** DONE change the test inputs to only vary between -180 and +180
+CLOSED: [2023-04-10 Mon 09:42]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:42]
+:END:
+- find the indices in lan where it flips: there happens to be one super early!
+#+begin_src R
+  ZB18a |>
+    slice(1:5) |>
+    ggplot(aes(seq_len(5), y = lan)) +
+    geom_line()
+#+end_src
 
-** DONE move the code out of here for reals -> pkg structure is single source of truth
+#+RESULTS:
+
+- in the C-routine
+**** DONE [#A] compare unwrap to C output
+CLOSED: [2023-04-10 Mon 10:44]
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 18:30]
+:END:
+it's NOT THE FUCKING SAME!!!
+#+begin_src R
+  wrap <- read_table("snvec-3.7.5/out-wrap.dat",
+             col_names = c("time", "lphu", "lanu", "X")) |>
+    select(-X)
+
+  min(wrap$time)
+#+end_src
+
+#+RESULTS:
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+: cols(
+:   time = [32mcol_double()[39m,
+:   lphu = [32mcol_double()[39m,
+:   lanu = [32mcol_double()[39m,
+:   X = [33mcol_logical()[39m
+: )
+: [1] -1e+05
+
+#+begin_src R
+  ZB18a |>
+    mutate(lanu = unwrap(lan)) |>
+    ggplot(aes(x = -age, y = lan)) +
+    geom_line() +
+    geom_line(aes(x = time, y = lanu, colour = "Richard-C"), data = wrap) +
+    geom_line(aes(x = -age, y = lanu, colour = "Ilja-R")) +
+    xlim(c(-1e3, 0))
+#+end_src
+
+#+RESULTS:
+: Warning messages:
+: 1: [1m[22mRemoved 247500 rows containing missing values (`geom_line()`).
+: 2: [1m[22mRemoved 246755 rows containing missing values (`geom_line()`).
+: 3: [1m[22mRemoved 247500 rows containing missing values (`geom_line()`).
+
+it's still super different! :O am I resolving it on tmv = the output time scale in stead of the solution time scale? does it depend on Ed Td somehow?
+
+
+*** NEXT [0/2] write test for snvec itself
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:38]
+:END:
+**** SOME returns errors with wrong inputs?
+:LOGBOOK:
+- State "SOME"       from              [2023-04-06 Thu 16:38]
+:END:
+**** NEXT test correct outputs
+:PROPERTIES:
+:CREATED:  [2023-04-06 Thu 16:39]
+:END:
+** DONE move the code out of README.org for reals -> pkg structure is single source of truth
 CLOSED: [2023-04-05 Wed 20:19]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 18:49]
