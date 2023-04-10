@@ -221,23 +221,21 @@ of the stepper routine to be used.
 **** read in the raw spin vector s
 the raw spin vector s, added as something that we write to file myself (not sure if correct!)
 #+begin_src R
-  snv_sout <- read_table("snvec-3.7.5/s-out.dat",
-                        col_names = c("time", "sx", "sy", "sz", "x")) |>
-    # this is because there's some whitespace there?
-    # note that t is in tmv / KY2D = in kyr
-    select(-x)
+  snv_sout <- read_fwf("snvec-3.7.5/s-out.dat",
+                     col_positions = fwf_empty("snvec-3.7.5/s-out.dat",
+                                               col_names = c("time", "sx", "sy", "sz", "x")))
 #+end_src
 
 #+RESULTS:
+: [1mindexing[0m [34ms-out.dat[0m [---------------------------------------------------------------------------------------------------------------------------] [32m0B/s[0m, eta: [36m?s[0m[1mindexing[0m [34ms-out.dat[0m [====================================================================================================================] [32m615.86MB/s[0m, eta: [36m 0s[0m                                                                                                                                                                                                 [1mRows: [22m[34m2523[39m [1mColumns: [22m[34m4[39m
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
 :
-: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────[39m
-: cols(
-:   time = [32mcol_double()[39m,
-:   sx = [32mcol_double()[39m,
-:   sy = [32mcol_double()[39m,
-:   sz = [32mcol_double()[39m,
-:   x = [33mcol_logical()[39m
-: )
+: [32mdbl[39m (4): time, sx, sy, sz
+:
+: [36mℹ[39m Use `spec()` to retrieve the full column specification for this data.
+: [36mℹ[39m Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+note that I switched from read_table to read_fwf because it can strip whitespace also at the end of the final column
 
 **** plot the raw spin vector s
 #+begin_src R :results output graphics file :file imgs/c-output_s.png :width 700
@@ -258,11 +256,9 @@ the raw spin vector s, added as something that we write to file myself (not sure
 
 **** [#A] read the final eccentricity, phi, precession
 #+begin_src R :results none
-  snv_out <- read_table("snvec-3.7.5/out.dat",
-                        col_names = c("t", "epl", "phi", "cp", "x")) |>
-    # this is because there's some whitespace there?
-    # note that t is in tmv / KY2D = in kyr
-    select(-x)
+  snv_out <- read_fwf("snvec-3.7.5/out.dat",
+                     col_positions = fwf_empty("snvec-3.7.5/out.dat",
+                                               col_names = c("t", "epl", "phi", "cp", "x")))
 #+end_src
 
 **** plot the final eccentricity, phi, precession
@@ -1075,9 +1071,9 @@ CLOSED: [2023-04-10 Mon 10:44]
 :END:
 it's NOT THE FUCKING SAME!!!
 #+begin_src R
-  wrap <- read_table("snvec-3.7.5/out-wrap.dat",
-             col_names = c("time", "lphu", "lanu", "X")) |>
-    select(-X)
+  wrap <- read_fwf("snvec-3.7.5/out-wrap.dat",
+                   col_positions = fwf_empty("snvec-3.7.5/out-wrap.dat",
+                                             col_names = c("time", "lphu", "lanu")))
 
   min(wrap$time)
 #+end_src
