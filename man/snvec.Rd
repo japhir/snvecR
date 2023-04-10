@@ -2,7 +2,7 @@
 % Please edit documentation in R/snvec.R
 \name{snvec}
 \alias{snvec}
-\title{Calculate climatic precession and obliquity from OS, Td, and Ed.}
+\title{Calculate precession and obliquity from an OS, Td, and Ed.}
 \usage{
 snvec(
   tend = -1000,
@@ -15,30 +15,52 @@ snvec(
 )
 }
 \arguments{
-\item{tend}{The final timestep in -kyr. Defaults to \code{-1000} years.}
+\item{tend}{The final timestep in -kyr. Defaults to \code{-1000} kyr.}
 
-\item{ed}{Dynamical ellipticity. Defaults to \code{1.0}.}
+\item{ed}{Dynamical ellipticity, normalized to modern. Defaults to \code{1.0}.}
 
-\item{td}{Tidal dissipation. Defaults to \code{0.0}.}
+\item{td}{Tidal dissipation, normalized to modern. Defaults to \code{0.0}.}
 
-\item{orbital_solution}{The orbital solution to use. See details.}
+\item{orbital_solution}{Character vector with the name of the orbital
+solution to use. One of \code{"ZB18a"} (default) or \code{"La11"} (not yet
+implemented!).}
 
 \item{tres}{The output timestep resolution in kyr. Defaults to \code{0.4}.}
 
-\item{tolerance}{The numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol} and \code{atol}.}
+\item{tolerance}{The numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol}
+and \code{atol} arguments. Defaults to 1e-7.}
 
-\item{quiet}{If quiet, do not print info messages.}
+\item{quiet}{Be quiet?
+If \code{TRUE}, hide info messages.
+If \code{FALSE} (the default) print info messages and timing.}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with all the computed results.
+A \link[tibble:tibble-package]{tibble} with all the computed results (see Details).
 }
 \description{
-Computes precession and tilt/obliquity from an astronomical solution input
-and parameter values for dynamical ellipticity and tidal dissipation.
-It fits a set of ordinary differential equations.
+Computes climatic precession and obliquity (or tilt) from an orbital
+solution (OS) input and input values for dynamical ellipticity (Ed) and
+tidal dissipation (Td). It fits a set of ordinary differential equations.
 }
 \details{
-Currently only the "ZB18a" orbital solution is supported.
+The output is a \link[tibble:tibble-package]{tibble} with the following columns:
+\itemize{
+\item \code{time}
+\item \code{sx}, \code{sy}, \code{sz}
+\item \code{age}
+\item \code{nnx}, \code{nny}, \code{nnz}
+\item \code{eei}
+\item \code{inci}
+\item \code{lphi}
+\item \code{lani}
+\item \code{tmp}
+\item \code{epl}
+\item \code{u}
+\item \code{nv} Vector
+\item \code{up} Vector u', projected to xxx.
+\item \code{phi} The xxx.
+\item \code{cp} Climatic precession.
+}
 }
 \examples{
 # default call
@@ -46,7 +68,17 @@ snvec()
 
 # a quick one with few timesteps, low resolution, high tolerance
 snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
+}
+\references{
+Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’
+Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to
+Solar System Chaos. \emph{The Astronomical Journal}, 164(3), 107.
+\url{https://doi.org/10.3847/1538-3881/ac80f8}
 
+Wikipedia page on Orbital Elements: \url{https://en.wikipedia.org/wiki/Orbital_elements}
+}
+\seealso{
+\code{\link[deSolve:ode]{deSolve::ode()}} for the ODE solver that we use.
 }
 \author{
 Ilja J. Kocken and Richard E. Zeebe

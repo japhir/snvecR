@@ -3,7 +3,11 @@ bibentry(
   header = "To cite snvecR in publications use:",
   key = "KockenZeebe2023",
   title = "snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed",
-  ## author = "Kocken, Ilja J. and Zeebe, Richard E.",
+  author = c(person("Ilja", "Kocken", , "ikocken@hawaii.edu", role = c("aut", "cre"),
+                    comment = c(ORCID = "0000-0003-2196-8718")),
+             person("Richard", "Zeebe", , "zeebe@hawaii.edu", role = c("aut"),
+                    comment = c(ORCID = "0000-0003-0806-8387"))
+             ),
   journal = "CRAN / JOSS??",
   year = "2023",
   ## volume = {n/a},

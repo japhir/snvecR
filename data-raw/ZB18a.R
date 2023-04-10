@@ -89,11 +89,14 @@ dat <- dat |>
   )
 
 ## save the data
-
+# we want the object to have the correct name
 ZB18a <- dat
+
 usethis::use_data(ZB18a,
   overwrite = TRUE, version = 3,
   ## compress = "bzip2" # 13M
   ## compress = "gzip" # 14M
   compress = "xz" # 12M
 )
+
+rm(dat)

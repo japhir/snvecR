@@ -4,18 +4,51 @@
 #' solution (OS) input and input values for dynamical ellipticity (Ed) and
 #' tidal dissipation (Td). It fits a set of ordinary differential equations.
 #'
-#' @param tend The final timestep in -kyr. Defaults to `-1000` years.
-#' @param ed Dynamical ellipticity. Defaults to `1.0`.
-#' @param td Tidal dissipation. Defaults to `0.0`.
-#' @param orbital_solution The orbital solution to use. See details.
+#' @param tend The final timestep in -kyr. Defaults to `-1000` kyr.
+#' @param ed Dynamical ellipticity, normalized to modern. Defaults to `1.0`.
+#' @param td Tidal dissipation, normalized to modern. Defaults to `0.0`.
+#' @param orbital_solution Character vector with the name of the orbital
+#'   solution to use. One of `"ZB18a"` (default) or `"La11"` (not yet
+#'   implemented!).
 #' @param tres The output timestep resolution in kyr. Defaults to `0.4`.
-#' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol` and `atol`.
-#' @param quiet If quiet, do not print info messages.
-#' @returns A [tibble][tibble::tibble-package] with all the computed results.
+#' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol`
+#'   and `atol` arguments. Defaults to 1e-7.
+#' @param quiet Be quiet?
+#'   If `TRUE`, hide info messages.
+#'   If `FALSE` (the default) print info messages and timing.
+#' @returns A [tibble][tibble::tibble-package] with all the computed results (see Details).
 #'
 #' @author Ilja J. Kocken and Richard E. Zeebe
 #'
-#' @details Currently only the "ZB18a" orbital solution is supported.
+#' @details
+#' The output is a [tibble][tibble::tibble-package] with the following columns:
+#'   * `time`
+#'   * `sx`, `sy`, `sz`
+#'   * `age`
+#'   * `nnx`, `nny`, `nnz`
+#'   * `eei`
+#'   * `inci`
+#'   * `lphi`
+#'   * `lani`
+#'   * `tmp`
+#'   * `epl`
+#'   * `u`
+#'   * `nv` Vector
+#'   * `up` Vector u', projected to xxx.
+#'   * `phi` The xxx.
+#'   * `cp` Climatic precession.
+#'
+#' @seealso
+#'   [deSolve::ode()] for the ODE solver that we use.
+#'
+#' @references
+#'
+#' Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’
+#'   Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to
+#'   Solar System Chaos. _The Astronomical Journal_, 164(3), 107.
+#'   <https://doi.org/10.3847/1538-3881/ac80f8>
+#'
+#' Wikipedia page on Orbital Elements: <https://en.wikipedia.org/wiki/Orbital_elements>
 #'
 #' @examples
 #' # default call
@@ -23,12 +56,7 @@
 #'
 #' # a quick one with few timesteps, low resolution, high tolerance
 #' snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
-#'
 #' @export
-#' @references Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’
-#'   Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to
-#'   Solar System Chaos. _The Astronomical Journal_, 164(3), 107.
-#'   <https://doi.org/10.3847/1538-3881/ac80f8>
 snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
@@ -37,24 +65,23 @@ snvec <- function(tend = -1e3,
                   tolerance = 1e-7,
                   quiet = FALSE) {
   ## select the desired orbital solution
-
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {
     cli::cli_abort(c("{.var orbital_solution} must be one of: {.or {.q {solutions}}}",
       "x" = "You've supplied {.q {orbital_solution}}"
     ))
   }
+  if (orbital_solution == "ZB18a") {
+    dat <- snvecR::ZB18a
+  }
   if (orbital_solution == "La11") {
+    ## dat <- snvecR::La11
     cli::cli_abort(c("Orbital solution: La11 currently not supported.",
       "i" = "Pull requests welcome."
     ))
   }
-  if (orbital_solution == "ZB18a") {
-    dat <- snvecR::ZB18a
-  }
 
   ## tend
-
   if (tend >= 0) {
     cli::cli_abort(c("{.var tend} must be < 0",
       "x" = "You've supplied {tend}"
@@ -68,19 +95,16 @@ snvec <- function(tend = -1e3,
 
   ## tres
   ## a quick dumb input test for now
-
-  if (abs(tres) < tend) {
-    cli::cli_abort(c("|{.var tres}| must be < {.var tend}.",
+  if (tres < tend) {
+    cli::cli_abort(c("{.var tres} must be < {.var tend}.",
       "i" = "{.var tres} = {tres}",
       "i" = "{.var tend} = {tend}"
     ))
   }
 
-  ## message user about inputs
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-28 Tue 13:31]
-  ## :END:
+  # ed, td, tolerance?
 
+  # message user about inputs
   if (!quiet) {
     startdate <- lubridate::now()
     cli::cli_inform(c(
@@ -99,10 +123,6 @@ snvec <- function(tend = -1e3,
   }
 
   ## calculate global vars ndn, wdw, k0d from Td and Ed
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-24 Fri 14:40]
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
   ## [[file:snvec-3.7.5/snvec-3.7.5.c::=== fedtd() ][fedtd()]]
 
   # as a function of ed, td
@@ -114,14 +134,9 @@ snvec <- function(tend = -1e3,
   dts <- dat$t[2] - dat$t[1] # difference in time
 
   ## initial values for the spin vector s
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-24 Fri 14:04]
-  ## :END:
-  ## [[file:snvec-3.7.5/snvec-3.7.5.c::=== finits() ][finits()]]
+  ## [[file:snvec-3.7.5/snvec-3.7.5.c::=== finits()][finits()]]
 
   ## use finits to get initial conditions in transformed ECLIPJ2000
-
-
   omt <- OMT / R2D
   inct <- INCT / R2D
   ep0 <- EP0 / R2D
@@ -131,7 +146,7 @@ snvec <- function(tend = -1e3,
   # orbit normal at t=0
   ninit <- dat |>
     dplyr::filter(.data$t == 0) |>
-    dplyr::select(.data$nnx, .data$nny, .data$nnz) |>
+    dplyr::select(tidyselect::all_of(c("nnx", "nny", "nnz"))) |>
     as.matrix() |>
     as.vector()
 
@@ -153,7 +168,6 @@ snvec <- function(tend = -1e3,
   s0 <- euler(s0p, inct, omt, 0)
 
   ## set the deSolve state
-
   state <- c(
     sx = s0[1],
     sy = s0[2],
@@ -161,7 +175,6 @@ snvec <- function(tend = -1e3,
   )
 
   ## define deSolve parameters
-
   parameters <- c(
     ed = ed,
     td = td,
@@ -171,12 +184,7 @@ snvec <- function(tend = -1e3,
   )
 
   ## the differential equations
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-24 Fri 11:56]
-  ## :END:
-  ## see [[derivs]]
-
-
+  ## [[file:snvec-3.7.5/snvec-3.7.5.c::=== derivs() ][derivs()]]
   # derivatives. RHS of DEQs for spin vector s = y
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
@@ -222,16 +230,15 @@ snvec <- function(tend = -1e3,
 
   ## a linear sequence of steps
 
-  ## EPSLVR <- 1.e-7 # accuracy 1e-7 2.2e-7/8.5e-7 La
   times <- seq(0, tend * KY2D,
-    ## length.out = 2523L # the length of the C-output
-    by = -tres * KY2D # ~ the average diff in the C-output
-    # snv_sout$time |> diff() |> median() = 0.396013
+               ## length.out = 2523L # the length of the C-output
+               by = -tres * KY2D
+               # ~ tres = 0.4 is the average diff in the C-output
+               # snv_sout$time |> diff() |> median() = 0.396013
   )
 
   ## solve it
   ## [[file:snvec-3.7.5/snvec-3.7.5.c::%%% solver][odeint()]]
-
   ## print(system.time(
     ## microbenchmark::microbenchmark(
     out <- deSolve::ode(
@@ -248,20 +255,15 @@ snvec <- function(tend = -1e3,
       ## "daspk", # = very stiff
       # play around with machine precision: default is 1e-6
       ## rtol = 1e-5, atol = 1e-5 # rougher = faster?
-      rtol = tolerance, atol = tolerance # based on EPSLVR
+      rtol = tolerance, atol = tolerance # based on EPSLVR = 1e-7
       ## rtol = 1e-12, atol = 1e-12
     )
   ## ))
   ## )
 
   ## print the final values for s
-  ## :PROPERTIES:
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
-  ## do we mean the value at time == 0? -> no! It's going back from 0 to -time
-
+  ## This is at t = tend, it's going back from 0 to -time
   fin <- out[nrow(out), ]
-  ## fin <- out[1, ]
   u <- as.vector(c(fin[2], fin[3], fin[4]))
 
   if (!quiet) {
@@ -273,12 +275,7 @@ snvec <- function(tend = -1e3,
   }
 
   ## interpolate the orbital solution
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-29 Wed 12:04]
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
   ## back onto output timescale
-
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(
@@ -293,24 +290,14 @@ snvec <- function(tend = -1e3,
     )
 
   ## calculate obliquity
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-29 Wed 12:12]
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
-
   fin <- fin |>
-    # calculate the dotproduct, richard's vvdot
+    # calculate the dotproduct, Richard's vvdot
     dplyr::mutate(
       tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
       epl = acos(.data$tmp)
     )
 
   ## calculate precession and climatic precession
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-29 Wed 12:14]
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
-
   fin <- fin |>
     # for each row, NOTE this makes it very slow!!
     dplyr::rowwise() |>
@@ -338,11 +325,6 @@ snvec <- function(tend = -1e3,
     )
 
   ## message user about final values
-  ## :PROPERTIES:
-  ## :CREATED:  [2023-03-29 Wed 12:18]
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
-
   if (!quiet) {
     cli::cli_inform(
       c("Final values:",
@@ -353,11 +335,6 @@ snvec <- function(tend = -1e3,
       )
     )
   }
-
-  ## end of the function
-  ## :PROPERTIES:
-  ## :header-args:R: :tangle R/snvec.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-  ## :END:
 
   # return fin
   fin

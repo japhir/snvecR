@@ -4,9 +4,12 @@
 ^imgs/*
 ^out/*
 ^README.org$
-.*_org.archive$
+^TODO.org$
+.org_archive$
 ^deSolve.org$
 ^ltximg$
 ^snvec-julia.org$
 ^CITATION.cff$
 ^.*\.zenodo.json$
+^README\.Rmd$
+^\.github$

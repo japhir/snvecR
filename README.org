@@ -1,10 +1,3 @@
-#+TITLE: snvec-R
-#+AUTHOR: Ilja J. Kocken
-#+EMAIL: ikocken@hawaii.edu
-written by Ilja J. Kocken [[https://orcid.org/0000-0003-2196-8718][orcid:0000-0003-2196-8718]]
-
-#+PROPERTY: header-args:R  :session *R:snvec-R* :exports both :results output :eval no-export
-
 * snvec-R
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
@@ -34,19 +27,6 @@ University of Hawaii at Manoa
 Honolulu, HI 96822, USA
 email: zeebe@soest.hawaii.edu
 #+end_quote
-
-*** load libraries
-:PROPERTIES:
-:CREATED:  [2023-03-30 Thu 09:14]
-:END:
-#+begin_src R :results none
-  library(tidyverse)
-  # we use dplyr and ggplot2 mostly
-  library(deSolve)
-  # we use glue for info messages -> cli
-  # as well as lubridate
-  devtools::load_all()
-#+end_src
 
 *** SOME reduce dependencies
 :PROPERTIES:
