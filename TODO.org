@@ -916,9 +916,12 @@ they apply the Laskar fortran routine from 92/93 to calculate precession/obliqui
 *** DONE download the required files
 CLOSED: [2023-04-10 Mon 16:54]
 
-*** NEXT ask Richard which corresponds to mean longitude
+*** WAIT ask Richard which corresponds to mean longitude
 :PROPERTIES:
 :CREATED:  [2023-04-10 Mon 16:55]
+:END:
+:LOGBOOK:
+- State "WAIT"       from "NEXT"       [2023-04-10 Mon 17:48]
 :END:
 
 *** NEXT reverse engineer the parameters
@@ -1197,7 +1200,7 @@ CLOSED: [2023-04-06 Thu 14:35]
 :END:
 https://github.com/r-lib/progress#readme
 this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
-* [29/39] snvecR is /published/ on CRAN, github, zenodo       :prj:
+* [31/42] snvecR is /published/ on CRAN, github, zenodo       :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1387,7 +1390,7 @@ CLOSED: [2023-04-10 Mon 15:48]
 default error is good enough
 Error in !quiet : invalid argument type
 Error in if (!quiet) { : missing value where TRUE/FALSE needed
-**** DONE test correct outputs
+**** DONE test cached correct outputs
 CLOSED: [2023-04-10 Mon 14:24]
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:39]
@@ -1407,7 +1410,7 @@ CLOSED: [2023-04-05 Wed 20:19]
 - State "SOME"       from              [2023-04-04 Tue 18:49]
 :END:
 
-** [0/5] make the package citable
+** [0/7] make the package citable
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 14:22]
 :END:
@@ -1452,6 +1455,11 @@ email: zeebe@soest.hawaii.edu
 :CREATED:  [2023-04-10 Mon 12:10]
 :END:
 
+*** NEXT add a binderhub badge to load it into an interactive online RStudio environment
+:PROPERTIES:
+:CREATED:  [2023-04-10 Mon 17:49]
+:END:
+
 *** NEXT create zenodo integration -- get doi
 :PROPERTIES:
 :CREATED:  [2023-04-10 Mon 12:10]
@@ -1462,7 +1470,8 @@ email: zeebe@soest.hawaii.edu
 :CREATED:  [2023-04-10 Mon 12:10]
 :END:
 
-** [0/0] build the R package cleanly =devtools:check()=
+** DONE [0/0] build the R package cleanly =devtools:check()=
+CLOSED: [2023-04-10 Mon 17:49]
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 09:02]
 :END:
@@ -1487,7 +1496,7 @@ W  checking loading without being on the library search path
 
 I deleted =R_LIBS= from my [[file:~/.Renviron]]
 
-** [3/4] include the BIG dataset                            :prj:
+** [4/5] include the BIG dataset                            :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 14:33]
 :END:
@@ -1533,11 +1542,12 @@ You’ll have to experiment with different compression methods and make this dec
 CLOSED: [2023-04-06 Thu 14:59]
 xz is smallest, but still 12 MB
 
-*** is it useful to convert it to a matrix instead?
+*** CANC is it useful to convert it to a matrix instead?
+CLOSED: [2023-04-10 Mon 17:50]
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 15:45]
 :END:
-
+not really
 *** DONE ask Richard to host the textfile on his website
 CLOSED: [2023-04-10 Mon 10:44]
 :PROPERTIES:
@@ -1570,3 +1580,4 @@ put it in zzz.R
 :PROPERTIES:
 :CREATED:  [2023-04-10 Mon 12:09]
 :END:
+[[file:R/zzz.R]]
