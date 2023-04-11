@@ -423,7 +423,7 @@ CLOSED: [2023-04-06 Thu 16:33]
   ))
   plot(out)
 #+end_src
-* [9/15] snvecR /works/                                       :prj:
+* [10/18] snvecR /works/                                      :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 14:52]
 :END:
@@ -890,7 +890,7 @@ stopped at Tue Apr  4 23:06:35 2023
 
 rldpeace
 
-** NEXT make the La2011 solution obl + precession available?
+** NEXT [1/4] make the La2011 solution obl + precession available? :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 10:35]
 :END:
@@ -903,45 +903,31 @@ but NOT the 2004 solutions! divergence times at ~40 Ma with 2011 or ZB18a
 if I do, make sure to update the docs for snvec and parameter "orbital_solution"
 http://vo.imcce.fr/insola/earth/online/earth/earth.html
 
-from the README:
-http://vo.imcce.fr/insola/earth/online/earth/La2010/README.TXT
-#+begin_example
-The file La2010X_alkhqp3.dat and La2010X_alkhqp3L.dat contain t, a,l,k,h,q,p
-where t is  the time from J2000 (in kyr)
-a : semi-major axis
-l : mean longitude (expressed in radians)
-k : e  cos (varpi)
-h : e  sin (varpi)
-q : sin(i/2) cos (Omega)
-p : sin(i/2) sin (Omega)
-#+end_example
-
-http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010d_alkhqp3L.dat
-
-#+begin_src R
-  La11a <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010d_alkhqp3L.dat",
-                             col_names = c("t", "a", "l", "k","h", "q", "p")) |>
-#+end_src
-
-#+begin_src R
-  La11a <- La11a |>
-    # make consistent names with Zeebe approach
-    rename(aa = a,
-           ## lph = l, # mean longitude = LongPeriapse or LongAscendNode?
-           kk = k, hh = h, qq = q, pp = p)
-#+end_src
-
-#+RESULTS:
-
 *** SOME check out the Wu paper / acycle
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 10:37]
 :END:
 :LOGBOOK:
+- State "SOME"       from "SOME"       [2023-04-10 Mon 16:54]
 - State "SOME"       from "NEXT"       [2023-04-04 Tue 10:39]
 :END:
 they apply the Laskar fortran routine from 92/93 to calculate precession/obliquity for the La2011 but that's in the ecliptic reference plane rather than the intertial reference frame.
 
+*** DONE download the required files
+CLOSED: [2023-04-10 Mon 16:54]
+
+*** NEXT ask Richard which corresponds to mean longitude
+:PROPERTIES:
+:CREATED:  [2023-04-10 Mon 16:55]
+:END:
+
+*** NEXT reverse engineer the parameters
+:PROPERTIES:
+:CREATED:  [2023-04-10 Mon 16:54]
+:END:
+- [ ] lph
+- [ ] inc
+- [ ] lan
 ** SOME make it possible for snvec to write to file
 :LOGBOOK:
 - State "SOME"       from              [2023-04-05 Wed 13:20]
