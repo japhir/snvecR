@@ -285,13 +285,13 @@ snvec <- function(tend = -1e3,
     tibble::as_tibble() |>
     dplyr::mutate(
       age = -.data$time / KY2D,
-      nnx = approxdat(dat, .data$nnx)(.data$time),
-      nny = approxdat(dat, .data$nny)(.data$time),
-      nnz = approxdat(dat, .data$nnz)(.data$time),
-      eei = approxdat(dat, .data$ee)(.data$time),
-      inci = approxdat(dat, .data$inc)(.data$time),
-      lphi = approxdat(dat, .data$lphu)(.data$time),
-      lani = approxdat(dat, .data$lanu)(.data$time)
+      nnx = approxdat(dat, "nnx")(.data$time),
+      nny = approxdat(dat, "nny")(.data$time),
+      nnz = approxdat(dat, "nnz")(.data$time),
+      eei = approxdat(dat, "ee")(.data$time),
+      inci = approxdat(dat, "inc")(.data$time),
+      lphi = approxdat(dat, "lphu")(.data$time),
+      lani = approxdat(dat, "lanu")(.data$time)
     )
 
   ## calculate obliquity
