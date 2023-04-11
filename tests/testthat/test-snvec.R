@@ -5,6 +5,10 @@ test_that("snvecR inputs are checked", {
   expect_error(snvec(tend = 5))
   expect_error(snvec(tres = -5))
   expect_error(snvec(tres = -Inf))
+  expect_warning(snvec(ed = 1.5, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(ed = 0.9, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(td = 5, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(td = -2, tend = -1, tres = .5, quiet = TRUE))
 })
 
 test_that("snvecR basic call works", {

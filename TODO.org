@@ -1211,7 +1211,7 @@ CLOSED: [2023-04-06 Thu 14:35]
 :END:
 https://github.com/r-lib/progress#readme
 this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
-* [27/39] snvecR is /published/ on CRAN, github, zenodo       :prj:
+* [29/39] snvecR is /published/ on CRAN, github, zenodo       :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1314,7 +1314,7 @@ CLOSED: [2023-04-06 Thu 16:37]
 
 learn more at
 https://github.com/r-lib/actions/blob/v2/examples/README.md
-** [13/17] write tests for each component                   :prj:
+** [15/17] write tests for each component                   :prj:
 *** DONE test qinterp
 CLOSED: [2023-04-06 Thu 16:38]
 *** DONE tests euler
@@ -1370,11 +1370,11 @@ it's still super different! :O am I resolving it on tmv = the output time scale 
 ok I was reporting it as a function of tmv, not as the OS's timesteps.
 Ditched C's output of timesteps and pasted it back from the OS, now it's identical.
 
-*** NEXT [8/11] write test for snvec itself
+*** NEXT [10/11] write test for snvec itself
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:38]
 :END:
-**** [7/9] returns errors with wrong inputs?
+**** [9/9] returns errors with wrong inputs?
 :LOGBOOK:
 - State "DONE"       from "SOME"       [2023-04-10 Mon 15:44]
 - State "SOME"       from              [2023-04-06 Thu 16:38]
@@ -1390,8 +1390,10 @@ CLOSED: [2023-04-10 Mon 15:45]
 CLOSED: [2023-04-10 Mon 15:45]
 ***** DONE tres > 0
 CLOSED: [2023-04-10 Mon 15:46]
-***** NEXT ed 0--1
-***** NEXT td 0--1
+***** DONE ed range
+CLOSED: [2023-04-10 Mon 16:17]
+***** DONE td range
+CLOSED: [2023-04-10 Mon 16:17]
 ***** DONE tolerance somewhere between 1e-3 and 1e-12
 CLOSED: [2023-04-10 Mon 15:59]
 ***** CANC quiet = T or F
