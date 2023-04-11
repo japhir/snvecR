@@ -9,21 +9,39 @@
 # q : sin(i/2) cos (Omega)
 # p : sin(i/2) sin (Omega)
 
+
+# to get eccentricity we'll need a separate file:
+
+# The files La2010X_ecc3.dat and La2010X_ecc3L.dat  contain t, ecc
+# where t is  the time from J2000 (in kyr)  and ecc the Earth eccentricity
+
+# The step time is 5kyr in the La2010X_ecc3.dat.
+# The step time is 1kyr in the La2010X_ecc3L.dat.
+
+
 library(readr)
 library(snvecR) # for the unwrap function
 
-dat <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010d_alkhqp3L.dat",
+dat <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010a_alkhqp3L.dat",
                              col_names = c("t", "a", "l", "k","h", "q", "p"))
 
+ecc <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010a_ecc3L.dat",
+                             col_names = c("t", "ecc"))
+
+
 dplyr::glimpse(dat)
+dplyr::glimpse(ecc)
 
 ## rename some of the names in dat
 ## to make the naming consistent with the C code
 dat <- dat |>
+  dplyr::left_join(ecc) |>
   tidylog::rename(
     t = t,
     aa = a,
-    ## ee = e, # NOT AVAILABLE in this one!
+    ee = ecc,
+    # not available in this solution
+    # which one is the mean longitude?
     ## inc = Inclination,
     ## lph = LongPeriapse,
     ## lan = LongAscendNode,
@@ -47,10 +65,14 @@ dplyr::glimpse(dat)
 dat <- dat |>
   dplyr::mutate(age = -t / KY2D, .after = t) |>
   dplyr::mutate(
-    hh = ee * sin(lph / R2D),
-    kk = ee * cos(lph / R2D),
-    pp = 2 * sin(0.5 * inc / R2D) * sin(lan / R2D),
-    qq = 2 * sin(0.5 * inc / R2D) * cos(lan / R2D),
+    # reverse-engineer lph, lan, inc from khqp
+    lph = NA,
+    inc = NA,
+    lan = NA,
+    ## hh = ee * sin(lph / R2D),
+    ## kk = ee * cos(lph / R2D),
+    ## pp = 2 * sin(0.5 * inc / R2D) * sin(lan / R2D),
+    ## qq = 2 * sin(0.5 * inc / R2D) * cos(lan / R2D),
     cc = cos(inc / R2D),
     dd = cos(inc / R2D / 2),
     ## /* nn <- nvec(t): normal to orbit */
