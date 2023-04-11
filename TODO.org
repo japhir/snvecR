@@ -18,7 +18,84 @@ This file is here for personal use to keep track of progress, for interactive se
   # we use glue for info messages -> cli
   # as well as lubridate
   devtools::load_all()
+
+  dat <- ZB18a
 #+end_src
+
+* DONE analyze the orbital solution input
+CLOSED: [2023-04-10 Mon 15:37]
+:PROPERTIES:
+:CREATED:  [2023-03-29 Wed 14:20]
+:END:
+*** ee
+#+begin_src R :results output graphics file :file imgs/input_ee.png :width 700 :eval never
+  dat |>
+   ggplot(aes(x = age / 1e3, y = ee)) +
+   labs(x = "Age (Ma)", y = "Eccentricity") +
+   scale_x_reverse() +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:imgs/input_ee.png]]
+
+*** inc
+#+begin_src R :results output graphics file :file imgs/input_inc.png :width 700 :eval never
+  dat |>
+   ggplot(aes(x = age / 1e3, y = inc)) +
+   labs(x = "Age (Ma)", y = "Inclination") +
+   scale_x_reverse() +
+   geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:imgs/input_inc.png]]
+
+*** lph
+#+begin_src R :results output graphics file :file imgs/input_lph.png :width 700
+  dat |>
+   ggplot(aes(x = age / 1e3, y = lph)) +
+   labs(x = "Age (Ma)", y = "Long Periapse") +
+   scale_x_reverse() +
+   xlim(c(1, 0)) +
+   geom_line() +
+   geom_line(aes(y = unwrap(lph)), col = "red") +
+   coord_cartesian(ylim=c(-3.1e6,200))
+#+end_src
+
+#+RESULTS:
+[[file:imgs/input_lph.png]]
+
+*** lan
+#+begin_src R :results output graphics file :file imgs/input_lan.png :width 700
+  dat |>
+   ggplot(aes(x = age / 1e3, y = lan)) +
+   labs(x = "Age (Ma)", y = "Long Ascending Node") +
+   scale_x_reverse() +
+   xlim(c(1, 0)) +
+   geom_line() +
+   geom_line(aes(y = unwrap(lan)), col = "red") +
+   coord_cartesian(ylim=c(-2e4, 5))
+#+end_src
+
+#+RESULTS:
+[[file:imgs/input_lan.png]]
+
+*** h, k, p, q
+#+begin_src R :results output graphics file :file imgs/input_hkpq.png :width 700 :eval never
+  dat |>
+    select(age, hh, kk, pp, qq, cc, dd) |>
+    pivot_longer(hh:dd) |>
+    ggplot(aes(x = age / 1e3, y = value)) +
+    labs(x = "Age (Ma)") +
+    scale_x_reverse() +
+    xlim(c(1, 0)) +
+    facet_grid(rows = vars(name), scales = "free_y") +
+    geom_line()
+#+end_src
+
+#+RESULTS:
+[[file:imgs/input_hkpq.png]]
 
 * DONE understand the C-code
 CLOSED: [2023-04-06 Thu 14:54]
@@ -345,7 +422,7 @@ CLOSED: [2023-04-06 Thu 16:33]
   ))
   plot(out)
 #+end_src
-* [5/9] snvecR /works/                                        :prj:
+* [9/15] snvecR /works/                                       :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 14:52]
 :END:
@@ -570,6 +647,80 @@ then render those 1 kyr
 
 #+RESULTS:
 [[file:imgs/compare_c-R-full.png]]
+
+** DONE compare the C-output to the raw spin vector s
+CLOSED: [2023-04-10 Mon 15:41]
+
+*** DONE read in the raw spin vector s from the C-routine
+CLOSED: [2023-04-10 Mon 15:41]
+the raw spin vector s, added as something that we write to file myself (not sure if correct!)
+#+begin_src R
+  snv_sout <- read_table("snvec-3.7.5/s-out.dat",
+                        col_names = c("time", "sx", "sy", "sz", "x")) |>
+    # this is because there's some whitespace there?
+    # note that t is in tmv / KY2D = in kyr
+    select(-x)
+#+end_src
+
+#+RESULTS:
+:
+: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
+: cols(
+:   time = [32mcol_double()[39m,
+:   sx = [32mcol_double()[39m,
+:   sy = [32mcol_double()[39m,
+:   sz = [32mcol_double()[39m,
+:   x = [33mcol_logical()[39m
+: )
+
+*** DONE plot the spin vector s together with the C-routine for easy inspection
+CLOSED: [2023-04-10 Mon 15:41]
+#+begin_src R :results output graphics file :output graphics file :file imgs/2023-03-29_output.png :width 700
+  comb <- snv_sout |>
+    mutate(code = "C") |>
+    bind_rows(
+      out |>
+      as_tibble() |>
+      select(time, sx, sy, sz) |>
+      mutate(time = time / KY2D) |>
+      mutate(code = "R") |>
+      mutate(across(time:sz, as.numeric)))
+
+
+  pl_s <- comb |>
+    pivot_longer(cols = sx:sz) |>
+    ggplot(aes(x = time, y = value, colour = name, linetype = code)) +
+    geom_line() +
+    geom_point() +
+    annotate("rug",
+             y = c(0.404360548210294,
+                   -0.053622586775944,
+                   0.913026378223150),
+             sides = "l",
+             colour = scales::hue_pal()(3),
+             length = grid::unit(1, "cm"))
+  pl_s
+#+end_src
+
+#+RESULTS:
+[[file:imgs/2023-03-29_output.png]]
+
+**** SOME make a plot of the difference between the two
+:LOGBOOK:
+- State "SOME"       from              [2023-04-04 Tue 11:15]
+:END:
+but they're not on the same timesteps so that would be annoying...
+
+
+*** DONE make the figure interactive in the browser
+CLOSED: [2023-04-10 Mon 15:41]
+#+begin_src R :eval never
+  plotly::toWebGL(plotly::ggplotly(pl_s, dynamicTicks = TRUE))
+#+end_src
+
+#+RESULTS:
+: There were 15 warnings (use warnings() to see them)
+
 ** DONE make the R routine visually return the same spin vector as the C routine
 CLOSED: [2023-04-04 Tue 09:27]
 ** WAIT [1/1] make the R routine return machine precision close to identical results to the C routine
@@ -799,6 +950,56 @@ at the end
 #+begin_src R :eval never :tangle no
 if(!is.null(file)) { readr::write_rds(fin, file = file) }
 #+end_src
+
+** SOME [0/4] add options for which output to return
+:LOGBOOK:
+- State "SOME"       from              [2023-04-10 Mon 15:37]
+:END:
+- [ ] the raw spin vector output
+- [ ] the full output with all columns
+- [ ] only the same output as the C-routine (default)
+*** analyse the ODE solver for problems
+:PROPERTIES:
+:CREATED:  [2023-04-03 Mon 14:38]
+:END:
+#+begin_src R :tangle no
+  diagnostics(out)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+--------------------
+lsode return code
+--------------------
+
+  return code (idid) =  2
+  Integration was successful.
+
+--------------------
+INTEGER values
+--------------------
+
+  1 The return code : 2
+  2 The number of steps taken for the problem so far: 250064
+  3 The number of function evaluations for the problem so far: 311277
+  5 The method order last used (successfully): 5
+  6 The order of the method to be attempted on the next step: 5
+  7 If return flag =-4,-5: the largest component in error vector 0
+  8 The length of the real work array actually required: 58
+  9 The length of the integer work array actually required: 23
+ 14 The number of Jacobian evaluations and LU decompositions so far: 12539
+
+--------------------
+RSTATE values
+--------------------
+
+  1 The step size in t last used (successfully): -8.504139e-06
+  2 The step size to be attempted on the next step: -8.504139e-06
+  3 The current value of the independent variable which the solver has reached: -3.6525e+10
+  4 Tolerance scale factor > 1.0 computed when requesting too much accuracy: 0
+#+end_example
+
 * [2/2] snvecR runs /fast/                                  :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:34]
@@ -806,6 +1007,63 @@ if(!is.null(file)) { readr::write_rds(fin, file = file) }
 ** DONE play around with the different ODE solver algorithms to figure out which one is fastest
 CLOSED: [2023-04-04 Tue 09:28]
 looks like the stiff solver bdf is fastest!
+
+*** read in previous results
+#+begin_src R :eval never :tangle no
+  make_combinable <- function(dat, method) {
+    dat |>
+     as_tibble() |>
+     mutate(across(time:sz, as.double)) |>
+     mutate(method = method)
+  }
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R :eval never :tangle no
+  ## out <- read_rds("out/2023-03-29_out.rds")
+  rk4 <- read_rds("out/2023-03-30_out.rds") |> make_combinable("rk4") # rk4, 1000 steps
+  ode23 <- read_rds("out/2023-03-31_out.rds") |> make_combinable("ode23")# ode23 5001 steps, intended for non-stiff problems!
+  ode45 <- read_rds("out/2023-04-01_out-ode45.rds") |> make_combinable("ode45") # ode45 5001 steps
+  bdf <- read_rds("out/2023-04-01_out-bdf.rds") |> make_combinable("bdf")     # bdf stiff 2523
+  daspk <- read_rds("out/2023-04-02_out-daspk.rds") |> make_combinable("daspk")     # stiff 2523
+  lsoda <- read_rds("out/2023-04-02_out-lsoda.rds") |> make_combinable("lsoda")     # stiff 2523
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R :tangle no :eval never
+  allout <- bind_rows(rk4, ode23, ode45, bdf, daspk, lsoda)
+#+end_src
+
+#+RESULTS:
+: Error in list2(...) : object 'ode23' not found
+
+*** plot the different methods
+:PROPERTIES:
+:CREATED:  [2023-04-02 Sun 11:24]
+:END:
+the different methods (other then timestep) result in identical results!!
+
+#+begin_src R :results output graphics file :output graphics file :file imgs/2023-04-02_all-output.png :width 700 :eval never
+  allout |>
+    pivot_longer(cols = sx:sz) |>
+    ggplot(aes(x = time, y = value, colour = name, linetype = method)) +
+    geom_line() +
+    geom_point() +
+    annotate("rug",
+             y = c(0.404360548210294,
+                   -0.053622586775944,
+                   0.913026378223150),
+             sides = "r",
+             colour = c("red", "green", "blue"),
+             length = grid::unit(1, "cm")) +
+   coord_cartesian(xlim = c(-20*KY2D, 0))
+#+end_src
+
+#+RESULTS:
+[[file:imgs/2023-04-02_all-output.png]]
+
 ** CANC consider whether it's useful to build a Cpp implementation of our function?
 CLOSED: [2023-04-06 Thu 16:33]
 probably not needed, 30s or so for 100 Myr is fast enough
@@ -956,6 +1214,14 @@ this is easy to do for a purrr call if we're solving many different version, but
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
+** SOME reduce dependencies
+:PROPERTIES:
+:CREATED:  [2023-03-31 Fri 12:23]
+:END:
+:LOGBOOK:
+- State "SOME"       from              [2023-03-31 Fri 12:23]
+:END:
+
 ** DONE double-check if we like the name
 CLOSED: [2023-04-06 Thu 16:41]
 :PROPERTIES:
@@ -1138,6 +1404,27 @@ CLOSED: [2023-04-05 Wed 20:19]
 fixed [[file:inst/CITATION]] so that it works
 used R package citation::r2cff() to generate a template cff file
 
+*** NEXT include proper way to cite the package
+still need to include this in the DESCRIPTION etc.
+or there was a package loading thing?
+
+#+begin_quote
+When using snvec, cite as:
+
+A deep-time dating tool for paleo-applications utilizing obliquity
+and precession cycles: The role of dynamical ellipticity and tidal
+dissipation, Richard E. Zeebe and Lucas J. Lourens, Paleoceanography
+and Paleoclimatology, 2022.
+
+Richard E. Zeebe
+School of Ocean and Earth
+Science and Technology
+University of Hawaii at Manoa
+1000 Pope Road, MSB 504
+Honolulu, HI 96822, USA
+email: zeebe@soest.hawaii.edu
+#+end_quote
+
 *** NEXT update CITATION to cite the package on CRAN itself
 :PROPERTIES:
 :CREATED:  [2023-04-05 Wed 15:55]
@@ -1197,6 +1484,9 @@ I deleted =R_LIBS= from my [[file:~/.Renviron]]
 [[file:data-raw/ZB18a.R]]
 typically should be < 1 MB!
 https://r-pkgs.org/data.html
+
+*** notes on how to include data in an R package
+see https://r-pkgs.org/data.html for how to include data in an R package
 
 *** notes on package size for CRAN submission
 :PROPERTIES:
