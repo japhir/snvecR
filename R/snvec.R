@@ -342,5 +342,10 @@ snvec <- function(tend = -1e3,
   }
 
   # return fin
-  fin
+  fin |>
+    # we transform the deSolve parameters into simple numeric columns
+    # this is so they work better with things like bind_rows etc. via vctrs
+    dplyr::mutate(dplyr::across(
+      c(.data$time, .data$sx, .data$sy, .data$sz, .data$age, .data$epl),
+      as.numeric))
 }
