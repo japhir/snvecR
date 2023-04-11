@@ -23,14 +23,14 @@
 #' @details
 #' The output is a [tibble][tibble::tibble-package] with the following columns:
 #'   * `time` Time in years.
-#'   * `sx`, `sy`, `sz`: Input vector s.
+#'   * `sx`, `sy`, `sz` Input vector s.
 #'   * `age` Age in thousands of years ago (ka).
 #'   * `nnx`, `nny`, `nnz` The euler transform of the input vector s.
 #'   * `eei`, `lphi`, `lani` The orbital solution's eccentricity, unwrapped
 #'      long periapse, and unwrapped long ascending node, interpolated to
 #'      resulting timesteps.
 #'   * `tmp` A temporary value that we used for the calculation.
-#'   * `epl` The acos(tmp).
+#'   * `epl` The `acos(tmp)`.
 #'   * `u` The input vector s as a list-column.
 #'   * `nv` The vector n as a list-column.
 #'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000
