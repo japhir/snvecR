@@ -1,0 +1,55 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# snvecR
+
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org/package=snvecR)
+<!-- badges: end -->
+
+The goal of snvecR is to calculate precession and obliquity from an orbital solution (defaults to RZ18a) and assumed or reconstructed values for tidal dissipation (td) and dynamical ellipticity (ed).
+
+## Installation
+
+You can install the development version of snvecR like so:
+
+``` r
+remotes::install_github("japhir/snvecR")
+```
+
+## Example
+
+Here's the main function that does the work in action:
+
+```{r example}
+library(snvecR)
+solution <- snvec()
+```
+
+see `?snvec` for further documentation.
+
+Here we create a quick plot of the calculated climatic precession with the eccentricity envelope:
+
+```{r plot}
+library(ggplot2)
+solution |>
+  ggplot(aes(x = age, y = cp)) +
+  # the age scale goes from old to young
+  scale_x_reverse() +
+  # plot climatic precession
+  geom_line() +
+  # add the (interpolated) eccentricity envelope
+  geom_line(aes(y = eei))
+```
