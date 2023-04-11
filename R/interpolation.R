@@ -6,7 +6,7 @@
 ##' Linearly interpolate a dataframe.
 ##'
 ##' @param dat The dataframe.
-##' @param col The column we want to interpolate on.
+##' @param col A character vector with the column we want to interpolate on.
 ##' @returns A function that predicts `col` as a function of `t` in `dat`.
 ##'
 ##' @seealso [qinterp()] for quick interpolation of a single timestep.
@@ -16,7 +16,7 @@
 approxdat <- function(dat, col) {
   # I'm not putting any input checks because it's an internal function
   dat |>
-    dplyr::select(.data$t, {{ col }}) |>
+    dplyr::select(all_of(c("t", col))) |>
     approxfun(rule = 2)
 }
 

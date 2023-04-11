@@ -18,15 +18,17 @@ Suggests:
     microbenchmark,
     roxygen2
 Imports:
-    cli (>= 3.4.0),
     deSolve,
     pracma,
+    cli (>= 3.4.0),
     dplyr,
     tibble,
     purrr,
     readr,
+    tidyselect,
     lubridate,
-    rlang (>= 0.4.11)
+    rlang (>= 0.4.11),
+    withr
 Config/testthat/edition: 3
 Depends:
     R (>= 3.5.0)
