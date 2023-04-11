@@ -261,11 +261,11 @@ note that I switched from read_table to read_fwf because it can strip whitespace
                                                col_names = c("t", "epl", "phi", "cp", "x")))
 #+end_src
 
-**** plot the final eccentricity, phi, precession
+**** [#A] plot the final eccentricity, phi, precession
 #+begin_src R :results output graphics file :file imgs/c-output_ee.png :width 700
   pl_ref <- snv_out |>
     pivot_longer(cols = epl:cp) |>
-    ggplot(aes(t, value, colour = "Richard-C")) +
+    ggplot(aes(-t / 1e3, value, colour = "Richard-C")) +
     facet_grid(rows = vars(name), scales = "free_y") +
     scale_x_reverse() +
     geom_line() +
@@ -273,7 +273,7 @@ note that I switched from read_table to read_fwf because it can strip whitespace
     ## geom_point() +
     # fix the xlim so that when we add other data it doesn't rescale
     ## xlim(c(-1e3, 0))
-  pl_ref
+  ## pl_ref
 #+end_src
 
 #+RESULTS:
@@ -359,27 +359,28 @@ CLOSED: [2023-04-06 Thu 16:33]
 :CREATED:  [2023-04-10 Mon 10:24]
 :END:
 #+begin_src R
+  ## fin <- snvec(-1e3, 1, 0) # quick but short
   fin <- snvec(-1e5, 1, 0)
 #+end_src
 
 #+RESULTS:
 #+begin_example
 [1m[22mIntegration parameters:
-[36m•[39m `tend` = -1e+05 kyr
+[36m•[39m `tend` = -1000 kyr
 [36m•[39m `ed` = 1
 [36m•[39m `td` = 0
 [36m•[39m `orbital_solution` = "ZB18a"
 [36m•[39m `tres` = 0.4 kyr
 [36m•[39m `tolerance` = 1e-07
-[36mℹ[39m started at "2023-04-10 10:25:22"
+[36mℹ[39m started at "2023-04-10 13:41:38"
 [1m[22mFinal values:
-[36m•[39m s[1][2][3]: -0.181186234717299 0.377666080230894 0.902100420308931
-[36m•[39m s-error = |s|-1: -0.00539189218589675
+[36m•[39m s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935
+[36m•[39m s-error = |s|-1: -5.44863786333671e-05
 [1m[22mFinal values:
-[36m•[39m obliquity: 0.389933827834007 rad
-[36m•[39m precession: 1.96689170415452 rad
-[36mℹ[39m stopped at "2023-04-10 10:27:19"
-[36mℹ[39m total duration: 117s (~1.95 minutes)
+[36m•[39m obliquity: 0.413056573207875 rad
+[36m•[39m precession: -0.562236553023642 rad
+[36mℹ[39m stopped at "2023-04-10 13:41:39"
+[36mℹ[39m total duration: 1.1s
 #+end_example
 
 #+begin_src R
@@ -389,6 +390,13 @@ CLOSED: [2023-04-06 Thu 16:33]
 #+RESULTS:
 
 **** read in previous runs
+#+begin_src R
+  fin <- read_rds("out/2023-04-10_unwrap-fix.rds")
+#+end_src
+
+#+RESULTS:
+
+look at different tolerances
 #+begin_src R
   tol_1e07 <- read_rds("out/2023-04-04_normtol_1e-7.rds") |>
     mutate(tol = 1e-07) |>
@@ -409,15 +417,15 @@ CLOSED: [2023-04-06 Thu 16:33]
 #+begin_src R
   ## pl_both_young
   pl_both <- pl_ref +
-    geom_line(aes(x = time / KY2D, colour = "Ilja-R"),
+    geom_line(aes(x = age / 1e3, colour = "Ilja-R"),
               ## linetype = "dashed",
               data = fin |>
-                select(time, tmp, epl, phi, cp) |>
+                select(age, time, tmp, epl, phi, cp) |>
                 mutate(epl = as.double(epl)) |>
                 pivot_longer(cols = c(epl, phi, cp)))
-  pl_both_young <- pl_both + xlim(c(-1e3, 0))
-  pl_both_mid <- pl_both + xlim(c(-6.6e4, -6.5e4))
-  pl_both_old <- pl_both + xlim(c(-1e5, -9.9e4))
+  pl_both_young <- pl_both + xlim(c(1, 0))
+  pl_both_mid <- pl_both + xlim(c(66, 65))
+  pl_both_old <- pl_both + xlim(c(100, 99))
 #+end_src
 
 #+RESULTS:
@@ -428,14 +436,16 @@ CLOSED: [2023-04-06 Thu 16:33]
 : [1m[22mScale for [32mx[39m is already present.
 : Adding another scale for [32mx[39m, which will replace the existing scale.
 
-#+begin_src R :results output graphics file :file imgs/compare_c-R.png :width 700
-  ## pl_both_young
-  ## pl_both_mid
-  pl_both_old
+#+begin_src R :results output graphics file :file imgs/2023-04-10_compare_c-R.png :width 1920 :height 1080
+  ## pl_both_young +
+  pl_both_mid +
+  ## pl_both_old +
+  theme(text = element_text(size = 20))
 #+end_src
 
 #+RESULTS:
-[[file:imgs/compare_c-R.png]]
+[[file:imgs/2023-04-10_compare_c-R.png]]
+
 **** interpolate C-output onto R grid and calculate differences
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 13:41]
@@ -452,9 +462,9 @@ CLOSED: [2023-04-06 Thu 16:33]
       mutate(across(c(time, sx, sy, sz, age, epl), as.numeric)) |>
     mutate(
       # add the interpolated C-output
-      C_epl = approxdat(snv_out, epl)(-age),
-      C_phi = approxdat(snv_out, phi)(-age),
-      C_cp = approxdat(snv_out, cp)(-age),
+      C_epl = approxdat(snv_out, "epl")(-age),
+      C_phi = approxdat(snv_out, "phi")(-age),
+      C_cp = approxdat(snv_out, "cp")(-age),
       ) |>
     mutate(
       # calculate differences
@@ -499,7 +509,6 @@ CLOSED: [2023-04-06 Thu 16:33]
     facet_grid(rows = vars(name), scales = "free_y") +
     labs(y = "R - C") +
     scale_y_continuous(breaks = breaks_fun, minor_breaks= ~breaks_fun(.x, FALSE))
-    ## scale_y_continuous(breaks = seq(0,100,1), minor_breaks=seq(-100,100,0.1))
 
   # create zoom-ins on the youngest, oldest, and Cretaceous 1 kyr
   pl_diff_old <- pl_diff + xlim(c(100, 99))
@@ -510,27 +519,28 @@ CLOSED: [2023-04-06 Thu 16:33]
   #+RESULTS:
 
 then render those 1 kyr
-  #+begin_src R :results output graphics file :file imgs/compare_c-R-diff.png :width 700
+  #+begin_src R :results output graphics file :file imgs/2023-04-10_compare_c-R-diff.png :width 1920 :height 1080
     ## pl_diff_young
-    pl_diff_mid
-    ## pl_diff_old
+    ## pl_diff_mid
+    pl_diff_old + labs(x = "Age (Ma)") + theme(text = element_text(size = 20))
 #+end_src
 
 #+RESULTS:
-[[file:imgs/compare_c-R-diff.png]]
+[[file:imgs/2023-04-10_compare_c-R-diff.png]]
 
 #+begin_src R :results output graphics file :file imgs/compare_c-R-diff_hist.png :width 900
   comp |>
     pivot_longer(ends_with("_diff")) |>
-    ggplot(aes(x = abs(value), fill = factor(tol))) +
+    ggplot(aes(x = abs(value)## , fill = factor(tol)
+               )) +
     ## geom_density(alpha = .3) +
     ## geom_histogram(alpha = .3) +
     ## stat_summary(aes(y = 0), fun = mean_cl_normal) +
     ## ggridges::geom_density_ridges() +
-    ggdist::stat_halfeye(aes(group = factor(tol),
-                             ## colour = factor(tol)
-                             ),
-                         position = "dodge",
+    ggdist::stat_halfeye(## aes(group = factor(tol),
+                         ##     ## colour = factor(tol)
+                         ##     ),
+                         ## position = "dodge",
                          alpha = .4) +
     scale_x_sqrt() +
     ## scale_x_log10() +
@@ -543,7 +553,7 @@ then render those 1 kyr
           axis.ticks.y = element_blank(),
           panel.grid.major.y = element_blank(),
           panel.grid.minor.y = element_blank()) +
-    labs(fill = "Tolerance",
+    labs(## fill = "Tolerance",
          x = "abs(diff) (note sqrt transform)")
 #+end_src
 
@@ -942,7 +952,7 @@ CLOSED: [2023-04-06 Thu 14:35]
 :END:
 https://github.com/r-lib/progress#readme
 this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
-* [19/28] snvecR is published on CRAN, github, zenodo
+* [20/29] snvecR is published on CRAN, github, zenodo
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1037,7 +1047,7 @@ CLOSED: [2023-04-06 Thu 16:37]
 
 learn more at
 https://github.com/r-lib/actions/blob/v2/examples/README.md
-** [5/8] write tests for each component                     :prj:
+** [6/9] write tests for each component                     :prj:
 *** DONE test qinterp
 CLOSED: [2023-04-06 Thu 16:38]
 *** DONE tests euler
@@ -1073,42 +1083,27 @@ it's NOT THE FUCKING SAME!!!
 #+begin_src R
   wrap <- read_fwf("snvec-3.7.5/out-wrap.dat",
                    col_positions = fwf_empty("snvec-3.7.5/out-wrap.dat",
-                                             col_names = c("time", "lphu", "lanu")))
-
-  min(wrap$time)
+                                             col_names = c(#"time",
+                                               "lphu", "lanu"))) |>
+     mutate(t = ZB18a$t, age = ZB18a$age)
 #+end_src
-
-#+RESULTS:
-:
-: [36m──[39m [1mColumn specification[22m [36m──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────[39m
-: cols(
-:   time = [32mcol_double()[39m,
-:   lphu = [32mcol_double()[39m,
-:   lanu = [32mcol_double()[39m,
-:   X = [33mcol_logical()[39m
-: )
-: [1] -1e+05
 
 #+begin_src R
   ZB18a |>
     mutate(lanu = unwrap(lan)) |>
     ggplot(aes(x = -age, y = lan)) +
     geom_line() +
-    geom_line(aes(x = time, y = lanu, colour = "Richard-C"), data = wrap) +
+    geom_line(aes(x = -age, y = lanu, colour = "Richard-C"), data = wrap) +
     geom_line(aes(x = -age, y = lanu, colour = "Ilja-R")) +
     xlim(c(-1e3, 0))
 #+end_src
 
-#+RESULTS:
-: Warning messages:
-: 1: [1m[22mRemoved 247500 rows containing missing values (`geom_line()`).
-: 2: [1m[22mRemoved 246755 rows containing missing values (`geom_line()`).
-: 3: [1m[22mRemoved 247500 rows containing missing values (`geom_line()`).
-
 it's still super different! :O am I resolving it on tmv = the output time scale in stead of the solution time scale? does it depend on Ed Td somehow?
 
+ok I was reporting it as a function of tmv, not as the OS's timesteps.
+Ditched C's output of timesteps and pasted it back from the OS, now it's identical.
 
-*** NEXT [0/2] write test for snvec itself
+*** NEXT [1/3] write test for snvec itself
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:38]
 :END:
@@ -1116,9 +1111,15 @@ it's still super different! :O am I resolving it on tmv = the output time scale 
 :LOGBOOK:
 - State "SOME"       from              [2023-04-06 Thu 16:38]
 :END:
-**** NEXT test correct outputs
+**** DONE test correct outputs
+CLOSED: [2023-04-10 Mon 14:24]
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:39]
+:END:
+using cached version right now
+**** NEXT test correct outputs vs. C-routine?
+:PROPERTIES:
+:CREATED:  [2023-04-10 Mon 14:24]
 :END:
 ** DONE move the code out of README.org for reals -> pkg structure is single source of truth
 CLOSED: [2023-04-05 Wed 20:19]
