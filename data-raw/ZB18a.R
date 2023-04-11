@@ -1,67 +1,64 @@
 ## for our use-case, the file is
 ## [[file:snvec-3.7.5/ems-plan3.dat]]
+# also available on <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>
 
 ## the top of the file has some lines specifying which columns were used
 ## 0  7  8  9  12 10 11 15
+# where the numbers correspond to HNBody column indicators
 
 library(readr)
 library(snvecR) # for the unwrap function
 
-dat <- read_table("snvec-3.7.5/ems-plan3.dat",
+dat <- read_table("http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat",
+  # also locally on "snvec-3.7.5/ems-plan3.dat"
   comment = "#",
-  skip = 3,
+  skip = 3, # skip those column indicators
+  # set the column names manually
   col_names = c(
-    "time", # 0-Time (=Epoch)
+    "Time",              # 0-Time (=Epoch)
     ## "x1", "x2", "x3", # 1-3
     ## "v1", "v2", "v3", # 4-6
-    "semimajor_axis", # 7-SemiMajorAxis
-    "eccentricity", # 8
-    "inclination", # 9
-    "long_periapse", # 12
-    ## "time_periapse",  # 13
-    "long_ascend_node", # 10
-    "arg_periapse", # 11
-    ## "peri_distance",  # 12
-    "mean_anomaly" #      # 15
-    ## "true_anomaly",   # 16
-    ## "mean_longitude", # 17
-    ## "true_longitude", # 18
-    ## "mean_latitude",  # 19
-    ## "true_latitude",  # 20
-    ## "mass",           # 21
-    ## "enc_radius",     # 22
-    ## "capt_radius",    # 23
-    ## "id_tag",         # 24
-    ## "jac_index"       # 25
+    "SemiMajorAxis",     # 7
+    "Eccentricity",      # 8
+    "Inclination",       # 9
+    "LongPeriapse",      # 12
+    ## "TimePeriapse",   # 13
+    "LongAscendNode",    # 10
+    "ArgPeriapse",       # 11
+    ## "PeriDistance",   # 12
+    "MeanAnomaly"        # 15
+    ## "TrueAnomaly",    # 16
+    ## "MeanLongitude",  # 17
+    ## "TrueLongitude",  # 18
+    ## "MeanLatitude",   # 19
+    ## "TrueLatitude",   # 20
+    ## "Mass"            # 21
+    ## "EncRadius",      # 22
+    ## "CaptRadius",     # 23
+    ## "IdTag",          # 24
+    ## "JacIndex"        # 25
   )
 )
 
-head(dat) |> round(2)
+dplyr::glimpse(dat)
 
 ## rename some of the names in dat
-## :PROPERTIES:
-## :CREATED:  [2023-03-24 Fri 14:14]
-## :END:
 ## to make the naming consistent with the C code
-
 dat <- dat |>
   tidylog::rename(
-    t = time,
-    aa = semimajor_axis,
-    ee = eccentricity,
-    inc = inclination,
-    lph = long_periapse,
-    lan = long_ascend_node,
-    arp = arg_periapse,
-    mna = mean_anomaly
+    t = Time,
+    aa = SemiMajorAxis,
+    ee = Eccentricity,
+    inc = Inclination,
+    lph = LongPeriapse,
+    lan = LongAscendNode,
+    arp = ArgPeriapse,
+    mna = MeanAnomaly
   )
 
-## calculate the unwraps for lph and lan
-## :PROPERTIES:
-## :CREATED:  [2023-03-29 Wed 12:03]
-## :END:
-## unwrap lph, lan
+dplyr::glimpse(dat)
 
+## calculate the unwraps for lph and lan
 dat <- dat |>
   dplyr::mutate(
     # this function is not exported so we need to use three colons
