@@ -107,6 +107,9 @@ snvec <- function(tend = -1e3,
   }
 
   # ed, td, tolerance?
+  if (tolerance > 1e-3 | tolerance < 1e-12) {
+    cli::cli_warn("Input tolerance should be between 1e-3 and 1e-12.")
+  }
 
   # message user about inputs
   if (!quiet) {

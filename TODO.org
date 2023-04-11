@@ -370,7 +370,8 @@ note that I switched from read_table to read_fwf because it can strip whitespace
 *** debug specific functions
 [[file:snvec-3.7.5/snvec-3.7.5.c::Ilja's debugging scheme][Ilja's debugging scheme]]
 
-* read up on the deSolve package for R
+* DONE read up on the deSolve package for R
+CLOSED: [2023-04-10 Mon 15:43]
 :PROPERTIES:
 :CREATED:  [2023-03-24 Fri 12:02]
 :END:
@@ -1210,7 +1211,7 @@ CLOSED: [2023-04-06 Thu 14:35]
 :END:
 https://github.com/r-lib/progress#readme
 this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
-* [20/29] snvecR is published on CRAN, github, zenodo
+* [27/39] snvecR is /published/ on CRAN, github, zenodo       :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1313,7 +1314,7 @@ CLOSED: [2023-04-06 Thu 16:37]
 
 learn more at
 https://github.com/r-lib/actions/blob/v2/examples/README.md
-** [6/9] write tests for each component                     :prj:
+** [13/17] write tests for each component                   :prj:
 *** DONE test qinterp
 CLOSED: [2023-04-06 Thu 16:38]
 *** DONE tests euler
@@ -1369,14 +1370,35 @@ it's still super different! :O am I resolving it on tmv = the output time scale 
 ok I was reporting it as a function of tmv, not as the OS's timesteps.
 Ditched C's output of timesteps and pasted it back from the OS, now it's identical.
 
-*** NEXT [1/3] write test for snvec itself
+*** NEXT [8/11] write test for snvec itself
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:38]
 :END:
-**** SOME returns errors with wrong inputs?
+**** [7/9] returns errors with wrong inputs?
 :LOGBOOK:
+- State "DONE"       from "SOME"       [2023-04-10 Mon 15:44]
 - State "SOME"       from              [2023-04-06 Thu 16:38]
 :END:
+***** DONE orbital solution
+CLOSED: [2023-04-10 Mon 15:45]
+it's either La11 or ZB18a
+***** DONE tend >= 0
+CLOSED: [2023-04-10 Mon 15:45]
+***** DONE tend < min(dat$t / KY2D)
+CLOSED: [2023-04-10 Mon 15:45]
+***** DONE tres < tend
+CLOSED: [2023-04-10 Mon 15:45]
+***** DONE tres > 0
+CLOSED: [2023-04-10 Mon 15:46]
+***** NEXT ed 0--1
+***** NEXT td 0--1
+***** DONE tolerance somewhere between 1e-3 and 1e-12
+CLOSED: [2023-04-10 Mon 15:59]
+***** CANC quiet = T or F
+CLOSED: [2023-04-10 Mon 15:48]
+default error is good enough
+Error in !quiet : invalid argument type
+Error in if (!quiet) { : missing value where TRUE/FALSE needed
 **** DONE test correct outputs
 CLOSED: [2023-04-10 Mon 14:24]
 :PROPERTIES:
