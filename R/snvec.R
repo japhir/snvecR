@@ -102,6 +102,11 @@ snvec <- function(tend = -1e3,
     ))
   }
 
+  if (tres <= 0) {
+    cli::cli_abort(c("{.var tres} must be > 0.",
+                     "i" = "{.var tres} = {tres}"))
+  }
+
   # ed, td, tolerance?
 
   # message user about inputs
