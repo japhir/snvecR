@@ -22,20 +22,19 @@
 #'
 #' @details
 #' The output is a [tibble][tibble::tibble-package] with the following columns:
-#'   * `time`
-#'   * `sx`, `sy`, `sz`
-#'   * `age`
-#'   * `nnx`, `nny`, `nnz`
-#'   * `eei`
-#'   * `inci`
-#'   * `lphi`
-#'   * `lani`
-#'   * `tmp`
-#'   * `epl`
-#'   * `u`
-#'   * `nv` Vector
-#'   * `up` Vector u', projected to xxx.
-#'   * `phi` The xxx.
+#'   * `time` Time in years.
+#'   * `sx`, `sy`, `sz`: Input vector s.
+#'   * `age` Age in thousands of years ago (ka).
+#'   * `nnx`, `nny`, `nnz` The euler transform of the input vector s.
+#'   * `eei`, `lphi`, `lani` The orbital solution's eccentricity, unwrapped
+#'      long periapse, and unwrapped long ascending node, interpolated to
+#'      resulting timesteps.
+#'   * `tmp` A temporary value that we used for the calculation.
+#'   * `epl` The acos(tmp).
+#'   * `u` The input vector s as a list-column.
+#'   * `nv` The vector n as a list-column.
+#'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000
+#'   * `phi` The true anomaly.
 #'   * `cp` Climatic precession.
 #'
 #' @seealso
@@ -346,6 +345,6 @@ snvec <- function(tend = -1e3,
     # we transform the deSolve parameters into simple numeric columns
     # this is so they work better with things like bind_rows etc. via vctrs
     dplyr::mutate(dplyr::across(
-      c(.data$time, .data$sx, .data$sy, .data$sz, .data$age, .data$epl),
+      all_of(c("time", "sx", "sy", "sz", "age", "epl")),
       as.numeric))
 }
