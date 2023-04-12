@@ -1212,7 +1212,7 @@ CLOSED: [2023-04-06 Thu 14:35]
 :END:
 https://github.com/r-lib/progress#readme
 this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
-* [33/43] snvecR is /published/ on CRAN, github, zenodo       :prj:
+* [34/44] snvecR is /published/ on github, zenodo, CRAN     :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1331,6 +1331,31 @@ CLOSED: [2023-04-06 Thu 16:37]
 
 learn more at
 https://github.com/r-lib/actions/blob/v2/examples/README.md
+** DONE add a website
+CLOSED: [2023-04-11 Tue 18:10]
+:PROPERTIES:
+:CREATED:  [2023-04-11 Tue 17:43]
+:END:
+https://r-pkgs.org/website.html
+*** set up
+#+begin_src R
+  usethis::use_pkgdown()
+#+end_src
+
+#+RESULTS:
+#+begin_example
+✔ Adding '^_pkgdown\\.yml$', '^docs$', '^pkgdown$' to '.Rbuildignore'
+✔ Adding 'docs' to '.gitignore'
+✔ Writing '_pkgdown.yml'
+• Modify '_pkgdown.yml'
+Waiting for Emacs...
+#+end_example
+
+*** build site
+#+begin_src R
+  pkgdown::build_site()
+#+end_src
+
 ** [17/18] write tests for each component                   :prj:
 *** DONE test qinterp
 CLOSED: [2023-04-06 Thu 16:38]

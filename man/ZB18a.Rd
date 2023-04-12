@@ -3,7 +3,7 @@
 \docType{data}
 \name{ZB18a}
 \alias{ZB18a}
-\title{Astronomical Solution from Zeebe et al., 2018}
+\title{Orbital Solution from Zeebe et al., 2018.}
 \format{
 \subsection{\code{ZB18a}}{
 
@@ -12,33 +12,39 @@ A data frame with 250,001 rows and 8 columns:
 \item{t}{Time in days.}
 \item{age}{Age in thousands of years (kyr) before present.}
 \item{aa}{Semimajor axis.}
-\item{ee}{Eccentricity}
-\item{inc}{Inclination}
-\item{lph}{Long periapse}
-\item{lan}{Long ascending node}
-\item{arp}{Argument of periapse}
-\item{mna}{Mean anomaly}
-\item{hh}{helper hh}
-\item{kk}{helper hk}
-\item{pp}{helper pp}
-\item{qq}{helper qq}
-\item{cc}{helper cc}
-\item{dd}{helper dd}
+\item{ee}{Eccentricity.}
+\item{inc}{Inclination.}
+\item{lph}{Long periapse.}
+\item{lan}{Long ascending node.}
+\item{arp}{Argument of periapse.}
+\item{mna}{Mean anomaly.}
+\item{hh}{helper hh.}
+\item{kk}{helper hk.}
+\item{pp}{helper pp.}
+\item{qq}{helper qq.}
+\item{cc}{helper cc.}
+\item{dd}{helper dd.}
 \item{nnx, nny, nnz}{Vector of Earth's orbit normal.}
 }
 }
 }
 \source{
-\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}
+All orbital solutions can be found on \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
+The specific one we use here is available at \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
 }
 \usage{
 ZB18a
 }
 \description{
-The HNBody output of Zeebe & Lourens 2019 \url{10.1126/science.aax0612}.
+The HNBody output of Zeebe & Lourens 2019.
 }
 \details{
 The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements}
-describes what the components relate to to uniquely specify an orbital plane.
+describes what the components relate to in order to uniquely specify an orbital plane.
+}
+\references{
+Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
+Paleocene–Eocene boundary age constrained by geology and astronomy.
+\emph{Science}, 365(6456), 926–929. \url{https://doi.org/10.1126/science.aax0612}
 }
 \keyword{datasets}

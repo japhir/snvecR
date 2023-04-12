@@ -144,7 +144,7 @@ snvec <- function(tend = -1e3,
   }
 
   if (td < 0 | td > 1) {
-    cli::cli_warn(c("!" = "Tidal dissipation likely varied between 0 and 1!",
+    cli::cli_warn(c("Tidal dissipation likely varied between 0 and 1!",
                     "i" = "{.var td} = {td}",
                     "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>"))
   }
