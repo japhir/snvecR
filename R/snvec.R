@@ -94,8 +94,7 @@ snvec <- function(tend = -1e3,
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {
     cli::cli_abort(c("{.var orbital_solution} must be one of: {.or {.q {solutions}}}",
-      "x" = "You've supplied {.q {orbital_solution}}"
-    ))
+                     "x" = "You've supplied {.q {orbital_solution}}"))
   }
   if (orbital_solution == "ZB18a") {
     dat <- snvecR::ZB18a
@@ -109,8 +108,8 @@ snvec <- function(tend = -1e3,
   }
   outputs <- c("nice", "all", "ode")
   if (!output %in% outputs) {
-    cli::cli_abort("{.var output} must be one of {.or {.q {outputs}}}",
-                   "x" = "You've supplied {q {output}}")
+    cli::cli_abort(c("{.var output} must be one of {.or {.q {outputs}}}",
+                     "x" = "You've supplied {.q {output}}"))
   }
   ## tend
   if (tend >= 0) {
@@ -404,7 +403,7 @@ snvec <- function(tend = -1e3,
 
   if (output == "nice") {
     fin |>
-      # get rid of columns that we do not use
+      # get rid of columns that we do not like
       dplyr::select(-tidyselect::all_of(c(
         "sx", "sy", "sz",
         "nnx", "nny", "nnz",
