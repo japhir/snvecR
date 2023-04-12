@@ -6,7 +6,7 @@ title: 'snvecR: snvecR: Calculate Climatic Precession and Obliquity from OS, Td,
 version: 3.7.5.9000
 date-released: 2023-04-06
 abstract: This package makes it easy to calculate precession and obliquity from an
-  orbital solution (defaults to RZ18a) and assumed or reconstructed values for tidal
+  orbital solution (defaults to ZB18a) and assumed or reconstructed values for tidal
   dissipation (td) and dynamical ellipticity (ed).
 authors:
 - family-names: Kocken

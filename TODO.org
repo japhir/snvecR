@@ -1271,7 +1271,7 @@ CLOSED: [2023-04-06 Thu 16:14]
 #+begin_src R
   usethis::use_readme_rmd()
 #+end_src
-*** DONE reander to md
+*** DONE render to md
 CLOSED: [2023-04-06 Thu 16:15]
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:14]
@@ -1279,6 +1279,22 @@ CLOSED: [2023-04-06 Thu 16:15]
 #+begin_src R
   devtools::build_readme()
 #+end_src
+
+#+RESULTS:
+#+begin_example
+[1m[22m[36mℹ[39m Installing [34msnvecR[39m in temporary library
+[1m[22m[36mℹ[39m Building [34m/home/japhir/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/README.Rmd[39m
+/usr/bin/pandoc: error while loading shared libraries: libHShslua-classes-2.3.0-JeVSVZbMagbuc0D8DLXfK-ghc9.0.2.so: cannot open shared object file: No such file or directory
+Error in system(paste(shQuote(path), "--version"), intern = TRUE) :
+  error in running command
+[1m[33mError[39m[22m:
+[33m![39m in callr subprocess.
+[1mCaused by error[22m in `system(paste(shQuote(path), "--version"), intern = TRUE)`:
+[33m![39m error in running command
+[36mℹ[39m See `$stdout` for standard output.
+[90mType .Last.error to see the more details.[39m
+#+end_example
+
 *** DONE use badges
 CLOSED: [2023-04-06 Thu 16:19]
 #+begin_src R

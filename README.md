@@ -10,7 +10,7 @@ status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org
 <!-- badges: end -->
 
 The goal of snvecR is to calculate precession and obliquity from an
-orbital solution (defaults to RZ18a) and assumed or reconstructed values
+orbital solution (defaults to ZB18a) and assumed or reconstructed values
 for tidal dissipation (td) and dynamical ellipticity (ed).
 
 ## Installation

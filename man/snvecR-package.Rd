@@ -6,7 +6,7 @@
 \alias{snvecR-package}
 \title{snvecR: snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed}
 \description{
-This package makes it easy to calculate precession and obliquity from an orbital solution (defaults to RZ18a) and assumed or reconstructed values for tidal dissipation (td) and dynamical ellipticity (ed).
+This package makes it easy to calculate precession and obliquity from an orbital solution (defaults to ZB18a) and assumed or reconstructed values for tidal dissipation (td) and dynamical ellipticity (ed).
 }
 \author{
 \strong{Maintainer}: Ilja Kocken \email{ikocken@hawaii.edu} (\href{https://orcid.org/0000-0003-2196-8718}{ORCID})

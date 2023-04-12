@@ -46,14 +46,14 @@ tidal dissipation (Td). It fits a set of ordinary differential equations.
 The output is a \link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
 \item \code{time} Time in years.
-\item \code{sx}, \code{sy}, \code{sz}: Input vector s.
+\item \code{sx}, \code{sy}, \code{sz} Input vector s.
 \item \code{age} Age in thousands of years ago (ka).
 \item \code{nnx}, \code{nny}, \code{nnz} The euler transform of the input vector s.
 \item \code{eei}, \code{lphi}, \code{lani} The orbital solution's eccentricity, unwrapped
 long periapse, and unwrapped long ascending node, interpolated to
 resulting timesteps.
 \item \code{tmp} A temporary value that we used for the calculation.
-\item \code{epl} The acos(tmp).
+\item \code{epl} The \code{acos(tmp)}.
 \item \code{u} The input vector s as a list-column.
 \item \code{nv} The vector n as a list-column.
 \item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000
