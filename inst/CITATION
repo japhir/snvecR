@@ -1,5 +1,5 @@
 bibentry(
-  bibtype = "Article",
+  bibtype = "Manual",
   header = "To cite snvecR in publications use:",
   key = "KockenZeebe2023",
   title = "snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed",
@@ -8,13 +8,13 @@ bibentry(
              person("Richard", "Zeebe", , "zeebe@hawaii.edu", role = c("aut"),
                     comment = c(ORCID = "0000-0003-0806-8387"))
              ),
-  journal = "CRAN / JOSS??",
+  ## journal = "CRAN / JOSS??",
   year = "2023",
   ## volume = {n/a},
   ## number = {n/a},
   ## pages = {},
-  doi = "TODO", # put it on zenodo?
-  url = "TODO", # github page?
+  ## doi = "TODO", # put it on zenodo?
+  url = "https://japhir.github.io/snvecR/",
   # textVersion is a mandatory field
   ## textVersion = ""
   # but ?bibentry recommends against specifying it
