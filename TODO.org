@@ -444,7 +444,7 @@ CLOSED: [2023-04-06 Thu 16:33]
 #+RESULTS:
 #+begin_example
 [1m[22mIntegration parameters:
-[36m•[39m `tend` = -1000 kyr
+[36m•[39m `tend` = -1000 ka
 [36m•[39m `ed` = 1
 [36m•[39m `td` = 0
 [36m•[39m `orbital_solution` = "ZB18a"
@@ -659,7 +659,7 @@ the raw spin vector s, added as something that we write to file myself (not sure
   snv_sout <- read_table("snvec-3.7.5/s-out.dat",
                         col_names = c("time", "sx", "sy", "sz", "x")) |>
     # this is because there's some whitespace there?
-    # note that t is in tmv / KY2D = in kyr
+    # note that t is in tmv / KY2D = in ka
     select(-x)
 #+end_src
 
@@ -764,7 +764,7 @@ CLOSED: [2023-04-05 Wed 13:47]
 : Richard E. Zeebe
 : Ilja J. Kocken
 : Integration parameters:
-:  tend = -1e+05 kyr
+:  tend = -1e+05 ka
 :  tres = 0.4 kyr
 :  Ed = 1
 :  Td = 0
@@ -785,7 +785,7 @@ CLOSED: [2023-04-05 Wed 13:47]
 : Richard E. Zeebe
 : Ilja J. Kocken
 : Integration parameters:
-: tend = -1e+05 kyr
+: tend = -1e+05 ka
 : tres = 0.4 kyr
 : Ed = 1
 : Td = 0
@@ -806,7 +806,7 @@ CLOSED: [2023-04-05 Wed 13:47]
 #+RESULTS:
 #+begin_example
 Integration parameters:
- tend = -1e+05 kyr
+ tend = -1e+05 ka
  Ed = 1
  Td = 0
  orbital_solution = ZB18a
@@ -831,7 +831,7 @@ stopped at Wed Apr  5 09:56:46 2023
 #+RESULTS:
 #+begin_example
 Integration parameters:
- tend = -1e+05 kyr
+ tend = -1e+05 ka
  Ed = 1
  Td = 0
  orbital_solution = ZB18a

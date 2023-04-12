@@ -15,7 +15,7 @@ test_that("snvecR inputs are checked", {
 test_that("snvecR basic call works", {
   withr::local_options(width = 57)
   # I test a snapshot of the output
-  expect_snapshot(snvec(tend = -49, # limit output to 50 kyr so it takes <5 s (CRAN check)
+  expect_snapshot(snvec(tend = -49, # limit output to 50 ka so it takes <5 s (CRAN check)
                         # specify default values explicitly in case they change in the future
                         ed = 1,
                         td = 0,

@@ -4,24 +4,24 @@
 #' solution (OS) input and input values for dynamical ellipticity (Ed) and
 #' tidal dissipation (Td). It solves a set of ordinary differential equations.
 #'
-#' @param tend The final timestep in -kyr. Defaults to `-1000` kyr.
+#' @param tend The final timestep in thousands of years before present (ka).
+#'   Defaults to `-1000` ka.
 #' @param ed Dynamical ellipticity, normalized to modern. Defaults to `1.0`.
 #' @param td Tidal dissipation, normalized to modern. Defaults to `0.0`.
 #' @param orbital_solution Character vector with the name of the orbital
 #'   solution to use. One of `"ZB18a"` (default) or `"La11"` (not yet
 #'   implemented!).
-#' @param tres The output timestep resolution in kyr. Defaults to `0.4`.
+#' @param tres The output timestep resolution in thousands of years (kyr).
+#'   Defaults to `0.4`.
 #' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol`
 #'   and `atol` arguments. Defaults to `1e-7`.
-#' @param quiet Be quiet?
-#'   If `TRUE`, hide info messages.
-#'   If `FALSE` (the default) print info messages and timing.
-#' @param output The desired output, one of:
-#'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
-#'     columns time, age, eei, epl, phi, cp.
-#'   * `"full"` A [tibble][tibble::tibble-package] with all the computed and
-#'     interpolated columns.
-#'   * `"ode"` A matrix with the output of the ODE solver.
+#' @param quiet Be quiet? If `TRUE`, hide info messages. If `FALSE` (the
+#'   default) print info messages and timing.
+#' @param output The desired output, one of: * `"nice"` (the default) A
+#'   [tibble][tibble::tibble-package] with the columns time, age, eei, epl,
+#'   phi, cp. * `"full"` A [tibble][tibble::tibble-package] with all the
+#'   computed and interpolated columns. * `"ode"` A matrix with the output of
+#'   the ODE solver.
 #'
 #' @returns A [tibble][tibble::tibble-package] with a selection of columns or a
 #'   matrix, depending on the `output` parameter (see Details).
@@ -164,7 +164,7 @@ snvec <- function(tend = -1e3,
       ## "Richard E. Zeebe",
       ## "Ilja J. Kocken",
       "Integration parameters:",
-      "*" = "{.var tend} = {tend} kyr",
+      "*" = "{.var tend} = {tend} ka",
       "*" = "{.var ed} = {ed}",
       "*" = "{.var td} = {td}",
       "*" = "{.var orbital_solution} = {.q {orbital_solution}}",

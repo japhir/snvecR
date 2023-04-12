@@ -16,7 +16,8 @@ snvec(
 )
 }
 \arguments{
-\item{tend}{The final timestep in -kyr. Defaults to \code{-1000} kyr.}
+\item{tend}{The final timestep in thousands of years before present (ka).
+Defaults to \code{-1000} ka.}
 
 \item{ed}{Dynamical ellipticity, normalized to modern. Defaults to \code{1.0}.}
 
@@ -26,23 +27,20 @@ snvec(
 solution to use. One of \code{"ZB18a"} (default) or \code{"La11"} (not yet
 implemented!).}
 
-\item{tres}{The output timestep resolution in kyr. Defaults to \code{0.4}.}
+\item{tres}{The output timestep resolution in thousands of years (kyr).
+Defaults to \code{0.4}.}
 
 \item{tolerance}{The numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol}
 and \code{atol} arguments. Defaults to \code{1e-7}.}
 
-\item{quiet}{Be quiet?
-If \code{TRUE}, hide info messages.
-If \code{FALSE} (the default) print info messages and timing.}
+\item{quiet}{Be quiet? If \code{TRUE}, hide info messages. If \code{FALSE} (the
+default) print info messages and timing.}
 
-\item{output}{The desired output, one of:
-\itemize{
-\item \code{"nice"} (the default) A \link[tibble:tibble-package]{tibble} with the
-columns time, age, eei, epl, phi, cp.
-\item \code{"full"} A \link[tibble:tibble-package]{tibble} with all the computed and
-interpolated columns.
-\item \code{"ode"} A matrix with the output of the ODE solver.
-}}
+\item{output}{The desired output, one of: * \code{"nice"} (the default) A
+\link[tibble:tibble-package]{tibble} with the columns time, age, eei, epl,
+phi, cp. * \code{"full"} A \link[tibble:tibble-package]{tibble} with all the
+computed and interpolated columns. * \code{"ode"} A matrix with the output of
+the ODE solver.}
 }
 \value{
 A \link[tibble:tibble-package]{tibble} with a selection of columns or a
