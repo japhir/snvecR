@@ -1392,6 +1392,7 @@ Waiting for Emacs...
 ✔ Setting 'https://japhir.github.io/snvecR/' as homepage of GitHub repo 'japhir/snvecR'
 #+end_example
 
+
 ** [17/18] write tests for each component                   :prj:
 *** DONE test qinterp
 CLOSED: [2023-04-06 Thu 16:38]
