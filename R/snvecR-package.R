@@ -10,6 +10,7 @@
 #' @importFrom readr write_rds read_rds read_table
 #' @importFrom rlang .data
 #' @importFrom tibble tibble
+#' @importFrom tidyr unnest
 #' @importFrom tidyselect all_of
 #' @importFrom withr local_options
 ## usethis namespace: end

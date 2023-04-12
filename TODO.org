@@ -1178,6 +1178,11 @@ CLOSED: [2023-04-06 Thu 14:28]
 CLOSED: [2023-04-11 Tue 17:36]
 see [[file:vignettes/analyze_grid_td-ed.Rmd]]
 
+*** build vignette
+#+begin_src R
+ devtools::build_vignettes()
+#+end_src
+
 *** CANC share the computed output grids
 CLOSED: [2023-04-11 Tue 17:37]
 :PROPERTIES:

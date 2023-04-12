@@ -30,7 +30,8 @@ Imports:
     tidyselect,
     lubridate,
     rlang (>= 0.4.11),
-    withr
+    withr,
+    tidyr
 Config/testthat/edition: 3
 Depends:
     R (>= 3.5.0)

@@ -16,8 +16,12 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(tidyverse)
-library(snvecR)
+library(tibble)  # nice dataframes
+library(dplyr)   # mutate/select/filter/glimpse
+library(purrr)   # pmap
+library(tidyr)   # unnest
+library(ggplot2) # nice plots
+library(snvecR)  # this package
 ```
 
 # Introduction
