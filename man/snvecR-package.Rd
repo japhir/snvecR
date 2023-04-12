@@ -20,7 +20,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Richard Zeebe \email{zeebe@hawaii.edu} (\href{https://orcid.org/0000-0003-0806-8387}{ORCID})
+  \item Richard Zeebe \email{zeebe@soest.hawaii.edu} (\href{https://orcid.org/0000-0003-0806-8387}{ORCID})
 }
 
 }
