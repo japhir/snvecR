@@ -1063,11 +1063,12 @@ the different methods (other then timestep) result in identical results!!
 ** CANC consider whether it's useful to build a Cpp implementation of our function?
 CLOSED: [2023-04-06 Thu 16:33]
 probably not needed, 30s or so for 100 Myr is fast enough
-* [8/9] snvecR is /fun/                                       :prj:
+* [9/10] snvecR is /fun/                                      :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:35]
 :END:
-** [6/6] calculate for grids of Td and Ed                   :prj:
+** DONE [6/6] calculate for grids of Td and Ed          :prj:
+CLOSED: [2023-04-11 Tue 17:37]
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
 :END:
@@ -1211,7 +1212,7 @@ CLOSED: [2023-04-06 Thu 14:35]
 :END:
 https://github.com/r-lib/progress#readme
 this is easy to do for a purrr call if we're solving many different version, but harder if we want to do it for a single ODE solver
-* [31/42] snvecR is /published/ on CRAN, github, zenodo       :prj:
+* [33/43] snvecR is /published/ on CRAN, github, zenodo       :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:27]
 :END:
@@ -1330,7 +1331,7 @@ CLOSED: [2023-04-06 Thu 16:37]
 
 learn more at
 https://github.com/r-lib/actions/blob/v2/examples/README.md
-** [15/17] write tests for each component                   :prj:
+** [17/18] write tests for each component                   :prj:
 *** DONE test qinterp
 CLOSED: [2023-04-06 Thu 16:38]
 *** DONE tests euler
@@ -1386,11 +1387,13 @@ it's still super different! :O am I resolving it on tmv = the output time scale 
 ok I was reporting it as a function of tmv, not as the OS's timesteps.
 Ditched C's output of timesteps and pasted it back from the OS, now it's identical.
 
-*** NEXT [10/11] write test for snvec itself
+*** DONE [11/12] write test for snvec itself
+CLOSED: [2023-04-11 Tue 17:38]
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:38]
 :END:
-**** [9/9] returns errors with wrong inputs?
+**** DONE [9/9] returns errors with wrong inputs?
+CLOSED: [2023-04-11 Tue 17:38]
 :LOGBOOK:
 - State "DONE"       from "SOME"       [2023-04-10 Mon 15:44]
 - State "SOME"       from              [2023-04-06 Thu 16:38]
@@ -1423,9 +1426,12 @@ CLOSED: [2023-04-10 Mon 14:24]
 :CREATED:  [2023-04-06 Thu 16:39]
 :END:
 using cached version right now
-**** NEXT test correct outputs vs. C-routine?
+*** SOME test correct outputs vs. C-routine?
 :PROPERTIES:
 :CREATED:  [2023-04-10 Mon 14:24]
+:END:
+:LOGBOOK:
+- State "SOME"       from "NEXT"       [2023-04-11 Tue 17:38]
 :END:
 ** DONE move the code out of README.org for reals -> pkg structure is single source of truth
 CLOSED: [2023-04-05 Wed 20:19]
