@@ -72,7 +72,8 @@ tidal dissipation (Td). It solves a set of ordinary differential equations.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>tend</dt>
-<dd><p>The final timestep in -kyr. Defaults to <code>-1000</code> kyr.</p></dd>
+<dd><p>The final timestep in thousands of years before present (ka).
+Defaults to <code>-1000</code> ka.</p></dd>
 
 
 <dt>ed</dt>
@@ -90,7 +91,8 @@ implemented!).</p></dd>
 
 
 <dt>tres</dt>
-<dd><p>The output timestep resolution in kyr. Defaults to <code>0.4</code>.</p></dd>
+<dd><p>The output timestep resolution in thousands of years (kyr).
+Defaults to <code>0.4</code>.</p></dd>
 
 
 <dt>tolerance</dt>
@@ -99,18 +101,16 @@ and <code>atol</code> arguments. Defaults to <code>1e-7</code>.</p></dd>
 
 
 <dt>quiet</dt>
-<dd><p>Be quiet?
-If <code>TRUE</code>, hide info messages.
-If <code>FALSE</code> (the default) print info messages and timing.</p></dd>
+<dd><p>Be quiet? If <code>TRUE</code>, hide info messages. If <code>FALSE</code> (the
+default) print info messages and timing.</p></dd>
 
 
 <dt>output</dt>
-<dd><p>The desired output, one of:</p><ul><li><p><code>"nice"</code> (the default) A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with the
-columns time, age, eei, epl, phi, cp.</p></li>
-<li><p><code>"full"</code> A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with all the computed and
-interpolated columns.</p></li>
-<li><p><code>"ode"</code> A matrix with the output of the ODE solver.</p></li>
-</ul></dd>
+<dd><p>The desired output, one of: * <code>"nice"</code> (the default) A
+<a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with the columns time, age, eei, epl,
+phi, cp. * <code>"full"</code> A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with all the
+computed and interpolated columns. * <code>"ode"</code> A matrix with the output of
+the ODE solver.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -174,21 +174,21 @@ we use.</p></div>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># default call</span></span></span>
 <span class="r-in"><span><span class="fu">snvec</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Integration parameters:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = -1000 kyr</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = -1000 ka</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `ed` = 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `td` = 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `orbital_solution` = "ZB18a"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tres` = 0.4 kyr</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tolerance` = 1e-07</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-12 22:53:56"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-12 23:10:44"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: 0.404197401889995 -0.0537088693151315 0.913033870060216</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: -5.44863769493809e-05</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: 0.413056572908906 rad</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: -0.562236541410392 rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-12 22:53:57"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 1.53s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-12 23:10:45"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 1.39s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        time   age    eei   epl    phi     cp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -207,21 +207,21 @@ we use.</p></div>
 <span class="r-in"><span><span class="co"># a quick one with few timesteps, low resolution, high tolerance</span></span></span>
 <span class="r-in"><span><span class="fu">snvec</span><span class="op">(</span><span class="op">-</span><span class="fl">1e2</span>, <span class="fl">1</span>, <span class="fl">0</span>, orbital_solution <span class="op">=</span> <span class="st">"ZB18a"</span>, tres <span class="op">=</span> <span class="fl">1</span>, tolerance <span class="op">=</span> <span class="fl">1e-4</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Integration parameters:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = -100 kyr</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = -100 ka</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `ed` = 1</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `td` = 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `orbital_solution` = "ZB18a"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tres` = 1 kyr</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tolerance` = 1e-04</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-12 22:53:57"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-12 23:10:46"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: 0.367675054892834 -0.133687345565282 0.919917929311039</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: -0.00034693567085553</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: 0.413004218872119 rad</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: -0.770431080769168 rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-12 22:53:58"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 0.37s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-12 23:10:46"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 0.36s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        time   age    eei   epl   phi        cp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
