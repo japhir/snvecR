@@ -8,6 +8,13 @@
 \description{
 This package makes it easy to calculate precession and obliquity from an orbital solution (defaults to ZB18a) and assumed or reconstructed values for tidal dissipation (td) and dynamical ellipticity (ed).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://japhir.github.io/snvecR/}
+}
+
+}
 \author{
 \strong{Maintainer}: Ilja Kocken \email{ikocken@hawaii.edu} (\href{https://orcid.org/0000-0003-2196-8718}{ORCID})
 

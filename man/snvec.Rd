@@ -29,7 +29,7 @@ implemented!).}
 \item{tres}{The output timestep resolution in kyr. Defaults to \code{0.4}.}
 
 \item{tolerance}{The numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol}
-and \code{atol} arguments. Defaults to 1e-7.}
+and \code{atol} arguments. Defaults to \code{1e-7}.}
 
 \item{quiet}{Be quiet?
 If \code{TRUE}, hide info messages.
@@ -37,14 +37,16 @@ If \code{FALSE} (the default) print info messages and timing.}
 
 \item{output}{The desired output, one of:
 \itemize{
-\item "nice" (the default) the columns time, age, eei, epl, phi, cp.
-\item "full" All the computed and interpolated columns.
-\item "ode" The output of the ODE solver. Useful for i.e. \code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
+\item \code{"nice"} (the default) A \link[tibble:tibble-package]{tibble} with the
+columns time, age, eei, epl, phi, cp.
+\item \code{"full"} A \link[tibble:tibble-package]{tibble} with all the computed and
+interpolated columns.
+\item \code{"ode"} A matrix with the output of the ODE solver.
 }}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with a selection of columns,
-depending on the \code{output} parameter (see Details).
+A \link[tibble:tibble-package]{tibble} with a selection of columns or a
+matrix, depending on the \code{output} parameter (see Details).
 }
 \description{
 Computes climatic precession and obliquity (or tilt) from an orbital
@@ -79,7 +81,8 @@ reference frame.
 }
 
 If \code{output = "ode"}, it will return the raw output of the ODE solver, which
-is an object of class \code{deSolve} and \code{matrix}.
+is an object of class \code{deSolve} and \code{matrix}. This can be useful for i.e.
+\code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
 }
 \examples{
 # default call

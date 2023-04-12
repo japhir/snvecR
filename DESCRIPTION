@@ -37,3 +37,4 @@ Depends:
 LazyData: true
 LazyDataCompression: xz
 VignetteBuilder: knitr
+URL: https://japhir.github.io/snvecR/

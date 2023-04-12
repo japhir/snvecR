@@ -12,17 +12,19 @@
 #'   implemented!).
 #' @param tres The output timestep resolution in kyr. Defaults to `0.4`.
 #' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol`
-#'   and `atol` arguments. Defaults to 1e-7.
+#'   and `atol` arguments. Defaults to `1e-7`.
 #' @param quiet Be quiet?
 #'   If `TRUE`, hide info messages.
 #'   If `FALSE` (the default) print info messages and timing.
 #' @param output The desired output, one of:
-#'   * "nice" (the default) the columns time, age, eei, epl, phi, cp.
-#'   * "full" All the computed and interpolated columns.
-#'   * "ode" The output of the ODE solver. Useful for i.e. [deSolve::diagnostics()].
+#'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
+#'     columns time, age, eei, epl, phi, cp.
+#'   * `"full"` A [tibble][tibble::tibble-package] with all the computed and
+#'     interpolated columns.
+#'   * `"ode"` A matrix with the output of the ODE solver.
 #'
-#' @returns A [tibble][tibble::tibble-package] with a selection of columns,
-#'   depending on the `output` parameter (see Details).
+#' @returns A [tibble][tibble::tibble-package] with a selection of columns or a
+#'   matrix, depending on the `output` parameter (see Details).
 #'
 #' @author Ilja J. Kocken and Richard E. Zeebe
 #'
@@ -51,7 +53,8 @@
 #'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000.
 #'
 #' If `output = "ode"`, it will return the raw output of the ODE solver, which
-#' is an object of class `deSolve` and `matrix`.
+#'   is an object of class `deSolve` and `matrix`. This can be useful for i.e.
+#'   [deSolve::diagnostics()].
 #'
 #' @seealso [deSolve::ode()] from Soetaert et al., 2010 for the ODE solver that
 #'   we use.

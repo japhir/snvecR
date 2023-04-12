@@ -3,11 +3,11 @@
 \docType{data}
 \name{ZB18a}
 \alias{ZB18a}
-\title{Orbital Solution from Zeebe et al., 2018.}
+\title{Orbital Solution ZB18a}
 \format{
 \subsection{\code{ZB18a}}{
 
-A data frame with 250,001 rows and 8 columns:
+A data frame with 250,001 rows and 20 columns:
 \describe{
 \item{t}{Time in days.}
 \item{age}{Age in thousands of years (kyr) before present.}
@@ -18,25 +18,30 @@ A data frame with 250,001 rows and 8 columns:
 \item{lan}{Long ascending node.}
 \item{arp}{Argument of periapse.}
 \item{mna}{Mean anomaly.}
-\item{hh}{helper hh.}
-\item{kk}{helper hk.}
-\item{pp}{helper pp.}
-\item{qq}{helper qq.}
-\item{cc}{helper cc.}
-\item{dd}{helper dd.}
+The following columns were computed from the above input:
+\item{lphu}{Unwrapped long periapse.}
+\item{lanu}{Unwrapped long ascending node.}
+\item{hh}{Helper: \code{ee * sin(lph / R2D)}.}
+\item{kk}{Helper: \code{ee * cos(lph / R2D)}.}
+\item{pp}{Helper: \code{2 * sin(0.5 * inc / R2D) * sin(lan / R2D)}.}
+\item{qq}{Helper: \code{2 * sin(0.5 * inc / R2D) * cos(lan / R2D)}.}
+\item{cc}{Helper: \code{cos(inc / R2D)}.}
+\item{dd}{Helper: \code{cos(inc / R2D / 2)}.}
 \item{nnx, nny, nnz}{Vector of Earth's orbit normal.}
 }
 }
 }
 \source{
-All orbital solutions can be found on \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
-The specific one we use here is available at \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
+\itemize{
+\item All orbital solutions can be found on \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
+\item The specific one we use here is available at \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
+}
 }
 \usage{
 ZB18a
 }
 \description{
-The HNBody output of Zeebe & Lourens 2019.
+The HNBody output of Zeebe & Lourens (2019).
 }
 \details{
 The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements}

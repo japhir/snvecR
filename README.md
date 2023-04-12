@@ -11,7 +11,8 @@ status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org
 
 The goal of snvecR is to calculate precession and obliquity from an
 orbital solution (defaults to ZB18a) and assumed or reconstructed values
-for tidal dissipation (td) and dynamical ellipticity (ed).
+for tidal dissipation (T<sub>d<sub>) and dynamical ellipticity
+(E<sub>d<sub>).
 
 ## Installation
 
@@ -35,15 +36,15 @@ solution <- snvec()
 #> • `orbital_solution` = "ZB18a"
 #> • `tres` = 0.4 kyr
 #> • `tolerance` = 1e-07
-#> ℹ started at "2023-04-12 09:05:04"
+#> ℹ started at "2023-04-12 11:23:51"
 #> Final values:
 #> • s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935
 #> • s-error = |s|-1: -5.44863786333671e-05
 #> Final values:
 #> • obliquity: 0.413056573207875 rad
 #> • precession: -0.562236553023642 rad
-#> ℹ stopped at "2023-04-12 09:05:05"
-#> ℹ total duration: 1.19s
+#> ℹ stopped at "2023-04-12 11:23:52"
+#> ℹ total duration: 1.25s
 ```
 
 see `?snvec` for further documentation.
@@ -58,7 +59,7 @@ solution |>
   # the age scale goes from old to young
   scale_x_reverse() +
   # plot climatic precession
-  geom_line() +
+  geom_line(colour = "skyblue") +
   # add the (interpolated) eccentricity envelope
   geom_line(aes(y = eei))
 ```
