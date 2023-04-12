@@ -423,7 +423,7 @@ CLOSED: [2023-04-06 Thu 16:33]
   ))
   plot(out)
 #+end_src
-* [10/18] snvecR /works/                                      :prj:
+* [13/18] snvecR /works/                                      :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 14:52]
 :END:
@@ -890,11 +890,12 @@ stopped at Tue Apr  4 23:06:35 2023
 
 rldpeace
 
-** NEXT [1/4] make the La2011 solution obl + precession available? :prj:
+** SOME [3/4] make the La2011 solution obl + precession available? :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 10:35]
 :END:
 :LOGBOOK:
+- State "SOME"       from "NEXT"       [2023-04-11 Tue 16:37]
 - State "NEXT"       from "SOME"       [2023-04-10 Mon 12:19]
 - State "SOME"       from "NEXT"       [2023-04-04 Tue 10:36]
 :END:
@@ -916,15 +917,18 @@ they apply the Laskar fortran routine from 92/93 to calculate precession/obliqui
 *** DONE download the required files
 CLOSED: [2023-04-10 Mon 16:54]
 
-*** WAIT ask Richard which corresponds to mean longitude
+*** DONE ask Richard which corresponds to mean longitude
+CLOSED: [2023-04-11 Tue 16:37]
 :PROPERTIES:
 :CREATED:  [2023-04-10 Mon 16:55]
 :END:
 :LOGBOOK:
+- State "DONE"       from "WAIT"       [2023-04-11 Tue 16:37]
 - State "WAIT"       from "NEXT"       [2023-04-10 Mon 17:48]
 :END:
 
-*** NEXT reverse engineer the parameters
+*** CANC reverse engineer the parameters
+CLOSED: [2023-04-11 Tue 16:37]
 :PROPERTIES:
 :CREATED:  [2023-04-10 Mon 16:54]
 :END:
@@ -941,14 +945,16 @@ at the end
 if(!is.null(file)) { readr::write_rds(fin, file = file) }
 #+end_src
 
-** SOME [0/4] add options for which output to return
+** DONE [3/3] add options for which output to return
+CLOSED: [2023-04-11 Tue 16:36]
 :LOGBOOK:
+- State "DONE"       from "SOME"       [2023-04-11 Tue 16:36]
 - State "SOME"       from              [2023-04-10 Mon 15:37]
 :END:
-- [ ] the raw spin vector output
-- [ ] the full output with all columns
-- [ ] only the same output as the C-routine (default)
-*** analyse the ODE solver for problems
+- [X] the raw spin vector output = ode
+- [X] the full output with all columns = all
+- [X] only the same output as the C-routine (default) = nice
+** analyse the ODE solver for problems
 :PROPERTIES:
 :CREATED:  [2023-04-03 Mon 14:38]
 :END:
@@ -1057,11 +1063,11 @@ the different methods (other then timestep) result in identical results!!
 ** CANC consider whether it's useful to build a Cpp implementation of our function?
 CLOSED: [2023-04-06 Thu 16:33]
 probably not needed, 30s or so for 100 Myr is fast enough
-* [4/7] snvecR is /fun/                                       :prj:
+* [8/9] snvecR is /fun/                                       :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-06 Thu 16:35]
 :END:
-** [4/6] calculate for grids of Td and Ed                :prj:
+** [6/6] calculate for grids of Td and Ed                   :prj:
 :PROPERTIES:
 :CREATED:  [2023-04-04 Tue 09:29]
 :END:
@@ -1167,13 +1173,17 @@ CLOSED: [2023-04-06 Thu 14:28]
 #+RESULTS:
 [[file:imgs/2023-04-05_experimental-grid_full_bin.png]]
 
-*** NEXT migrate this to a vignette
+*** DONE migrate this to a vignette
+CLOSED: [2023-04-11 Tue 17:36]
+see [[file:vignettes/analyze_grid_td-ed.Rmd]]
 
-*** SOME share the computed output grids
+*** CANC share the computed output grids
+CLOSED: [2023-04-11 Tue 17:37]
 :PROPERTIES:
 :CREATED:  [2023-03-23 Thu 11:46]
 :END:
 :LOGBOOK:
+- State "CANC"       from "SOME"       [2023-04-11 Tue 17:37]
 - State "SOME"       from              [2023-03-24 Fri 13:59]
 :END:
 ** SOME visualize results: a heat map?
@@ -1184,7 +1194,8 @@ CLOSED: [2023-04-06 Thu 14:28]
 - State "SOME"       from "NEXT"       [2023-04-05 Wed 15:55]
 :END:
 for that I'd need to have the difference function with a record
-*** NEXT make the text of my plots bigger for Richard
+*** DONE make the text of my plots bigger for Richard
+CLOSED: [2023-04-11 Tue 16:38]
 :PROPERTIES:
 :CREATED:  [2023-04-05 Wed 20:19]
 :END:

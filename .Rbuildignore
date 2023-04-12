@@ -13,3 +13,5 @@
 ^.*\.zenodo.json$
 ^README\.Rmd$
 ^\.github$
+^doc$
+^Meta$

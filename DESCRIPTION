@@ -16,7 +16,9 @@ Suggests:
     ggplot2,
     testthat,
     microbenchmark,
-    roxygen2
+    roxygen2,
+    knitr,
+    rmarkdown
 Imports:
     deSolve,
     pracma,
@@ -34,3 +36,4 @@ Depends:
     R (>= 3.5.0)
 LazyData: true
 LazyDataCompression: xz
+VignetteBuilder: knitr

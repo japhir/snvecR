@@ -11,3 +11,6 @@
 /out/
 /snvec-3.7.5/
 /snvec-julia.org
+inst/doc
+/doc/
+/Meta/

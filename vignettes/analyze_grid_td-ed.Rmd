@@ -1,0 +1,146 @@
+---
+title: "Analyze a grid of Td and Ed values"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyze a grid of Td and Ed values}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 12, fig.height = 8
+)
+```
+
+```{r setup}
+library(tidyverse)
+library(snvecR)
+```
+
+# Introduction
+
+The function `snvec()` uses some of the parameters of a full orbital solution
+(OS, such as ZB18a) in combination with values for tidal dissipation (Td) and
+dynamical ellipticity (Ed) to calculate precession and obliquity (or tilt).
+
+In this vignette we show how we would go about using `snvec()` for a range of
+input values.
+
+# Create a grid of Td and Ed
+
+We create a grid of input values for Td and Ed. The values in the grid are
+based on Zeebe and Lourens 2022 table 2.
+
+```{r make-grid}
+biggrid <- expand.grid(Td = c(0, 0.5, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2),
+              Ed = c(1.000, 0.998, 1.005, 1.012)) |>
+    as_tibble()
+    # that's 32 rows
+biggrid
+```
+
+We now add columns for important parameter values, so that it is very clear
+from the output what the inputs were.
+
+```{r update-grid}
+biggrid <- biggrid |>
+    # for now only for 1000 years at very high tolerance so it's fast
+    mutate(tol = 1e-4, tend = -1e3)
+    # this would be the real deal, the full 100 Ma--0 results at medium
+    # tolerance.
+    ## mutate(tol = 1e-7, tend = -1e5)
+```
+
+# Approach
+We're going to use `purrr`'s `pmap()` function here, which allows you to apply
+a function given a list of input values. See [the chapter on iteration in
+r4ds](https://r4ds.had.co.nz/iteration.html#mapping-over-multiple-arguments)
+for more details. This will create a list-column with the results.
+
+If we would apply the `snvec()` function here directly for the full 100 Myr, it
+would quickly make R run out of memory, because it would be storing all the
+timesteps for those 32 experiments. Instead, we write a wrapper function that
+only stores the latest N timesteps.
+
+```{r snvec-tail}
+snvec_tail <- function(..., n = 100) {
+  # do the fit with the parameters in ...
+  snvec(...) |>
+    # save only the last n values, that's where the differences are greatest
+    tail(n = n)
+}
+```
+
+# Compute obliquity and precession
+
+Now we can apply the function to the grid.
+
+```{r massive-compute}
+biggrid <- biggrid |>
+    # apply our new function!
+    mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, tolerance = tol),
+                      .f = snvec_tail,
+                      # additional parameters to snvec_tail can go after!
+                      quiet = TRUE, output = "nice", n = 100,
+                      # I would strongly recommend against increasing the
+                      # resolution too much, but for speed/illustration we
+                      # prefer to do it here
+                      tres = 5,
+                      # interactively this makes a nice progress bar
+                      .progress = "snvec on a grid")) #|>
+
+    # normally we would save the results to file, because these take quite a
+    # long time to calculate!
+    ## write_rds("out/2023-04-05_biggrid.rds")
+```
+
+This would be how I would read in my old results (about 9MB on-disk for the final 1000 timesteps in the full 100 Myr simulations).
+
+```{r read-old, eval=FALSE}
+biggrid <- read_rds("out/2023-04-05_biggrid.rds")
+```
+
+# Inspect results
+
+Let's look at the structure of the output:
+```{r check}
+glimpse(biggrid)
+```
+
+We can see the list column `sol` in this result! But we'd like to access the
+raw output, so we use `unnest()`.
+
+```{r unnest}
+expanded <- biggrid |>
+  unnest(sol)
+expanded
+```
+
+Let's make a figure of these final values.
+
+```{r plot}
+expanded |>
+  ggplot(aes(x = age, y = cp,
+             colour = factor(Td),
+             linetype = factor(Ed))) +
+  scale_x_reverse("Age (ka)") +
+  facet_grid(rows = vars(Td)) +
+  geom_line() +
+  # add eccentricity
+  geom_line(aes(y = eei), colour = "black") +
+  labs(y = "Climatic precession",
+       colour = "Tidal dissipation",
+       linetype = "Dynamical ellipticity")
+```
+
+Now the analysis can begin! But this is where we finish this vignette.
+
+# References
+
+Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
+  paleo-applications utilizing obliquity and precession cycles: The role of
+  dynamical ellipticity and tidal dissipation. _Paleoceanography and
+  Paleoclimatology_, e2021PA004349. <https://doi.org/10.1029/2021PA004349>
