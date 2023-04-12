@@ -9,7 +9,13 @@
 # q : sin(i/2) cos (Omega)
 # p : sin(i/2) sin (Omega)
 
+# but note from the README: http://vo.imcce.fr/insola/earth/online/earth/La2010/README.TXT
+# The classical elliptical elements a, e, i, l, varpi, Omega
+# are taken in the invariant reference frame
+# and the origin of time is J2000.
 
+cli::cli_abort(c("i" = "The input OS for snvec must be in the Heliocentric Inertial Reference frame (HCI) (J2000)",
+                 "x" = "The La11 solution is in the invariant reference frame"))
 # to get eccentricity we'll need a separate file:
 
 # The files La2010X_ecc3.dat and La2010X_ecc3L.dat  contain t, ecc

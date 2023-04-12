@@ -2,7 +2,7 @@
 #'
 #' Computes climatic precession and obliquity (or tilt) from an orbital
 #' solution (OS) input and input values for dynamical ellipticity (Ed) and
-#' tidal dissipation (Td). It fits a set of ordinary differential equations.
+#' tidal dissipation (Td). It solves a set of ordinary differential equations.
 #'
 #' @param tend The final timestep in -kyr. Defaults to `-1000` kyr.
 #' @param ed Dynamical ellipticity, normalized to modern. Defaults to `1.0`.
@@ -21,6 +21,10 @@
 #' @author Ilja J. Kocken and Richard E. Zeebe
 #'
 #' @details
+#' This is a re-implementation of the C-code in Zeebe & Lourens 2022,
+#' in order to make it more accessible.
+#' The terms are explained in detail in Zeebe 2022.
+#'
 #' The output is a [tibble][tibble::tibble-package] with the following columns:
 #'   * `time` Time in years.
 #'   * `sx`, `sy`, `sz` Input vector s.
@@ -29,7 +33,6 @@
 #'   * `eei`, `lphi`, `lani` The orbital solution's eccentricity, unwrapped
 #'      long periapse, and unwrapped long ascending node, interpolated to
 #'      resulting timesteps.
-#'   * `tmp` A temporary value that we used for the calculation.
 #'   * `epl` The `acos(tmp)`.
 #'   * `u` The input vector s as a list-column.
 #'   * `nv` The vector n as a list-column.
@@ -38,16 +41,26 @@
 #'   * `cp` Climatic precession.
 #'
 #' @seealso
-#'   [deSolve::ode()] for the ODE solver that we use.
+#'   [deSolve::ode()] from Soetaert et al., 2010 for the ODE solver that we use.
 #'
 #' @references
 #'
-#' Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’
-#'   Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to
-#'   Solar System Chaos. _The Astronomical Journal_, 164(3), 107.
+#' Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
+#'   paleo-applications utilizing obliquity and precession cycles: The role of
+#'   dynamical ellipticity and tidal dissipation. _Paleoceanography and
+#'   Paleoclimatology_, e2021PA004349. <https://doi.org/10.1029/2021PA004349>
+#'
+#' Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
+#'   Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
+#'   System Chaos. _The Astronomical Journal_, 164(3), 107.
 #'   <https://doi.org/10.3847/1538-3881/ac80f8>
 #'
-#' Wikipedia page on Orbital Elements: <https://en.wikipedia.org/wiki/Orbital_elements>
+#' Wikipedia page on Orbital Elements:
+#'   <https://en.wikipedia.org/wiki/Orbital_elements>
+#'
+#' Karline Soetaert, Thomas Petzoldt, R. Woodrow Setzer (2010). Solving
+#'   Differential Equations in R: Package deSolve. Journal of Statistical
+#'   Software, 33(9), 1--25. doi:10.18637/jss.v033.i09
 #'
 #' @examples
 #' # default call
@@ -76,8 +89,9 @@ snvec <- function(tend = -1e3,
   if (orbital_solution == "La11") {
     ## dat <- snvecR::La11
     cli::cli_abort(c("Orbital solution: La11 currently not supported.",
-      "i" = "Pull requests welcome."
-    ))
+      "!" = "The input OS for snvec must be in the Heliocentric Inertial Reference frame (HCI) (J2000).",
+      "x" = "The La11 solution is in the invariant reference frame.",
+      "i" = "Pull requests welcome."))
   }
 
   ## tend
@@ -359,6 +373,8 @@ snvec <- function(tend = -1e3,
     # we transform the deSolve parameters into simple numeric columns
     # this is so they work better with things like bind_rows etc. via vctrs
     dplyr::mutate(dplyr::across(
-      all_of(c("time", "sx", "sy", "sz", "age", "epl")),
-      as.numeric))
+      tidyselect::all_of(c("time", "sx", "sy", "sz", "age", "epl")),
+      as.numeric)) |>
+    # get rid of columns that we do not use
+    dplyr::select(-tidyselect::all_of(c("tmp")))
 }
