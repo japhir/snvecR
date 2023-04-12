@@ -21,7 +21,9 @@ test_that("snvecR basic call works", {
                         # return results at a very low resolution for speed
                         tres = 1,
                         # do not show info messages because some have timestamps
-                        quiet = TRUE) |>
+                        quiet = TRUE,
+                        # provide output = all so that we can see if the vectors are doing well
+                        output = "all") |>
                     # report only the columns of interest (the ones returned by the C-routine)
                     # this means that if I change my mind about which columns to report it doesn't matter,
                     # as long as the output of these columns remains the same.

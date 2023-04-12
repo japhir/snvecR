@@ -10,10 +10,11 @@ library(readr)
 library(snvecR) # for the unwrap function
 
 dat <- read_table("http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat",
-  # also locally on "snvec-3.7.5/ems-plan3.dat"
+                  # also locally at
+                  #"snvec-3.7.5/ems-plan3.dat"
   comment = "#",
   skip = 3, # skip those column indicators
-  # set the column names manually
+  # set the column names manually to match the header comments
   col_names = c(
     "Time",              # 0-Time (=Epoch)
     ## "x1", "x2", "x3", # 1-3

@@ -11,7 +11,8 @@ snvec(
   orbital_solution = "ZB18a",
   tres = 0.4,
   tolerance = 1e-07,
-  quiet = FALSE
+  quiet = FALSE,
+  output = "nice"
 )
 }
 \arguments{
@@ -33,33 +34,52 @@ and \code{atol} arguments. Defaults to 1e-7.}
 \item{quiet}{Be quiet?
 If \code{TRUE}, hide info messages.
 If \code{FALSE} (the default) print info messages and timing.}
+
+\item{output}{The desired output, one of:
+\itemize{
+\item "nice" (the default) the columns time, age, eei, epl, phi, cp.
+\item "full" All the computed and interpolated columns.
+\item "ode" The output of the ODE solver. Useful for i.e. \code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
+}}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with all the computed results (see Details).
+A \link[tibble:tibble-package]{tibble} with a selection of columns,
+depending on the \code{output} parameter (see Details).
 }
 \description{
 Computes climatic precession and obliquity (or tilt) from an orbital
 solution (OS) input and input values for dynamical ellipticity (Ed) and
-tidal dissipation (Td). It fits a set of ordinary differential equations.
+tidal dissipation (Td). It solves a set of ordinary differential equations.
 }
 \details{
+This is a re-implementation of the C-code in the supplementary information
+of Zeebe & Lourens 2022, in order to make it more accessible. The terms
+are explained in detail in Zeebe 2022.
+
 The output is a \link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
 \item \code{time} Time in years.
-\item \code{sx}, \code{sy}, \code{sz} Input vector s.
 \item \code{age} Age in thousands of years ago (ka).
-\item \code{nnx}, \code{nny}, \code{nnz} The euler transform of the input vector s.
-\item \code{eei}, \code{lphi}, \code{lani} The orbital solution's eccentricity, unwrapped
-long periapse, and unwrapped long ascending node, interpolated to
-resulting timesteps.
-\item \code{tmp} A temporary value that we used for the calculation.
-\item \code{epl} The \code{acos(tmp)}.
-\item \code{u} The input vector s as a list-column.
-\item \code{nv} The vector n as a list-column.
-\item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000
+\item \code{eei} The orbital solution's eccentricity.
+\item \code{epl} The obliquity in radians.
 \item \code{phi} The true anomaly.
 \item \code{cp} Climatic precession.
 }
+
+If \code{output = "all"}, the following additional columns are included:
+\itemize{
+\item \code{sx}, \code{sy}, \code{sz} Input spin vector s in the heliocentric inertial
+reference frame.
+\item \code{nnx}, \code{nny}, \code{nnz} The vector normal to the orbit.
+\item \code{lphi} The long periapse.
+\item \code{lani} The long ascending node.
+\item \code{u} The input vector s as a list-column.
+\item \code{nv} The vector n as a list-column.
+\item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000.
+}
+
+If \code{output = "ode"}, it will return the raw output of the ODE solver, which
+is an object of class \code{deSolve} and \code{matrix}.
 }
 \examples{
 # default call
@@ -69,15 +89,26 @@ snvec()
 snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
 }
 \references{
-Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’
-Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to
-Solar System Chaos. \emph{The Astronomical Journal}, 164(3), 107.
+Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
+paleo-applications utilizing obliquity and precession cycles: The role of
+dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
+Paleoclimatology}, e2021PA004349. \url{https://doi.org/10.1029/2021PA004349}
+
+Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
+Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
+System Chaos. \emph{The Astronomical Journal}, 164(3), 107.
 \url{https://doi.org/10.3847/1538-3881/ac80f8}
 
-Wikipedia page on Orbital Elements: \url{https://en.wikipedia.org/wiki/Orbital_elements}
+Wikipedia page on Orbital Elements:
+\url{https://en.wikipedia.org/wiki/Orbital_elements}
+
+Karline Soetaert, Thomas Petzoldt, R. Woodrow Setzer (2010). Solving
+Differential Equations in R: Package deSolve. Journal of Statistical
+Software, 33(9), 1--25. \url{https:doi.org/10.18637/jss.v033.i09}
 }
 \seealso{
-\code{\link[deSolve:ode]{deSolve::ode()}} for the ODE solver that we use.
+\code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., 2010 for the ODE solver that
+we use.
 }
 \author{
 Ilja J. Kocken and Richard E. Zeebe

@@ -16,32 +16,45 @@
 #' @param quiet Be quiet?
 #'   If `TRUE`, hide info messages.
 #'   If `FALSE` (the default) print info messages and timing.
-#' @returns A [tibble][tibble::tibble-package] with all the computed results (see Details).
+#' @param output The desired output, one of:
+#'   * "nice" (the default) the columns time, age, eei, epl, phi, cp.
+#'   * "full" All the computed and interpolated columns.
+#'   * "ode" The output of the ODE solver. Useful for i.e. [deSolve::diagnostics()].
+#'
+#' @returns A [tibble][tibble::tibble-package] with a selection of columns,
+#'   depending on the `output` parameter (see Details).
 #'
 #' @author Ilja J. Kocken and Richard E. Zeebe
 #'
 #' @details
-#' This is a re-implementation of the C-code in Zeebe & Lourens 2022,
-#' in order to make it more accessible.
-#' The terms are explained in detail in Zeebe 2022.
+#'
+#' This is a re-implementation of the C-code in the supplementary information
+#'   of Zeebe & Lourens 2022, in order to make it more accessible. The terms
+#'   are explained in detail in Zeebe 2022.
 #'
 #' The output is a [tibble][tibble::tibble-package] with the following columns:
 #'   * `time` Time in years.
-#'   * `sx`, `sy`, `sz` Input vector s.
 #'   * `age` Age in thousands of years ago (ka).
-#'   * `nnx`, `nny`, `nnz` The euler transform of the input vector s.
-#'   * `eei`, `lphi`, `lani` The orbital solution's eccentricity, unwrapped
-#'      long periapse, and unwrapped long ascending node, interpolated to
-#'      resulting timesteps.
-#'   * `epl` The `acos(tmp)`.
-#'   * `u` The input vector s as a list-column.
-#'   * `nv` The vector n as a list-column.
-#'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000
+#'   * `eei` The orbital solution's eccentricity.
+#'   * `epl` The obliquity in radians.
 #'   * `phi` The true anomaly.
 #'   * `cp` Climatic precession.
 #'
-#' @seealso
-#'   [deSolve::ode()] from Soetaert et al., 2010 for the ODE solver that we use.
+#' If `output = "all"`, the following additional columns are included:
+#'   * `sx`, `sy`, `sz` Input spin vector s in the heliocentric inertial
+#'     reference frame.
+#'   * `nnx`, `nny`, `nnz` The vector normal to the orbit.
+#'   * `lphi` The long periapse.
+#'   * `lani` The long ascending node.
+#'   * `u` The input vector s as a list-column.
+#'   * `nv` The vector n as a list-column.
+#'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000.
+#'
+#' If `output = "ode"`, it will return the raw output of the ODE solver, which
+#' is an object of class `deSolve` and `matrix`.
+#'
+#' @seealso [deSolve::ode()] from Soetaert et al., 2010 for the ODE solver that
+#'   we use.
 #'
 #' @references
 #'
@@ -60,7 +73,7 @@
 #'
 #' Karline Soetaert, Thomas Petzoldt, R. Woodrow Setzer (2010). Solving
 #'   Differential Equations in R: Package deSolve. Journal of Statistical
-#'   Software, 33(9), 1--25. doi:10.18637/jss.v033.i09
+#'   Software, 33(9), 1--25. <https:doi.org/10.18637/jss.v033.i09>
 #'
 #' @examples
 #' # default call
@@ -75,7 +88,8 @@ snvec <- function(tend = -1e3,
                   orbital_solution = "ZB18a",
                   tres = 0.4,
                   tolerance = 1e-7,
-                  quiet = FALSE) {
+                  quiet = FALSE,
+                  output = "nice") {
   ## select the desired orbital solution
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {
@@ -93,7 +107,11 @@ snvec <- function(tend = -1e3,
       "x" = "The La11 solution is in the invariant reference frame.",
       "i" = "Pull requests welcome."))
   }
-
+  outputs <- c("nice", "all", "ode")
+  if (!output %in% outputs) {
+    cli::cli_abort("{.var output} must be one of {.or {.q {outputs}}}",
+                   "x" = "You've supplied {q {output}}")
+  }
   ## tend
   if (tend >= 0) {
     cli::cli_abort(c("{.var tend} must be < 0",
@@ -292,7 +310,6 @@ snvec <- function(tend = -1e3,
     )
   ## ))
   ## )
-
   ## print the final values for s
   ## This is at t = tend, it's going back from 0 to -time
   fin <- out[nrow(out), ]
@@ -304,6 +321,11 @@ snvec <- function(tend = -1e3,
       "*" = "s[1][2][3]: {paste(fin[2], fin[3], fin[4])}",
       "*" = "s-error = |s|-1: {sqrt(abs(pracma::dot(u, u)))-1}"
     ))
+  }
+
+  # return ODE output if desired
+  if (output == "ode") {
+    return(out)
   }
 
   ## interpolate the orbital solution
@@ -368,13 +390,26 @@ snvec <- function(tend = -1e3,
     )
   }
 
-  # return fin
-  fin |>
+  # final cleanup
+  fin <- fin |>
     # we transform the deSolve parameters into simple numeric columns
     # this is so they work better with things like bind_rows etc. via vctrs
     dplyr::mutate(dplyr::across(
       tidyselect::all_of(c("time", "sx", "sy", "sz", "age", "epl")),
-      as.numeric)) |>
-    # get rid of columns that we do not use
-    dplyr::select(-tidyselect::all_of(c("tmp")))
+      as.numeric))
+
+  if (output == "all") {
+    return(fin)
+  }
+
+  if (output == "nice") {
+    fin |>
+      # get rid of columns that we do not use
+      dplyr::select(-tidyselect::all_of(c(
+        "sx", "sy", "sz",
+        "nnx", "nny", "nnz",
+        "inci", "lphi", "lani",
+        "tmp",
+        "u", "nv", "up")))
+  }
 }
