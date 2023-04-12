@@ -32,3 +32,14 @@ test_that("snvecR basic call works", {
                     # print the full 100 rows to monitor changes
                     print(n = 50))
 })
+
+test_that("snvecR output columns are correct", {
+  # we have the desired columns
+  expect_equal(snvec(tend = -1, tres = 0.5, quiet = TRUE, output = "nice") |>
+                 colnames(),
+               c("time", "age", "eei", "epl", "phi", "cp"))
+  # we have a deSolve matrix
+  expect_equal(snvec(tend = -1, tres = 0.5, quiet = TRUE, output = "ode") |>
+                 class(),
+               c("deSolve", "matrix"))
+})
