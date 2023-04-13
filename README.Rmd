@@ -17,6 +17,10 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org/package=snvecR)
+[![GPL-3](https://github.com/japhir/snvecR/blob/master/LICENSE.md)](https://img.shields.io/github/license/japhir/snvecR?logo=gnu&.svg)
+[![release](https://img.shields.io/github/v/release/japhir/snvecR.svg)](https://img.shields.io/github/v/release/japhir/snvecR)
+[![R-CMD-check](https://github.com/japhir/snvecR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/japhir/snvecR/actions/workflows/R-CMD-check.yaml)
+[![Launch binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/japhir/snvecR/main)
 <!-- badges: end -->
 
 The goal of snvecR is to calculate precession and obliquity from an orbital

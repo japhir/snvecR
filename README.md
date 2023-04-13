@@ -7,6 +7,11 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org/package=snvecR)
+[![GPL-3](https://github.com/japhir/snvecR/blob/master/LICENSE.md)](https://img.shields.io/github/license/japhir/snvecR?logo=gnu&.svg)
+[![release](https://img.shields.io/github/v/release/japhir/snvecR.svg)](https://img.shields.io/github/v/release/japhir/snvecR)
+[![R-CMD-check](https://github.com/japhir/snvecR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/japhir/snvecR/actions/workflows/R-CMD-check.yaml)
+[![Launch
+binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/japhir/snvecR/main)
 <!-- badges: end -->
 
 The goal of snvecR is to calculate precession and obliquity from an
@@ -36,15 +41,15 @@ solution <- snvec()
 #> • `orbital_solution` = "ZB18a"
 #> • `tres` = 0.4 kyr
 #> • `tolerance` = 1e-07
-#> ℹ started at "2023-04-12 14:15:06"
+#> ℹ started at "2023-04-12 15:22:36"
 #> Final values:
 #> • s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935
 #> • s-error = |s|-1: -5.44863786333671e-05
 #> Final values:
 #> • obliquity: 0.413056573207875 rad
 #> • precession: -0.562236553023642 rad
-#> ℹ stopped at "2023-04-12 14:15:07"
-#> ℹ total duration: 1.15s
+#> ℹ stopped at "2023-04-12 15:22:37"
+#> ℹ total duration: 1.16s
 ```
 
 see `?snvec` for further documentation.
