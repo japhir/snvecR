@@ -64,7 +64,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of snvecR is to calculate precession and obliquity from an orbital solution (defaults to ZB18a) and assumed or reconstructed values for tidal dissipation (T<sub>d<sub>) and dynamical ellipticity (E<sub>d<sub>).</sub></sub></sub></sub></p>
+<p>The goal of snvecR is to calculate precession and obliquity from an orbital solution (defaults to ZB18a) and assumed or reconstructed values for tidal dissipation (T<sub>d</sub>) and dynamical ellipticity (E<sub>d</sub>).</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -80,21 +80,21 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://japhir.github.io/snvecR/">snvecR</a></span><span class="op">)</span></span>
 <span><span class="va">solution</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/snvec.html">snvec</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Integration parameters:</span></span>
-<span><span class="co">#&gt; • `tend` = -1000 kyr</span></span>
+<span><span class="co">#&gt; • `tend` = -1000 ka</span></span>
 <span><span class="co">#&gt; • `ed` = 1</span></span>
 <span><span class="co">#&gt; • `td` = 0</span></span>
 <span><span class="co">#&gt; • `orbital_solution` = "ZB18a"</span></span>
 <span><span class="co">#&gt; • `tres` = 0.4 kyr</span></span>
 <span><span class="co">#&gt; • `tolerance` = 1e-07</span></span>
-<span><span class="co">#&gt; ℹ started at "2023-04-12 11:23:51"</span></span>
+<span><span class="co">#&gt; ℹ started at "2023-04-12 14:15:06"</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935</span></span>
 <span><span class="co">#&gt; • s-error = |s|-1: -5.44863786333671e-05</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • obliquity: 0.413056573207875 rad</span></span>
 <span><span class="co">#&gt; • precession: -0.562236553023642 rad</span></span>
-<span><span class="co">#&gt; ℹ stopped at "2023-04-12 11:23:52"</span></span>
-<span><span class="co">#&gt; ℹ total duration: 1.25s</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ stopped at "2023-04-12 14:15:07"</span></span>
+<span><span class="co">#&gt; ℹ total duration: 1.15s</span></span></code></pre></div>
 <p>see <code><a href="reference/snvec.html">?snvec</a></code> for further documentation.</p>
 <p>Here we create a quick plot of the calculated climatic precession with the eccentricity envelope:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
