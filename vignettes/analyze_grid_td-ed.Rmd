@@ -111,7 +111,7 @@ This would be how I would read in my old results (about 9MB on-disk for the
 final 1000 timesteps in the full 100 Myr simulations).
 
 ```{r read-old, eval=FALSE}
-biggrid <- read_rds("out/2023-04-05_biggrid.rds")
+biggrid <- readr::read_rds("out/2023-04-05_biggrid.rds")
 ```
 
 
@@ -198,7 +198,7 @@ biggrid |>
 ```
 
 This would lead to the creation of one file per row, which you can read in
-individually or for a certain subset using `read_rds()`.
+individually or for a certain subset using `readr::read_rds()`.
 
 Below we do it for all the files and make a plot!
 

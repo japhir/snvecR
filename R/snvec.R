@@ -140,13 +140,15 @@ snvec <- function(tend = -1e3,
                      "i" = "{.var tres} = {tres}"))
   }
 
-  if (ed < .998 | ed > 1.0005) {
+  # this warning is too strict and kind of annoying
+  ## if (ed < .998 | ed > 1.0005) {
+  if (ed < .9 | ed > 1.1) {
     cli::cli_warn(c("!" = "Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past 45 Ma!",
                     "i" = "{.var ed} = {ed}",
                     "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>"))
   }
 
-  if (td < 0 | td > 1) {
+  if (td < 0 | td > 1.2) {
     cli::cli_warn(c("Tidal dissipation likely varied between 0 and 1!",
                     "i" = "{.var td} = {td}",
                     "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>"))
