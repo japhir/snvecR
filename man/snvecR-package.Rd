@@ -4,7 +4,7 @@
 \name{snvecR-package}
 \alias{snvecR}
 \alias{snvecR-package}
-\title{snvecR: snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed}
+\title{snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed}
 \description{
 Easily calculate precession and obliquity from an orbital solution (OS, defaults to ZB18a from Zeebe and Lourens (2019) \doi{10.1126/science.aax0612}) and assumed or reconstructed values for tidal dissipation (Td) and dynamical ellipticity (Ed). This is a translation and adaptation of the C-code in the supplementary material to Zeebe and Lourens (2022) \doi{10.1029/2021PA004349}, with furher details on the methodology described in Zeebe (2022) \doi{10.3847/1538-3881/ac80f8}.
 }
