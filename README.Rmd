@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 
 The goal of snvecR is to calculate precession and obliquity from an orbital
 solution (defaults to ZB18a) and assumed or reconstructed values for tidal
-dissipation (T<sub>d<sub>) and dynamical ellipticity (E<sub>d<sub>).
+dissipation (T<sub>d</sub>) and dynamical ellipticity (E<sub>d</sub>).
 
 ## Installation
 
