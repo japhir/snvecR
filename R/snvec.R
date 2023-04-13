@@ -35,19 +35,19 @@
 #'   are explained in detail in Zeebe 2022.
 #'
 #' The output is a [tibble][tibble::tibble-package] with the following columns:
-#'   * `time` Time in years.
+#'   * `time` Time (years).
 #'   * `age` Age in thousands of years ago (ka).
-#'   * `eei` The orbital solution's eccentricity.
-#'   * `epl` The obliquity in radians.
-#'   * `phi` The true anomaly.
-#'   * `cp` Climatic precession.
+#'   * `eei` The orbital solution's eccentricity (-).
+#'   * `epl` The obliquity (radians).
+#'   * `phi` The true anomaly (radians).
+#'   * `cp` Climatic precession (-).
 #'
 #' If `output = "all"`, the following additional columns are included:
 #'   * `sx`, `sy`, `sz` Input spin vector s in the heliocentric inertial
 #'     reference frame.
 #'   * `nnx`, `nny`, `nnz` The vector normal to the orbit.
-#'   * `lphi` The long periapse.
-#'   * `lani` The long ascending node.
+#'   * `lphi` The long periapse (radians).
+#'   * `lani` The long ascending node (radians).
 #'   * `u` The input vector s as a list-column.
 #'   * `nv` The vector n as a list-column.
 #'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000.

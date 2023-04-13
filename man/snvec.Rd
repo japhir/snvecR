@@ -58,12 +58,12 @@ are explained in detail in Zeebe 2022.
 
 The output is a \link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
-\item \code{time} Time in years.
+\item \code{time} Time (years).
 \item \code{age} Age in thousands of years ago (ka).
-\item \code{eei} The orbital solution's eccentricity.
-\item \code{epl} The obliquity in radians.
-\item \code{phi} The true anomaly.
-\item \code{cp} Climatic precession.
+\item \code{eei} The orbital solution's eccentricity (-).
+\item \code{epl} The obliquity (radians).
+\item \code{phi} The true anomaly (radians).
+\item \code{cp} Climatic precession (-).
 }
 
 If \code{output = "all"}, the following additional columns are included:
@@ -71,8 +71,8 @@ If \code{output = "all"}, the following additional columns are included:
 \item \code{sx}, \code{sy}, \code{sz} Input spin vector s in the heliocentric inertial
 reference frame.
 \item \code{nnx}, \code{nny}, \code{nnz} The vector normal to the orbit.
-\item \code{lphi} The long periapse.
-\item \code{lani} The long ascending node.
+\item \code{lphi} The long periapse (radians).
+\item \code{lani} The long ascending node (radians).
 \item \code{u} The input vector s as a list-column.
 \item \code{nv} The vector n as a list-column.
 \item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000.

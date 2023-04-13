@@ -12,16 +12,16 @@
 #' \describe{
 #'   \item{t}{Time in days.}
 #'   \item{age}{Age in thousands of years (kyr) before present.}
-#'   \item{aa}{Semimajor axis.}
-#'   \item{ee}{Eccentricity.}
-#'   \item{inc}{Inclination.}
-#'   \item{lph}{Long periapse.}
-#'   \item{lan}{Long ascending node.}
-#'   \item{arp}{Argument of periapse.}
-#'   \item{mna}{Mean anomaly.}
+#'   \item{aa}{Semimajor axis in astronomical units (au).}
+#'   \item{ee}{Eccentricity (unitless).}
+#'   \item{inc}{Inclination (degrees).}
+#'   \item{lph}{Long periapse (degrees).}
+#'   \item{lan}{Long ascending node (degrees).}
+#'   \item{arp}{Argument of periapse (degrees).}
+#'   \item{mna}{Mean anomaly (degrees).}
 #'   The following columns were computed from the above input:
-#'   \item{lphu}{Unwrapped long periapse.}
-#'   \item{lanu}{Unwrapped long ascending node.}
+#'   \item{lphu}{Unwrapped long periapse (degrees).}
+#'   \item{lanu}{Unwrapped long ascending node (degrees).}
 #'   \item{hh}{Helper: `ee * sin(lph / R2D)`.}
 #'   \item{kk}{Helper: `ee * cos(lph / R2D)`.}
 #'   \item{pp}{Helper: `2 * sin(0.5 * inc / R2D) * sin(lan / R2D)`.}
