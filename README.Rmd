@@ -23,9 +23,13 @@ knitr::opts_chunk$set(
 [![Launch binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/japhir/snvecR/main)
 <!-- badges: end -->
 
-The goal of snvecR is to calculate precession and obliquity from an orbital
-solution (defaults to ZB18a) and assumed or reconstructed values for tidal
-dissipation (T<sub>d</sub>) and dynamical ellipticity (E<sub>d</sub>).
+Easily calculate precession and obliquity from an orbital solution (OS,
+defaults to ZB18a from Zeebe and Lourens (2019) <doi:10.1126/science.aax0612>)
+and assumed or reconstructed values for tidal dissipation (T<sub>d</sub>) and
+dynamical ellipticity (E<sub>d</sub>). This is a translation and adaptation of
+the C-code in the supplementary material to Zeebe and Lourens (2022)
+<doi:10.1029/2021PA004349>, with furher details on the methodology described in
+Zeebe (2022) <doi:10.3847/1538-3881/ac80f8>.
 
 ## Installation
 
@@ -60,3 +64,21 @@ solution |>
   # add the (interpolated) eccentricity envelope
   geom_line(aes(y = eei))
 ```
+
+# References
+Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
+  Paleocene–Eocene boundary age constrained by geology and astronomy.
+  _Science_, 365(6456), 926–929. <https://doi.org/10.1126/science.aax0612>
+
+Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
+  paleo-applications utilizing obliquity and precession cycles: The role of
+  dynamical ellipticity and tidal dissipation. _Paleoceanography and
+  Paleoclimatology_, e2021PA004349. <https://doi.org/10.1029/2021PA004349>
+
+Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
+  Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
+  System Chaos. _The Astronomical Journal_, 164(3), 107.
+  <https://doi.org/10.3847/1538-3881/ac80f8>
+
+Wikipedia page on Orbital Elements:
+  <https://en.wikipedia.org/wiki/Orbital_elements>

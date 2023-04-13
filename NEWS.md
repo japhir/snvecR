@@ -1,7 +1,7 @@
 # snvecR 3.7.5.9000 (development version)
 * Added a `NEWS.md` file to track changes to the package.
-* Implemented first public version based on C-code in [Zeebe en Lourens
-  2022](https://doi.org/10.1029/2021PA004349).
+* Implemented first public version based on C-code in [Zeebe and Lourens
+  2022](https://doi.org/10.1029/2021PA004349), as explained .
 * Added `snvec()` function that does all the work.
 * Added `ZB18a` dataset with orbital solution.
 * Added tests using `testthat`.
