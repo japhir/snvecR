@@ -3,9 +3,9 @@
 
 ## usethis namespace: start
 #' @importFrom cli cli_abort cli_inform
-#' @importFrom cli format_inline
 #' @importFrom dplyr across
 #' @importFrom dplyr mutate select filter rowwise ungroup first
+#' @importFrom glue glue
 #' @importFrom pracma dot
 #' @importFrom purrr map2_dbl
 #' @importFrom readr write_rds read_rds read_table

@@ -89,7 +89,7 @@ snvec_tail <- function(..., n = 100) {
 Compute obliquity and precession for each parameter combination, and save it in
 the new list-column `sol`.
 
-```{r massive-compute, cache = TRUE}
+```{r massive-compute}
 biggrid <- biggrid |>
     # apply our new function!
     mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, tolerance = tol),
@@ -168,7 +168,7 @@ biggrid <- biggrid |>
   select(-sol) |>
   # add a filename that's easy to break into relevant parameters later
   # I write to tempdir here, but you might want to write to something like out/
-  mutate(file = cli::format_inline("{tempdir()}/2023-04-13_biggrid_{Td}_{Ed}_{tol}_{tend}.rds"))
+  mutate(file = glue::glue("{tempdir()}/2023-04-13_biggrid_{Td}_{Ed}_{tol}_{tend}.rds"))
 biggrid
 ```
 
@@ -185,7 +185,7 @@ snvec_save <- function(..., file) {
 
 Calculate each time series' obliquity and precession and save to file.
 
-```{r run-pwalk, cache = TRUE}
+```{r run-pwalk}
 biggrid |>
   # in this case we make sure that column names are identical to argument names
   # so that the list (in this case tibble/data.frame) is matched to the correct
