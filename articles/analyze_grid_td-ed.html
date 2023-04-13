@@ -173,18 +173,10 @@ save it in the new list-column <code>sol</code>.</p>
 <span>                      <span class="co"># interactively this makes a nice progress bar</span></span>
 <span>                      .progress <span class="op">=</span> <span class="st">"snvec on a grid"</span><span class="op">)</span><span class="op">)</span> <span class="co">#|&gt;</span></span>
 <span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■                              </span>   3% |  ETA:  2m</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■                       </span>  25% |  ETA: 20s</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■                 </span>  47% |  ETA: 11s</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% |  ETA:  7s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■                             </span>   6% |  ETA:  1m</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA: 14s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA:  7s</span></span>
 <span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■     </span>  88% |  ETA:  2s</span></span>
-<span><span class="co">#&gt; Warning: There were 24 warnings in `mutate()`.</span></span>
-<span><span class="co">#&gt; The first warning was:</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> In argument: `sol = pmap(...)`.</span></span>
-<span><span class="co">#&gt; Caused by warning:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Run `dplyr::last_dplyr_warnings()` to see the 23 remaining warnings.</span></span>
 <span></span>
 <span>    <span class="co"># normally we would save the results to file, because these take quite a</span></span>
 <span>    <span class="co"># long time to calculate and we don't want to accidentally delete them.</span></span>
@@ -192,7 +184,7 @@ save it in the new list-column <code>sol</code>.</p>
 <p>This would be how I would read in my old results (about 9MB on-disk
 for the final 1000 timesteps in the full 100 Myr simulations).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">biggrid</span> <span class="op">&lt;-</span> <span class="fu">read_rds</span><span class="op">(</span><span class="st">"out/2023-04-05_biggrid.rds"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">biggrid</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">read_rds</a></span><span class="op">(</span><span class="st">"out/2023-04-05_biggrid.rds"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="inspect-results">Inspect results<a class="anchor" aria-label="anchor" href="#inspect-results"></a>
@@ -266,16 +258,16 @@ stead of <code><a href="https://purrr.tidyverse.org/reference/pmap.html" class="
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 5</span></span></span>
 <span><span class="co">#&gt;       Td    Ed    tol  tend file                                                </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span>                                              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0_1_1e-04_-1000.…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.5 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0.5_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.7 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0.7_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.8 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0.8_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.9 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0.9_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   1   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_1_1_1e-04_-1000.…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   1.1 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_1.1_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   1.2 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_1.2_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0   0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0_0.998_1e-04_-1…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.5 0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpGyPjPR/2023-04-13_biggrid_0.5_0.998_1e-04_…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0_1_1e-04_-1000.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.5 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0.5_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.7 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0.7_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.8 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0.8_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.9 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0.9_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   1   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_1_1_1e-04_-1000.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   1.1 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_1.1_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   1.2 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_1.2_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0   0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0_0.998_1e-04_-1…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.5 0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpSaehET/2023-04-13_biggrid_0.5_0.998_1e-04_…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more rows</span></span></span></code></pre></div>
 <p>We write a new wrapper function that includes a file argument to save
 the outputs.</p>
@@ -298,151 +290,47 @@ file.</p>
 <span>               quiet <span class="op">=</span> <span class="cn">TRUE</span>, output <span class="op">=</span> <span class="st">"nice"</span>, tres <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>               <span class="co"># show progress bar</span></span>
 <span>               .progress <span class="op">=</span> <span class="st">"snvec to file"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.5_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.7_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.8_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.9_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■                         </span>  19% |  ETA: 13s</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.1_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.2</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.2_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.5_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.7_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.8_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■                    </span>  38% |  ETA: 10s</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.5_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.7_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.8_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.9_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.1_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.2_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.5_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.7_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■                     </span>  34% |  ETA:  8s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.9_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.1_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.2</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.2_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.5_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.7_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA:  6s</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.8_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.9_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.1_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.005</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.2</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.2_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  75% |  ETA:  4s</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.5_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.7_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.8_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_0.9_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  94% |  ETA:  1s</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.1_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Warning: <span style="color: #BBBB00;">!</span> Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past</span></span>
-<span><span class="co">#&gt;   45 Ma!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `ed` = 1.012</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Warning: Tidal dissipation likely varied between 0 and 1!</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> `td` = 1.2</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See Zeebe &amp; Lourens 2022 Pal&amp;Pal &lt;https://doi.org/10.1029/2021PA004349&gt;</span></span>
-<span><span class="co">#&gt; Wrote file</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB;">/tmp/RtmpGyPjPR/2023-04-13_biggrid_1.2_1.012_1e-04_-1000.rds</span>.</span></span></code></pre></div>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.8_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.9_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.1_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.2_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.5_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.7_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA:  5s</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.8_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.9_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.1_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.2_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.5_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.7_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% |  ETA:  2s</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.8_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_0.9_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.1_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpSaehET/2023-04-13_biggrid_1.2_1.012_1e-04_-1000.rds</span>.</span></span></code></pre></div>
 <p>This would lead to the creation of one file per row, which you can
 read in individually or for a certain subset using
-<code>read_rds()</code>.</p>
+<code><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">readr::read_rds()</a></code>.</p>
 <p>Below we do it for all the files and make a plot!</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">biggrid</span> <span class="op">|&gt;</span> <span class="co"># limit to a few experiments</span></span>
