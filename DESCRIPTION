@@ -2,7 +2,7 @@ Package: snvecR
 Title: snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed
 Version: 3.7.5.9000
 Authors@R:
-    c(person("Ilja", "Kocken", , "ikocken@hawaii.edu", role = c("aut", "cre", "trl"),
+    c(person("Ilja", "Kocken", , "ikocken@hawaii.edu", role = c("aut", "cre", "trl", "cph"),
              comment = c(ORCID = "0000-0003-2196-8718")),
       person("Richard", "Zeebe", , "zeebe@soest.hawaii.edu", role = c("aut"),
              comment = c(ORCID = "0000-0003-0806-8387"))
