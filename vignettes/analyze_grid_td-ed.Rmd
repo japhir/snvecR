@@ -168,7 +168,7 @@ biggrid <- biggrid |>
   select(-sol) |>
   # add a filename that's easy to break into relevant parameters later
   # I write to tempdir here, but you might want to write to something like out/
-  mutate(file = glue::glue("{tempdir()}/2023-04-13_biggrid_{Td}_{Ed}_{tol}_{tend}.rds"))
+  mutate(file = cli::format_inline("{tempdir()}/2023-04-13_biggrid_{Td}_{Ed}_{tol}_{tend}.rds"))
 biggrid
 ```
 

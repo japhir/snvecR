@@ -15,13 +15,11 @@ binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/japhir/
 <!-- badges: end -->
 
 Easily calculate precession and obliquity from an orbital solution (OS,
-defaults to ZB18a from Zeebe and Lourens (2019)
-<doi:10.1126/science.aax0612>) and assumed or reconstructed values for
-tidal dissipation (T<sub>d</sub>) and dynamical ellipticity
-(E<sub>d</sub>). This is a translation and adaptation of the C-code in
-the supplementary material to Zeebe and Lourens (2022)
-<doi:10.1029/2021PA004349>, with furher details on the methodology
-described in Zeebe (2022) <doi:10.3847/1538-3881/ac80f8>.
+defaults to ZB18a from Zeebe and Lourens (2019)) and assumed or
+reconstructed values for tidal dissipation (T<sub>d</sub>) and dynamical
+ellipticity (E<sub>d</sub>). This is a translation and adaptation of the
+C-code in the supplementary material to Zeebe and Lourens (2022), with
+furher details on the methodology described in Zeebe (2022).
 
 ## Installation
 
@@ -45,15 +43,15 @@ solution <- snvec()
 #> • `orbital_solution` = "ZB18a"
 #> • `tres` = 0.4 kyr
 #> • `tolerance` = 1e-07
-#> ℹ started at "2023-04-13 12:14:47"
+#> ℹ started at "2023-04-13 12:41:58"
 #> Final values:
 #> • s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935
 #> • s-error = |s|-1: -5.44863786333671e-05
 #> Final values:
 #> • obliquity: 0.413056573207875 rad
 #> • precession: -0.562236553023642 rad
-#> ℹ stopped at "2023-04-13 12:14:49"
-#> ℹ total duration: 1.89s
+#> ℹ stopped at "2023-04-13 12:42:00"
+#> ℹ total duration: 1.97s
 ```
 
 see `?snvec` for further documentation.

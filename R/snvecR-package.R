@@ -3,6 +3,7 @@
 
 ## usethis namespace: start
 #' @importFrom cli cli_abort cli_inform
+#' @importFrom cli format_inline
 #' @importFrom dplyr across
 #' @importFrom dplyr mutate select filter rowwise ungroup first
 #' @importFrom pracma dot
