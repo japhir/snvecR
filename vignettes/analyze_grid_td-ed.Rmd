@@ -2,7 +2,7 @@
 title: "Analyze a grid of T<sub>d</sub> and E<sub>d</sub> values"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyze a grid of T<sub>d</sub> and E<sub>d</sub> values}
+  %\VignetteIndexEntry{Analyze a grid of Td and Ed values}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 12, fig.height = 8
 )
+options(rmarkdown.html_vignette.check_title = FALSE) # we have intentionally differing ones to enable the subscript
 ```
 
 ```{r setup}
@@ -184,7 +185,7 @@ snvec_save <- function(..., file) {
 
 Calculate each time series' obliquity and precession and save to file.
 
-```{r run-pwalk}
+```{r run-pwalk, cache = TRUE}
 biggrid |>
   # in this case we make sure that column names are identical to argument names
   # so that the list (in this case tibble/data.frame) is matched to the correct
