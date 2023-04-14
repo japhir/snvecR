@@ -1,5 +1,5 @@
 ---
-title: "Analyze a grid of T<sub>d</sub> and E<sub>d</sub> values"
+title: "Analyze a grid of Td and Ed values"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Analyze a grid of Td and Ed values}
@@ -13,7 +13,6 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 12, fig.height = 8
 )
-options(rmarkdown.html_vignette.check_title = FALSE) # we have intentionally differing ones to enable the subscript
 ```
 
 ```{r setup}
