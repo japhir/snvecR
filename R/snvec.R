@@ -1,65 +1,102 @@
 #' Calculate Earth’s Obliquity and Precession in the Past
 #'
-#' Computes climatic precession and obliquity (or tilt) from an orbital
-#' solution (OS) input and input values for dynamical ellipticity (Ed) and
-#' tidal dissipation (Td). It solves a set of ordinary differential equations.
+#' `snvec()` computes climatic precession and obliquity (or tilt) from an
+#' orbital solution (OS) input and input values for dynamical ellipticity
+#' (\eqn{E_{d}}{Ed}) and tidal dissipation (\eqn{T_{d}}{Td}). It solves a set
+#' of ordinary differential equations.
 #'
-#' @param tend The final timestep in thousands of years before present (ka).
+#' @param tend Final timestep in thousands of years before present (ka).
 #'   Defaults to `-1000` ka.
-#' @param ed Dynamical ellipticity, normalized to modern. Defaults to `1.0`.
-#' @param td Tidal dissipation, normalized to modern. Defaults to `0.0`.
+#' @param ed Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
+#'   Defaults to `1.0`.
+#' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
+#'   to `0.0`.
 #' @param orbital_solution Character vector with the name of the orbital
 #'   solution to use. One of `"ZB18a"` (default) from Zeebe and Lourens (2019),
 #'   or `"La11"` (not yet implemented!).
-#' @param tres The output timestep resolution in thousands of years (kyr).
-#'   Defaults to `0.4`.
-#' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol`
-#'   and `atol` arguments. Defaults to `1e-7`.
-#' @param quiet Be quiet? If `TRUE`, hide info messages. If `FALSE` (the
-#'   default) print info messages and timing.
-#' @param output The desired output, one of: * `"nice"` (the default) A
-#'   [tibble][tibble::tibble-package] with the columns time, age, eei, epl,
-#'   phi, cp. * `"full"` A [tibble][tibble::tibble-package] with all the
-#'   computed and interpolated columns. * `"ode"` A matrix with the output of
-#'   the ODE solver.
+#' @param tres Output timestep resolution in thousands of years (kyr). Defaults
+#'   to `0.4`.
+#' @param tolerance Numerical tolerance passed to [deSolve::ode()]'s `rtol` and
+#'   `atol` arguments. Defaults to `1e-7`.
+#' @param quiet Be quiet?
 #'
-#' @returns A [tibble][tibble::tibble-package] with a selection of columns or a
-#'   matrix, depending on the `output` parameter (see Details).
+#'   * If `TRUE`, hide info messages.
 #'
-#' @author Ilja J. Kocken and Richard E. Zeebe
+#'   * If `FALSE` (the default) print info messages and timing.
 #'
-#' @details
+#' @param output Character vector with name of desired output. One of:
 #'
-#' This is a re-implementation of the C-code in the supplementary information
-#'   of Zeebe & Lourens (2022), in order to make it more accessible. The terms
-#'   are explained in detail in Zeebe (2022).
+#'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
+#'     columns `time`, `age`, `eei`, `epl`, `phi`, `cp`.
 #'
-#' The output is a [tibble][tibble::tibble-package] with the following columns:
-#'   * `time` Time (years).
+#'   * `"full"` A [tibble][tibble::tibble-package] with all the computed and
+#'     interpolated columns.
+#'
+#'   * `"ode"` A matrix with the output of the ODE solver.
+#'
+#' @details This is a re-implementation of the C-code in the supplementary
+#'   information of Zeebe & Lourens (2022). The terms are explained in detail
+#'   in Zeebe (2022).
+#'
+#'   Note that the different ODE solver algorithm we use (Soetaert et al.,
+#'   2010) means that the R routine returns an evenly-spaced time grid, whereas
+#'   the C-routine has a variable time-step.
+#'
+#' @returns `snvec()` returns different output depending on the `outputs`
+#'   argument.
+#'
+#' If `output = "nice"` (the default), returns a
+#' [tibble][tibble::tibble-package] with the following columns:
+#'
+#'   * `time` Time \eqn{t} (days).
+#'
 #'   * `age` Age in thousands of years ago (ka).
-#'   * `eei` Orbital solution's eccentricity (-).
-#'   * `epl` Obliquity (radians).
-#'   * `phi` Precession (radians) from ECLIPJ2000.
-#'   * `cp` Climatic precession (-).
 #'
-#' If `output = "all"`, the following additional columns are included:
-#'   * `sx`, `sy`, `sz` Input spin vector s in the heliocentric inertial
-#'     reference frame.
-#'   * `nnx`, `nny`, `nnz` The vector normal to the orbit.
-#'   * `lphi` The long periapse (radians).
-#'   * `lani` The long ascending node (radians).
-#'   * `u` The input vector s as a list-column.
-#'   * `nv` The vector n as a list-column.
-#'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000 as a list
-#'     column.
+#'   * `eei` Orbital solution's eccentricity \eqn{e}, interpolated to output
+#'   timescale (-).
+#'
+#'   * `epl` Calculated Obliquity \eqn{\epsilon} (radians).
+#'
+#'   * `phi` Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
+#'
+#'   * `cp` Calculated Climatic precession (-) as \eqn{e\sin(\varpi)}.
+#'
+#' where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
+#'
+#' If `output = "all"`, the following additional columns are included,
+#'   typically interpolated to output timescale :
+#'
+#'   * `sx`, `sy`, `sz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
+#'   spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
+#'   reference frame.
+#   this one is in HCI
+#'
+#'   * `nnx`, `nny`, `nnz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+#'   unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+#'   instantaneous orbital plane.
+#   this one is in HCI
+#'
+#'   * `lphi` Unwrapped longitude of perihelion \eqn{\varpi} (radians).
+#'
+#'   * `lani` Unwrapped longitude of the ascending node \eqn{\Omega} (radians).
+#'
+#'   * `u` Spin axis unit vector \eqn{\boldsymbol{s}}{s} as a list-column.
+#'
+#'   * `nv` Unit normal vector to the orbital plane \eqn{\boldsymbol{n}}{n} as
+#'   a list-column.
+#'
+#'   * `up` Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
+#'   \eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
+#'   \eqn{\phi(t=0)=0} at J2000) as a list column.
+#   this one is in ECLIPJ2000
 #'
 #' If `output = "ode"`, it will return the raw output of the ODE solver, which
-#'   is an object of class `deSolve` and `matrix`, with columns `time`, `sx`,
-#'   `sy`, and `sz` (see above). This can be useful for i.e.
-#'   [deSolve::diagnostics()].
+#' is an object of class `deSolve` and `matrix`, with columns `time`, `sx`,
+#' `sy`, and `sz` (see above). This can be useful for i.e.
+#' [deSolve::diagnostics()].
 #'
-#' @seealso [deSolve::ode()] from Soetaert et al., 2010 for the ODE solver that
-#'   we use.
+#' @seealso [deSolve::ode()] from Soetaert et al., (2010) for the ODE solver
+#'   that we use.
 #'
 #' @references
 #'

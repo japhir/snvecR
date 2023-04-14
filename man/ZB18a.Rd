@@ -9,32 +9,51 @@
 
 A data frame with 250,001 rows and 20 columns:
 \describe{
-\item{t}{Time in days.}
-\item{age}{Age in thousands of years (kyr) before present.}
-\item{aa}{Semimajor axis in astronomical units (au).}
-\item{ee}{Eccentricity (unitless).}
-\item{inc}{Inclination (degrees).}
-\item{lph}{Long periapse (degrees).}
-\item{lan}{Long ascending node (degrees).}
-\item{arp}{Argument of periapse (degrees).}
-\item{mna}{Mean anomaly (degrees).}
+\item{t}{Time \eqn{t} (days).}
+\item{age}{Age in thousands of years before present (ka).}
+\item{aa}{Semimajor axis \eqn{a} in astronomical units (au).}
+\item{ee}{Eccentricity \eqn{e} (unitless).}
+\item{inc}{Inclination \eqn{I} (degrees).}
+\item{lph}{Longitude of perihelion \eqn{\varpi} (degrees).}
+\item{lan}{Longitude of the ascending node \eqn{\Omega} (degrees).}
+\item{arp}{Argument of perihelion \eqn{\omega} (degrees).}
+\item{mna}{Mean anomaly \eqn{M} (degrees).}
+
 The following columns were computed from the above input:
-\item{lphu}{Unwrapped long periapse (degrees).}
-\item{lanu}{Unwrapped long ascending node (degrees).}
-\item{hh}{Helper: \code{ee * sin(lph / R2D)}.}
-\item{kk}{Helper: \code{ee * cos(lph / R2D)}.}
-\item{pp}{Helper: \code{2 * sin(0.5 * inc / R2D) * sin(lan / R2D)}.}
-\item{qq}{Helper: \code{2 * sin(0.5 * inc / R2D) * cos(lan / R2D)}.}
-\item{cc}{Helper: \code{cos(inc / R2D)}.}
-\item{dd}{Helper: \code{cos(inc / R2D / 2)}.}
-\item{nnx, nny, nnz}{Vector of Earth's orbit normal.}
+
+\item{lphu}{Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
+jumps).}
+
+\item{lanu}{Unwrapped longitude of the ascending node \eqn{\Omega}
+(degrees without jumps).}
+
+\item{hh}{Variable: \eqn{e\sin(\varpi)}{ee * sin(lph / R2D)}.}
+
+\item{kk}{Variable: \eqn{e\cos(\varpi)}{ee * cos(lph / R2D)}.}
+
+\item{pp}{Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 * sin(0.5 * inc / R2D) *
+  sin(lan / R2D)}.}
+
+\item{qq}{Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 * sin(0.5 * inc / R2D) *
+  cos(lan / R2D)}.}
+
+\item{cc}{Helper: \eqn{\cos(I)}{cos(inc / R2D)}.}
+
+\item{dd}{Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.}
+
+\item{nnx, nny, nnz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+Eart's orbit unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+instantaneous orbital plane.}
+
 }
 }
 }
 \source{
 \itemize{
-\item All orbital solutions can be found on \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
-\item The specific one we use here is available at \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
+\item All orbital solutions can be found on
+\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
+\item The specific one we use here is available at
+\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
 }
 }
 \usage{

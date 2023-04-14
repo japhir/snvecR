@@ -16,73 +16,96 @@ snvec(
 )
 }
 \arguments{
-\item{tend}{The final timestep in thousands of years before present (ka).
+\item{tend}{Final timestep in thousands of years before present (ka).
 Defaults to \code{-1000} ka.}
 
-\item{ed}{Dynamical ellipticity, normalized to modern. Defaults to \code{1.0}.}
+\item{ed}{Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
+Defaults to \code{1.0}.}
 
-\item{td}{Tidal dissipation, normalized to modern. Defaults to \code{0.0}.}
+\item{td}{Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
+to \code{0.0}.}
 
 \item{orbital_solution}{Character vector with the name of the orbital
 solution to use. One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
 or \code{"La11"} (not yet implemented!).}
 
-\item{tres}{The output timestep resolution in thousands of years (kyr).
-Defaults to \code{0.4}.}
+\item{tres}{Output timestep resolution in thousands of years (kyr). Defaults
+to \code{0.4}.}
 
-\item{tolerance}{The numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol}
-and \code{atol} arguments. Defaults to \code{1e-7}.}
+\item{tolerance}{Numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol} and
+\code{atol} arguments. Defaults to \code{1e-7}.}
 
-\item{quiet}{Be quiet? If \code{TRUE}, hide info messages. If \code{FALSE} (the
-default) print info messages and timing.}
+\item{quiet}{Be quiet?
+\itemize{
+\item If \code{TRUE}, hide info messages.
+\item If \code{FALSE} (the default) print info messages and timing.
+}}
 
-\item{output}{The desired output, one of: * \code{"nice"} (the default) A
-\link[tibble:tibble-package]{tibble} with the columns time, age, eei, epl,
-phi, cp. * \code{"full"} A \link[tibble:tibble-package]{tibble} with all the
-computed and interpolated columns. * \code{"ode"} A matrix with the output of
-the ODE solver.}
+\item{output}{Character vector with name of desired output. One of:
+\itemize{
+\item \code{"nice"} (the default) A \link[tibble:tibble-package]{tibble} with the
+columns \code{time}, \code{age}, \code{eei}, \code{epl}, \code{phi}, \code{cp}.
+\item \code{"full"} A \link[tibble:tibble-package]{tibble} with all the computed and
+interpolated columns.
+\item \code{"ode"} A matrix with the output of the ODE solver.
+}}
 }
 \value{
-A \link[tibble:tibble-package]{tibble} with a selection of columns or a
-matrix, depending on the \code{output} parameter (see Details).
-}
-\description{
-Computes climatic precession and obliquity (or tilt) from an orbital
-solution (OS) input and input values for dynamical ellipticity (Ed) and
-tidal dissipation (Td). It solves a set of ordinary differential equations.
-}
-\details{
-This is a re-implementation of the C-code in the supplementary information
-of Zeebe & Lourens (2022), in order to make it more accessible. The terms
-are explained in detail in Zeebe (2022).
+\code{snvec()} returns different output depending on the \code{outputs}
+argument.
 
-The output is a \link[tibble:tibble-package]{tibble} with the following columns:
+If \code{output = "nice"} (the default), returns a
+\link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
-\item \code{time} Time (years).
+\item \code{time} Time \eqn{t} (days).
 \item \code{age} Age in thousands of years ago (ka).
-\item \code{eei} Orbital solution's eccentricity (-).
-\item \code{epl} Obliquity (radians).
-\item \code{phi} Precession (radians) from ECLIPJ2000.
-\item \code{cp} Climatic precession (-).
+\item \code{eei} Orbital solution's eccentricity \eqn{e}, interpolated to output
+timescale (-).
+\item \code{epl} Calculated Obliquity \eqn{\epsilon} (radians).
+\item \code{phi} Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
+\item \code{cp} Calculated Climatic precession (-) as \eqn{e\sin(\varpi)}.
 }
 
-If \code{output = "all"}, the following additional columns are included:
+where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
+
+If \code{output = "all"}, the following additional columns are included,
+typically interpolated to output timescale :
 \itemize{
-\item \code{sx}, \code{sy}, \code{sz} Input spin vector s in the heliocentric inertial
+\item \code{sx}, \code{sy}, \code{sz} The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
+spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
 reference frame.
-\item \code{nnx}, \code{nny}, \code{nnz} The vector normal to the orbit.
-\item \code{lphi} The long periapse (radians).
-\item \code{lani} The long ascending node (radians).
-\item \code{u} The input vector s as a list-column.
-\item \code{nv} The vector n as a list-column.
-\item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000 as a list
-column.
+\item \code{nnx}, \code{nny}, \code{nnz} The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+instantaneous orbital plane.
+\item \code{lphi} Unwrapped longitude of perihelion \eqn{\varpi} (radians).
+\item \code{lani} Unwrapped longitude of the ascending node \eqn{\Omega} (radians).
+\item \code{u} Spin axis unit vector \eqn{\boldsymbol{s}}{s} as a list-column.
+\item \code{nv} Unit normal vector to the orbital plane \eqn{\boldsymbol{n}}{n} as
+a list-column.
+\item \code{up} Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
+\eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
+\eqn{\phi(t=0)=0} at J2000) as a list column.
 }
 
 If \code{output = "ode"}, it will return the raw output of the ODE solver, which
 is an object of class \code{deSolve} and \code{matrix}, with columns \code{time}, \code{sx},
 \code{sy}, and \code{sz} (see above). This can be useful for i.e.
 \code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
+}
+\description{
+\code{snvec()} computes climatic precession and obliquity (or tilt) from an
+orbital solution (OS) input and input values for dynamical ellipticity
+(\eqn{E_{d}}{Ed}) and tidal dissipation (\eqn{T_{d}}{Td}). It solves a set
+of ordinary differential equations.
+}
+\details{
+This is a re-implementation of the C-code in the supplementary
+information of Zeebe & Lourens (2022). The terms are explained in detail
+in Zeebe (2022).
+
+Note that the different ODE solver algorithm we use (Soetaert et al.,
+2010) means that the R routine returns an evenly-spaced time grid, whereas
+the C-routine has a variable time-step.
 }
 \examples{
 # default call
@@ -114,9 +137,6 @@ Differential Equations in R: Package deSolve. Journal of Statistical
 Software, 33(9), 1--25. \url{https:doi.org/10.18637/jss.v033.i09}
 }
 \seealso{
-\code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., 2010 for the ODE solver that
-we use.
-}
-\author{
-Ilja J. Kocken and Richard E. Zeebe
+\code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., (2010) for the ODE solver
+that we use.
 }
