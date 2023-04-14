@@ -24,8 +24,8 @@ Defaults to \code{-1000} ka.}
 \item{td}{Tidal dissipation, normalized to modern. Defaults to \code{0.0}.}
 
 \item{orbital_solution}{Character vector with the name of the orbital
-solution to use. One of \code{"ZB18a"} (default) or \code{"La11"} (not yet
-implemented!).}
+solution to use. One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
+or \code{"La11"} (not yet implemented!).}
 
 \item{tres}{The output timestep resolution in thousands of years (kyr).
 Defaults to \code{0.4}.}
@@ -53,16 +53,16 @@ tidal dissipation (Td). It solves a set of ordinary differential equations.
 }
 \details{
 This is a re-implementation of the C-code in the supplementary information
-of Zeebe & Lourens 2022, in order to make it more accessible. The terms
-are explained in detail in Zeebe 2022.
+of Zeebe & Lourens (2022), in order to make it more accessible. The terms
+are explained in detail in Zeebe (2022).
 
 The output is a \link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
 \item \code{time} Time (years).
 \item \code{age} Age in thousands of years ago (ka).
-\item \code{eei} The orbital solution's eccentricity (-).
-\item \code{epl} The obliquity (radians).
-\item \code{phi} The true anomaly (radians).
+\item \code{eei} Orbital solution's eccentricity (-).
+\item \code{epl} Obliquity (radians).
+\item \code{phi} Precession (radians) from ECLIPJ2000.
 \item \code{cp} Climatic precession (-).
 }
 
@@ -75,11 +75,13 @@ reference frame.
 \item \code{lani} The long ascending node (radians).
 \item \code{u} The input vector s as a list-column.
 \item \code{nv} The vector n as a list-column.
-\item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000.
+\item \code{up} Vector u', with coordinates relative to phi(t=0) at J2000 as a list
+column.
 }
 
 If \code{output = "ode"}, it will return the raw output of the ODE solver, which
-is an object of class \code{deSolve} and \code{matrix}. This can be useful for i.e.
+is an object of class \code{deSolve} and \code{matrix}, with columns \code{time}, \code{sx},
+\code{sy}, and \code{sz} (see above). This can be useful for i.e.
 \code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
 }
 \examples{
@@ -90,6 +92,10 @@ snvec()
 snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
 }
 \references{
+Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
+Paleocene–Eocene boundary age constrained by geology and astronomy.
+\emph{Science}, 365(6456), 926–929. \url{https://doi.org/10.1126/science.aax0612}
+
 Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
 paleo-applications utilizing obliquity and precession cycles: The role of
 dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and

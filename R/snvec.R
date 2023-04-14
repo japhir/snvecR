@@ -9,8 +9,8 @@
 #' @param ed Dynamical ellipticity, normalized to modern. Defaults to `1.0`.
 #' @param td Tidal dissipation, normalized to modern. Defaults to `0.0`.
 #' @param orbital_solution Character vector with the name of the orbital
-#'   solution to use. One of `"ZB18a"` (default) or `"La11"` (not yet
-#'   implemented!).
+#'   solution to use. One of `"ZB18a"` (default) from Zeebe and Lourens (2019),
+#'   or `"La11"` (not yet implemented!).
 #' @param tres The output timestep resolution in thousands of years (kyr).
 #'   Defaults to `0.4`.
 #' @param tolerance The numerical tolerance passed to [deSolve::ode()]'s `rtol`
@@ -31,15 +31,15 @@
 #' @details
 #'
 #' This is a re-implementation of the C-code in the supplementary information
-#'   of Zeebe & Lourens 2022, in order to make it more accessible. The terms
-#'   are explained in detail in Zeebe 2022.
+#'   of Zeebe & Lourens (2022), in order to make it more accessible. The terms
+#'   are explained in detail in Zeebe (2022).
 #'
 #' The output is a [tibble][tibble::tibble-package] with the following columns:
 #'   * `time` Time (years).
 #'   * `age` Age in thousands of years ago (ka).
-#'   * `eei` The orbital solution's eccentricity (-).
-#'   * `epl` The obliquity (radians).
-#'   * `phi` The true anomaly (radians).
+#'   * `eei` Orbital solution's eccentricity (-).
+#'   * `epl` Obliquity (radians).
+#'   * `phi` Precession (radians) from ECLIPJ2000.
 #'   * `cp` Climatic precession (-).
 #'
 #' If `output = "all"`, the following additional columns are included:
@@ -50,16 +50,22 @@
 #'   * `lani` The long ascending node (radians).
 #'   * `u` The input vector s as a list-column.
 #'   * `nv` The vector n as a list-column.
-#'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000.
+#'   * `up` Vector u', with coordinates relative to phi(t=0) at J2000 as a list
+#'     column.
 #'
 #' If `output = "ode"`, it will return the raw output of the ODE solver, which
-#'   is an object of class `deSolve` and `matrix`. This can be useful for i.e.
+#'   is an object of class `deSolve` and `matrix`, with columns `time`, `sx`,
+#'   `sy`, and `sz` (see above). This can be useful for i.e.
 #'   [deSolve::diagnostics()].
 #'
 #' @seealso [deSolve::ode()] from Soetaert et al., 2010 for the ODE solver that
 #'   we use.
 #'
 #' @references
+#'
+#' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
+#'  Paleocene–Eocene boundary age constrained by geology and astronomy.
+#'  _Science_, 365(6456), 926–929. <https://doi.org/10.1126/science.aax0612>
 #'
 #' Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
 #'   paleo-applications utilizing obliquity and precession cycles: The role of
