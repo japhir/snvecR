@@ -1,4 +1,4 @@
-#' Calculate precession and obliquity from an OS, Td, and Ed.
+#' Calculate Earth’s Obliquity and Precession in the Past
 #'
 #' Computes climatic precession and obliquity (or tilt) from an orbital
 #' solution (OS) input and input values for dynamical ellipticity (Ed) and

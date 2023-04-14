@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: If you use this software, please cite it using the metadata from this file.
 type: software
-title: 'snvecR: Calculate Climatic Precession and Obliquity from OS, Td, and Ed'
+title: 'snvecR: Calculate Earth’s Obliquity and Precession in the Past'
 version: 3.7.5.9000
 date-released: 2023-04-06
 abstract: This package makes it easy to calculate precession and obliquity from an

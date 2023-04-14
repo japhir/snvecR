@@ -1,5 +1,5 @@
 Package: snvecR
-Title: Calculate Climatic Precession and Obliquity from OS, Td, and Ed
+Title: Calculate Earth’s Obliquity and Precession in the Past
 Version: 3.7.5.9000
 Authors@R:
     c(person("Ilja", "Kocken", , "ikocken@hawaii.edu", role = c("aut", "cre", "trl", "cph"),

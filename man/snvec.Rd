@@ -2,7 +2,7 @@
 % Please edit documentation in R/snvec.R
 \name{snvec}
 \alias{snvec}
-\title{Calculate precession and obliquity from an OS, Td, and Ed.}
+\title{Calculate Earth’s Obliquity and Precession in the Past}
 \usage{
 snvec(
   tend = -1000,
