@@ -43,15 +43,15 @@ solution <- snvec()
 #> • `orbital_solution` = "ZB18a"
 #> • `tres` = 0.4 kyr
 #> • `tolerance` = 1e-07
-#> ℹ started at "2023-04-14 16:26:22"
+#> ℹ started at "2023-04-14 18:01:43"
 #> Final values:
-#> • s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935
-#> • s-error = |s|-1: -5.44863786333671e-05
+#> • s[1][2][3]: 0.404167901494707 -0.0538203738703376 0.91304080670958
+#> • s-error = |s|-1: -5.40814828743352e-05
 #> Final values:
-#> • obliquity: 0.413056573207875 rad
-#> • precession: -0.562236553023642 rad
-#> ℹ stopped at "2023-04-14 16:26:25"
-#> ℹ total duration: 2.76s
+#> • obliquity: 0.413062053389373 rad
+#> • precession: -0.562524050187854 rad
+#> ℹ stopped at "2023-04-14 18:01:45"
+#> ℹ total duration: 1.85s
 ```
 
 see `?snvec` for further documentation.

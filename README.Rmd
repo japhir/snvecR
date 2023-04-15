@@ -52,7 +52,7 @@ see `?snvec` for further documentation.
 Here we create a quick plot of the calculated climatic precession with the
 eccentricity envelope:
 
-```{r plot}
+```{r plot, fig.width = 9, fig.height = 7}
 library(ggplot2)
 solution |>
   ggplot(aes(x = age, y = cp)) +
