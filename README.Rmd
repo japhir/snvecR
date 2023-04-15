@@ -56,12 +56,15 @@ eccentricity envelope:
 library(ggplot2)
 solution |>
   ggplot(aes(x = age, y = cp)) +
+  labs(x = "Age (ka)", y = "(-)", colour = "Orbital Element") +
   # the age scale goes from old to young
   scale_x_reverse() +
   # plot climatic precession
-  geom_line(colour = "skyblue") +
+  geom_line(aes(colour = "Climatic Precession")) +
   # add the (interpolated) eccentricity envelope
-  geom_line(aes(y = eei))
+  geom_line(aes(y = eei, colour = "Eccentricity")) +
+  scale_color_discrete(type = c("skyblue", "black")) +
+  theme(legend.pos = c(.9, .95))
 ```
 
 # References

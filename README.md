@@ -43,15 +43,15 @@ solution <- snvec()
 #> • `orbital_solution` = "ZB18a"
 #> • `tres` = 0.4 kyr
 #> • `tolerance` = 1e-07
-#> ℹ started at "2023-04-13 12:41:58"
+#> ℹ started at "2023-04-14 16:26:22"
 #> Final values:
 #> • s[1][2][3]: 0.404197400723194 -0.0537088738295803 0.91303387030935
 #> • s-error = |s|-1: -5.44863786333671e-05
 #> Final values:
 #> • obliquity: 0.413056573207875 rad
 #> • precession: -0.562236553023642 rad
-#> ℹ stopped at "2023-04-13 12:42:00"
-#> ℹ total duration: 1.97s
+#> ℹ stopped at "2023-04-14 16:26:25"
+#> ℹ total duration: 2.76s
 ```
 
 see `?snvec` for further documentation.
@@ -63,12 +63,15 @@ the eccentricity envelope:
 library(ggplot2)
 solution |>
   ggplot(aes(x = age, y = cp)) +
+  labs(x = "Age (ka)", y = "(-)", colour = "Orbital Element") +
   # the age scale goes from old to young
   scale_x_reverse() +
   # plot climatic precession
-  geom_line(colour = "skyblue") +
+  geom_line(aes(colour = "Climatic Precession")) +
   # add the (interpolated) eccentricity envelope
-  geom_line(aes(y = eei))
+  geom_line(aes(y = eei, colour = "Eccentricity")) +
+  scale_color_discrete(type = c("skyblue", "black")) +
+  theme(legend.pos = c(.9, .95))
 ```
 
 <img src="man/figures/README-plot-1.png" width="100%" />
