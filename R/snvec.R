@@ -318,21 +318,24 @@ snvec <- function(tend = -1e3,
       dY <- fac * (-cci * sx + ddi * ppi * sz)
       dZ <- -fac * (qqi * sx + ppi * sy) * ddi
 
-      # EPSDOT
+      # EPSDOT: tidal effect on obliquity
+      # if (epsdot) {
+      # orbit normal at ti = m is nn[j][m]
+      # dot product and dydt:
+      # dotab = cos(epl), sqrt = sin(epl=acos(dotab))
+
       ## dotab = s[1]*nn[1][m]+s[2]*nn[2][m]+s[3]*nn[3][m];
       ## tmp = tdg*EPSDOT*D2S/sqrt(1.-dotab*dotab);
       ## yp[1] += tmp*(nn[1][m] - dotab*s[1]);
       ## yp[2] += tmp*(nn[2][m] - dotab*s[2]);
       ## yp[3] += tmp*(nn[3][m] - dotab*s[3]);
-
+      # }
       list(c(dX, dY, dZ))
     }) # end 'with(as.list( ...
   }
 
   ## a linear sequence of steps
-
   times <- seq(0, tend * KY2D,
-               ## length.out = 2523L # the length of the C-output
                by = -tres * KY2D
                # ~ tres = 0.4 is the average diff in the C-output
                # snv_sout$time |> diff() |> median() = 0.396013
