@@ -63,8 +63,8 @@
 #'
 #' where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
 #'
-#' If `output = "all"`, the following additional columns are included,
-#'   typically interpolated to output timescale :
+#' If `output = "all"` (for developers), the following additional columns are
+#' included, typically interpolated to output timescale:
 #'
 #'   * `sx`, `sy`, `sz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
 #'   spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
@@ -88,7 +88,7 @@
 #'   * `up` Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
 #'   \eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
 #'   \eqn{\phi(t=0)=0} at J2000) as a list column.
-#   this one is in ECLIPJ2000
+#   this one is in inertial frame ECLIPJ2000
 #'
 #' If `output = "ode"`, it will return the raw output of the ODE solver, which
 #' is an object of class `deSolve` and `matrix`, with columns `time`, `sx`,
@@ -255,6 +255,7 @@ snvec <- function(tend = -1e3,
   b <- -2 * cs * np[2]
   c <- cs * cs - np[3] * np[3]
 
+  # initial position of spin vector in Earth's mean equator frame at t=0 (J2000) = [0, 0, 1]
   s0p <- c(NA, NA, NA)
   s0p[2] <- (-b + sqrt(b * b - 4 * a * c)) / (2 * a)
   s0p[3] <- sqrt(1 - s0p[2] * s0p[2])
@@ -285,8 +286,11 @@ snvec <- function(tend = -1e3,
   # derivatives. RHS of DEQs for spin vector s = y
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
+      # the the index of the current timestep in the orbital solution
       m <- min(round(abs(t / dts) + 1), nrow(dat))
 
+      ## quickly interpolate orbital solution input value at the current
+      ## timestep
       dx <- t - dat$t[m]
       qqi <- qinterp(dat$qq, dts, dx, m)
       ppi <- qinterp(dat$pp, dts, dx, m)
@@ -302,8 +306,8 @@ snvec <- function(tend = -1e3,
       # shouldn't I also interpolate hh and kk? -> see above
       ff <- (1 - dat$hh[m] * dat$hh[m] - dat$kk[m] * dat$kk[m])
       # i've tried both, gives identical results if I use the prescribed timesteps.
-      # they're also equally fast! so let's go with my own which I think is better.
-      # it might be the cause of numerical diffs between C and R? try without again
+      # they're also equally fast!
+      # we keep it the same as the C-routine for now.
 
       ff <- 1 / sqrt(ff * ff * ff)
       kb <- k0d * (1 + 1 * wdw * t) * (ff + BET0 * (1 + 2 * ndn * t))
@@ -336,27 +340,24 @@ snvec <- function(tend = -1e3,
 
   ## solve it
   ## [[file:snvec-3.7.5/snvec-3.7.5.c::%%% solver][odeint()]]
-  ## print(system.time(
-    ## microbenchmark::microbenchmark(
-    out <- deSolve::ode(
-      y = state,
-      times = times,
-      func = eqns,
-      parms = parameters,
-      method =
+  out <- deSolve::ode(
+    y = state,
+    times = times,
+    func = eqns,
+    parms = parameters,
+    method =
       ## "lsoda"# = default, chooses stiff/nonstiff automatically starting non-stiff
       # "ode23" # = non-stiff, variable time-step
       ## "ode45" # = stiff, variable time-step
       # radau #= stiff/non-stiff
-        "bdf", # = stiff
+      "bdf", # = stiff
       ## "daspk", # = very stiff
-      # play around with machine precision: default is 1e-6
-      ## rtol = 1e-5, atol = 1e-5 # rougher = faster?
-      rtol = tolerance, atol = tolerance # based on EPSLVR = 1e-7
-      ## rtol = 1e-12, atol = 1e-12
-    )
-  ## ))
-  ## )
+    atol = tolerance,
+      ## rtol = tolerance,
+    rtol = 0
+    # perhaps I should pass ... here?
+  )
+
   ## print the final values for s
   ## This is at t = tend, it's going back from 0 to -time
   fin <- out[nrow(out), ]
@@ -366,7 +367,7 @@ snvec <- function(tend = -1e3,
     cli::cli_inform(c(
       "Final values:",
       "*" = "s[1][2][3]: {paste(fin[2], fin[3], fin[4])}",
-      "*" = "s-error = |s|-1: {sqrt(abs(pracma::dot(u, u)))-1}"
+      "*" = "s-error = |s|-1: {sqrt(pracma::dot(u, u))-1}"
     ))
   }
 
@@ -375,8 +376,7 @@ snvec <- function(tend = -1e3,
     return(out)
   }
 
-  ## interpolate the orbital solution
-  ## back onto output timescale
+  ## interpolate the full orbital solution onto output timescale
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(

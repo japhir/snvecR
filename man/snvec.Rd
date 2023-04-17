@@ -68,8 +68,8 @@ timescale (-).
 
 where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
 
-If \code{output = "all"}, the following additional columns are included,
-typically interpolated to output timescale :
+If \code{output = "all"} (for developers), the following additional columns are
+included, typically interpolated to output timescale:
 \itemize{
 \item \code{sx}, \code{sy}, \code{sz} The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
 spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
