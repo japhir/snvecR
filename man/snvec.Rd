@@ -10,9 +10,9 @@ snvec(
   td = 0,
   orbital_solution = "ZB18a",
   tres = 0.4,
-  atol = 1e-06,
+  atol = 1e-05,
   rtol = 0,
-  solver = "lsodes",
+  solver = "vode",
   quiet = FALSE,
   output = "nice"
 )
@@ -35,13 +35,13 @@ or \code{"La11"} (not yet implemented!).}
 to \code{0.4}.}
 
 \item{atol}{Numerical absolute tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s
-\code{atol}. Defaults to \code{1e-6}.}
+\code{atol}. Defaults to \code{1e-5}.}
 
 \item{rtol}{Numerical relative tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s
 \code{rtol}. Defaults to \code{0}.}
 
 \item{solver}{Character vector specifying the method passed to
-\code{\link[deSolve:ode]{deSolve::ode()}}'s \code{method}. Defaults to \code{"lsodes"} for stiff problems
+\code{\link[deSolve:ode]{deSolve::ode()}}'s \code{method}. Defaults to \code{"vode"} for stiff problems
 with a variable timestep.}
 
 \item{quiet}{Be quiet?

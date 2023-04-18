@@ -17,11 +17,11 @@
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
 #'   to `0.4`.
 #' @param atol Numerical absolute tolerance passed to [deSolve::ode()]'s
-#'   `atol`. Defaults to `1e-6`.
+#'   `atol`. Defaults to `1e-5`.
 #' @param rtol Numerical relative tolerance passed to [deSolve::ode()]'s
 #'   `rtol`. Defaults to `0`.
 #' @param solver Character vector specifying the method passed to
-#'   [deSolve::ode()]'s `method`. Defaults to `"lsodes"` for stiff problems
+#'   [deSolve::ode()]'s `method`. Defaults to `"vode"` for stiff problems
 #'   with a variable timestep.
 #' @param quiet Be quiet?
 #'
@@ -140,9 +140,9 @@ snvec <- function(tend = -1e3,
                   td = 0,
                   orbital_solution = "ZB18a",
                   tres = 0.4,
-                  atol = 1e-6,
+                  atol = 1e-5,
                   rtol = 0,
-                  solver = "lsodes",
+                  solver = "vode",
                   quiet = FALSE,
                   output = "nice") {
   ## select the desired orbital solution

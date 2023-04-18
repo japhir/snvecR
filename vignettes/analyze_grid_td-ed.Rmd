@@ -53,7 +53,7 @@ experiments, so that it is very clear from the output what the inputs were.
 ```{r update-grid}
 biggrid <- biggrid |>
     # for now only for 1000 years at very high tolerance so it's fast
-    mutate(tol = 1e-4, tend = -1e3)
+    mutate(atol = 1e-4, tend = -1e3)
     # this would be the real deal, the full 100--0 Ma results at medium
     # tolerance.
     ## mutate(tol = 1e-7, tend = -1e5)
@@ -91,7 +91,7 @@ the new list-column `sol`.
 ```{r massive-compute}
 biggrid <- biggrid |>
     # apply our new function!
-    mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, tolerance = tol),
+    mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, atol = atol),
                       .f = snvec_tail,
                       # additional parameters to snvec_tail can go after!
                       quiet = TRUE, output = "nice", n = 100,
@@ -167,7 +167,7 @@ biggrid <- biggrid |>
   select(-sol) |>
   # add a filename that's easy to break into relevant parameters later
   # I write to tempdir here, but you might want to write to something like out/
-  mutate(file = glue::glue("{tempdir()}/2023-04-13_biggrid_{Td}_{Ed}_{tol}_{tend}.rds"))
+  mutate(file = glue::glue("{tempdir()}/2023-04-13_biggrid_{Td}_{Ed}_{atol}_{tend}.rds"))
 biggrid
 ```
 
@@ -189,7 +189,7 @@ biggrid |>
   # in this case we make sure that column names are identical to argument names
   # so that the list (in this case tibble/data.frame) is matched to the correct
   # arguments
-  rename(td = Td, ed = Ed, tolerance = tol) |>
+  rename(td = Td, ed = Ed, atol = atol) |>
   purrr::pwalk(.f = snvec_save,
                # additional parameters can go after!
                quiet = TRUE, output = "nice", tres = 5,
