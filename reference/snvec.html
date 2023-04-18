@@ -66,7 +66,9 @@ of ordinary differential equations.</p>
 <span>  td <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  orbital_solution <span class="op">=</span> <span class="st">"ZB18a"</span>,</span>
 <span>  tres <span class="op">=</span> <span class="fl">0.4</span>,</span>
-<span>  tolerance <span class="op">=</span> <span class="fl">1e-07</span>,</span>
+<span>  atol <span class="op">=</span> <span class="fl">1e-05</span>,</span>
+<span>  rtol <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  solver <span class="op">=</span> <span class="st">"vode"</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  output <span class="op">=</span> <span class="st">"nice"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -100,9 +102,20 @@ or <code>"La11"</code> (not yet implemented!).</p></dd>
 to <code>0.4</code>.</p></dd>
 
 
-<dt>tolerance</dt>
-<dd><p>Numerical tolerance passed to <code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode()</a></code>'s <code>rtol</code> and
-<code>atol</code> arguments. Defaults to <code>1e-7</code>.</p></dd>
+<dt>atol</dt>
+<dd><p>Numerical absolute tolerance passed to <code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode()</a></code>'s
+<code>atol</code>. Defaults to <code>1e-5</code>.</p></dd>
+
+
+<dt>rtol</dt>
+<dd><p>Numerical relative tolerance passed to <code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode()</a></code>'s
+<code>rtol</code>. Defaults to <code>0</code>.</p></dd>
+
+
+<dt>solver</dt>
+<dd><p>Character vector specifying the method passed to
+<code><a href="https://rdrr.io/pkg/deSolve/man/ode.html" class="external-link">deSolve::ode()</a></code>'s <code>method</code>. Defaults to <code>"vode"</code> for stiff problems
+with a variable timestep.</p></dd>
 
 
 <dt>quiet</dt>
@@ -141,22 +154,15 @@ timescale (-).</p></li>
 </ul><p>where \(\varpi\) is the longitude of perihelion relative to the moving equinox.</p>
 
 
-<p>If <code>output = "all"</code> (for developers), the following additional columns are
-included, typically interpolated to output timescale:</p><ul><li><p><code>sx</code>, <code>sy</code>, <code>sz</code> The \(x\), \(y\), and \(z\)-components of Earth's
+<p>If <code>output = "all"</code> (for developers), additional columns are included,
+typically interpolated to output timescale.</p><ul><li><p><code>sx</code>, <code>sy</code>, <code>sz</code> The \(x\), \(y\), and \(z\)-components of Earth's
 spin axis unit vector \(\boldsymbol{s}\) in the heliocentric inertial
 reference frame.</p></li>
-<li><p><code>nnx</code>, <code>nny</code>, <code>nnz</code> The \(x\), \(y\), and \(z\)-components of the
-unit normal vector \(\boldsymbol{n}\), normal to Earth's
-instantaneous orbital plane.</p></li>
-<li><p><code>lphi</code> Unwrapped longitude of perihelion \(\varpi\) (radians).</p></li>
-<li><p><code>lani</code> Unwrapped longitude of the ascending node \(\Omega\) (radians).</p></li>
-<li><p><code>u</code> Spin axis unit vector \(\boldsymbol{s}\) as a list-column.</p></li>
-<li><p><code>nv</code> Unit normal vector to the orbital plane \(\boldsymbol{n}\) as
-a list-column.</p></li>
-<li><p><code>up</code> Vector \(\boldsymbol{u}'\), euler transform of
-\(\boldsymbol{u}\) to the instantaneous orbit plane (relative to
-\(\phi(t=0)=0\) at J2000) as a list column.</p></li>
-</ul><p>If <code>output = "ode"</code>, it will return the raw output of the ODE solver, which
+</ul><p>See the source code for descriptions of all the intermediate computational
+steps.</p>
+
+
+<p>If <code>output = "ode"</code>, it will return the raw output of the ODE solver, which
 is an object of class <code>deSolve</code> and <code>matrix</code>, with columns <code>time</code>, <code>sx</code>,
 <code>sy</code>, and <code>sz</code> (see above). This can be useful for i.e.
 <code><a href="https://rdrr.io/pkg/deSolve/man/diagnostics.html" class="external-link">deSolve::diagnostics()</a></code>.</p>
@@ -205,16 +211,18 @@ that we use.</p></div>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `td` = 0</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `orbital_solution` = "ZB18a"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tres` = 0.4 kyr</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tolerance` = 1e-07</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-17 20:23:26"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `atol` = 1e-05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `rtol` = 0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `solver` = "vode"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-18 03:58:48"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: 0.404167901494707 -0.0538203738703376 0.91304080670958</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: -5.40814828743352e-05</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: 0.404184487125502 -0.0537555129021778 0.913036138471214</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: -5.51290422522444e-05</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: 0.413062053389373 rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: -0.562524050187854 rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-17 20:23:28"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 1.88s</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: 0.413060472709888 rad</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: -0.562357122251907 rad</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-18 03:58:49"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 1.27s</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 6</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        time   age    eei   epl    phi     cp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -230,38 +238,6 @@ that we use.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">314</span><span style="color: #BB0000;">900</span>   3.6 0.018<span style="text-decoration: underline;">1</span> 0.417 0.871  0.012<span style="text-decoration: underline;">0</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2,491 more rows</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># a quick one with few timesteps, low resolution, high tolerance</span></span></span>
-<span class="r-in"><span><span class="fu">snvec</span><span class="op">(</span><span class="op">-</span><span class="fl">1e2</span>, <span class="fl">1</span>, <span class="fl">0</span>, orbital_solution <span class="op">=</span> <span class="st">"ZB18a"</span>, tres <span class="op">=</span> <span class="fl">1</span>, tolerance <span class="op">=</span> <span class="fl">1e-4</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Integration parameters:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = -100 ka</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `ed` = 1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `td` = 0</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `orbital_solution` = "ZB18a"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tres` = 1 kyr</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tolerance` = 1e-04</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2023-04-17 20:23:28"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: 0.367754229285845 -0.133599938338641 0.919912342322532</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: -0.000334638872065862</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: 0.412998435234224 rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: -0.770143241244407 rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2023-04-17 20:23:29"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: 0.41s</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 101 × 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        time   age    eei   epl   phi        cp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        0     0 0.016<span style="text-decoration: underline;">7</span> 0.409 0      0.016<span style="text-decoration: underline;">3</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  -<span style="color: #BB0000; text-decoration: underline;">365</span><span style="color: #BB0000;">250</span>     1 0.017<span style="text-decoration: underline;">1</span> 0.411 0.243  0.017<span style="text-decoration: underline;">1</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  -<span style="color: #BB0000; text-decoration: underline;">730</span><span style="color: #BB0000;">500</span>     2 0.017<span style="text-decoration: underline;">5</span> 0.414 0.485  0.016<span style="text-decoration: underline;">3</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">095</span><span style="color: #BB0000;">750</span>     3 0.017<span style="text-decoration: underline;">8</span> 0.416 0.727  0.014<span style="text-decoration: underline;">0</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">461</span><span style="color: #BB0000;">000</span>     4 0.018<span style="text-decoration: underline;">2</span> 0.418 0.967  0.010<span style="text-decoration: underline;">5</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">826</span><span style="color: #BB0000;">250</span>     5 0.018<span style="text-decoration: underline;">5</span> 0.419 1.21   0.005<span style="text-decoration: underline;">73</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> -<span style="color: #BB0000;">2</span><span style="color: #BB0000; text-decoration: underline;">191</span><span style="color: #BB0000;">500</span>     6 0.018<span style="text-decoration: underline;">8</span> 0.421 1.45   0.000<span style="text-decoration: underline;">468</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> -<span style="color: #BB0000;">2</span><span style="color: #BB0000; text-decoration: underline;">556</span><span style="color: #BB0000;">750</span>     7 0.019<span style="text-decoration: underline;">0</span> 0.422 1.68  -<span style="color: #BB0000;">0.004</span><span style="color: #BB0000; text-decoration: underline;">99</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> -<span style="color: #BB0000;">2</span><span style="color: #BB0000; text-decoration: underline;">922</span><span style="color: #BB0000;">000</span>     8 0.019<span style="text-decoration: underline;">2</span> 0.423 1.92  -<span style="color: #BB0000;">0.010</span><span style="color: #BB0000; text-decoration: underline;">1</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -<span style="color: #BB0000;">3</span><span style="color: #BB0000; text-decoration: underline;">287</span><span style="color: #BB0000;">250</span>     9 0.019<span style="text-decoration: underline;">3</span> 0.423 2.16  -<span style="color: #BB0000;">0.014</span><span style="color: #BB0000; text-decoration: underline;">5</span>  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 91 more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
