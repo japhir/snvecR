@@ -16,8 +16,13 @@
 #'   or `"La11"` (not yet implemented!).
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
 #'   to `0.4`.
-#' @param tolerance Numerical tolerance passed to [deSolve::ode()]'s `rtol` and
-#'   `atol` arguments. Defaults to `1e-7`.
+#' @param atol Numerical absolute tolerance passed to [deSolve::ode()]'s
+#'   `atol`. Defaults to `1e-6`.
+#' @param rtol Numerical relative tolerance passed to [deSolve::ode()]'s
+#'   `rtol`. Defaults to `0`.
+#' @param solver Character vector specifying the method passed to
+#'   [deSolve::ode()]'s `method`. Defaults to `"lsodes"` for stiff problems
+#'   with a variable timestep.
 #' @param quiet Be quiet?
 #'
 #'   * If `TRUE`, hide info messages.
@@ -129,15 +134,15 @@
 #' # default call
 #' snvec()
 #'
-#' # a quick one with few timesteps, low resolution, high tolerance
-#' snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
 #' @export
 snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
                   orbital_solution = "ZB18a",
                   tres = 0.4,
-                  tolerance = 1e-7,
+                  atol = 1e-6,
+                  rtol = 0,
+                  solver = "lsodes",
                   quiet = FALSE,
                   output = "nice") {
   ## select the desired orbital solution
@@ -201,8 +206,11 @@ snvec <- function(tend = -1e3,
                     "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>"))
   }
 
-  if (tolerance > 1e-3 | tolerance < 1e-12) {
-    cli::cli_warn("Input tolerance should be between 1e-3 and 1e-12.")
+  if (atol < 1e-12 | atol > 1e-3) {
+    cli::cli_warn("Input absolute tolerance should be between 1e-12 and 1e-3.")
+  }
+  if (rtol > 1e-3) {
+    cli::cli_warn("Input relative tolerance should be smaller than 1e-3.")
   }
 
   # message user about inputs
@@ -218,7 +226,9 @@ snvec <- function(tend = -1e3,
       "*" = "{.var td} = {td}",
       "*" = "{.var orbital_solution} = {.q {orbital_solution}}",
       "*" = "{.var tres} = {tres} kyr",
-      "*" = "{.var tolerance} = {tolerance}",
+      "*" = "{.var atol} = {atol}",
+      "*" = "{.var rtol} = {rtol}",
+      "*" = "{.var solver} = {.q {solver}}",
       "i" = "started at {.q {startdate}}"
     ))
   }
@@ -352,16 +362,9 @@ snvec <- function(tend = -1e3,
     times = times,
     func = eqns,
     parms = parameters,
-    method =
-      ## "lsoda"# = default, chooses stiff/nonstiff automatically starting non-stiff
-      # "ode23" # = non-stiff, variable time-step
-      ## "ode45" # = stiff, variable time-step
-      # radau #= stiff/non-stiff
-      "bdf", # = stiff
-      ## "daspk", # = very stiff
-    atol = tolerance,
-      ## rtol = tolerance,
-    rtol = 0
+    method = solver,
+    atol = atol,
+    rtol = rtol
     # perhaps I should pass ... here?
   )
 
@@ -369,6 +372,11 @@ snvec <- function(tend = -1e3,
   ## This is at t = tend, it's going back from 0 to -time
   fin <- out[nrow(out), ]
   u <- as.vector(c(fin[2], fin[3], fin[4]))
+
+  if (anyNA(fin)) {
+    cli::cli_abort(c("The procedure returned NA for spin vector s!",
+                     "i" = "{u}"))
+  }
 
   if (!quiet) {
     cli::cli_inform(c(

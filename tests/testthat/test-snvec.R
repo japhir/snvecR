@@ -6,10 +6,14 @@ test_that("snvecR inputs are checked", {
   expect_error(snvec(tres = -5))
   expect_error(snvec(tres = -Inf))
   expect_error(snvec(output = "banaan"))
+  expect_error(snvec(solver = "banaan"))
   expect_warning(snvec(ed = 1.1001, tend = -1, tres = .5, quiet = TRUE))
   expect_warning(snvec(ed = 0.8999, tend = -1, tres = .5, quiet = TRUE))
   expect_warning(snvec(td = 1.2001, tend = -1, tres = .5, quiet = TRUE))
   expect_warning(snvec(td = -0.0001, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(atol = 0.9e-12, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(atol = 1.1e-3, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(rtol = 1.1e-3, tend = -1, tres = .5, quiet = TRUE))
 })
 
 test_that("snvecR basic call works", {

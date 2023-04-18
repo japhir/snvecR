@@ -10,7 +10,9 @@ snvec(
   td = 0,
   orbital_solution = "ZB18a",
   tres = 0.4,
-  tolerance = 1e-07,
+  atol = 1e-06,
+  rtol = 0,
+  solver = "lsodes",
   quiet = FALSE,
   output = "nice"
 )
@@ -32,8 +34,15 @@ or \code{"La11"} (not yet implemented!).}
 \item{tres}{Output timestep resolution in thousands of years (kyr). Defaults
 to \code{0.4}.}
 
-\item{tolerance}{Numerical tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{rtol} and
-\code{atol} arguments. Defaults to \code{1e-7}.}
+\item{atol}{Numerical absolute tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s
+\code{atol}. Defaults to \code{1e-6}.}
+
+\item{rtol}{Numerical relative tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s
+\code{rtol}. Defaults to \code{0}.}
+
+\item{solver}{Character vector specifying the method passed to
+\code{\link[deSolve:ode]{deSolve::ode()}}'s \code{method}. Defaults to \code{"lsodes"} for stiff problems
+with a variable timestep.}
 
 \item{quiet}{Be quiet?
 \itemize{
@@ -68,24 +77,16 @@ timescale (-).
 
 where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
 
-If \code{output = "all"} (for developers), the following additional columns are
-included, typically interpolated to output timescale:
+If \code{output = "all"} (for developers), additional columns are included,
+typically interpolated to output timescale.
 \itemize{
 \item \code{sx}, \code{sy}, \code{sz} The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
 spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
 reference frame.
-\item \code{nnx}, \code{nny}, \code{nnz} The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
-instantaneous orbital plane.
-\item \code{lphi} Unwrapped longitude of perihelion \eqn{\varpi} (radians).
-\item \code{lani} Unwrapped longitude of the ascending node \eqn{\Omega} (radians).
-\item \code{u} Spin axis unit vector \eqn{\boldsymbol{s}}{s} as a list-column.
-\item \code{nv} Unit normal vector to the orbital plane \eqn{\boldsymbol{n}}{n} as
-a list-column.
-\item \code{up} Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
-\eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
-\eqn{\phi(t=0)=0} at J2000) as a list column.
 }
+
+See the source code for descriptions of all the intermediate computational
+steps.
 
 If \code{output = "ode"}, it will return the raw output of the ODE solver, which
 is an object of class \code{deSolve} and \code{matrix}, with columns \code{time}, \code{sx},
@@ -111,8 +112,6 @@ the C-routine has a variable time-step.
 # default call
 snvec()
 
-# a quick one with few timesteps, low resolution, high tolerance
-snvec(-1e2, 1, 0, orbital_solution = "ZB18a", tres = 1, tolerance = 1e-4)
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
