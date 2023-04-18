@@ -63,32 +63,36 @@
 #'
 #' where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
 #'
-#' If `output = "all"` (for developers), the following additional columns are
-#' included, typically interpolated to output timescale:
+#' If `output = "all"` (for developers), additional columns are included,
+#' typically interpolated to output timescale.
 #'
 #'   * `sx`, `sy`, `sz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
 #'   spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
 #'   reference frame.
 #   this one is in HCI
 #'
-#'   * `nnx`, `nny`, `nnz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-#'   unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
-#'   instantaneous orbital plane.
-#   this one is in HCI
+#'  See the source code for descriptions of all the intermediate computational
+#'  steps.
 #'
-#'   * `lphi` Unwrapped longitude of perihelion \eqn{\varpi} (radians).
-#'
-#'   * `lani` Unwrapped longitude of the ascending node \eqn{\Omega} (radians).
-#'
-#'   * `u` Spin axis unit vector \eqn{\boldsymbol{s}}{s} as a list-column.
-#'
-#'   * `nv` Unit normal vector to the orbital plane \eqn{\boldsymbol{n}}{n} as
-#'   a list-column.
-#'
-#'   * `up` Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
-#'   \eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
-#'   \eqn{\phi(t=0)=0} at J2000) as a list column.
-#   this one is in inertial frame ECLIPJ2000
+# #'
+# #'   * `nnx`, `nny`, `nnz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+# #'   unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+# #'   instantaneous orbital plane.
+# #   this one is in HCI
+# #'
+# #'   * `lphi` Unwrapped longitude of perihelion \eqn{\varpi} (radians).
+# #'
+# #'   * `lani` Unwrapped longitude of the ascending node \eqn{\Omega} (radians).
+# #'
+# #'   * `u` Spin axis unit vector \eqn{\boldsymbol{s}}{s} as a list-column.
+# #'
+# #'   * `nv` Unit normal vector to the orbital plane \eqn{\boldsymbol{n}}{n} as
+# #'   a list-column.
+# #'
+# #'   * `up` Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
+# #'   \eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
+# #'   \eqn{\phi(t=0)=0} at J2000) as a list column.
+# #   this one is in inertial frame ECLIPJ2000
 #'
 #' If `output = "ode"`, it will return the raw output of the ODE solver, which
 #' is an object of class `deSolve` and `matrix`, with columns `time`, `sx`,
