@@ -62,74 +62,59 @@
 
 
 <p>A data frame with 250,001 rows and 20 columns:</p><dl><dt>t</dt>
-<dd><p>Time \(t\) (days).</p></dd>
+<dd><p>Time in days.</p></dd>
 
 <dt>age</dt>
-<dd><p>Age in thousands of years before present (ka).</p></dd>
+<dd><p>Age in thousands of years (kyr) before present.</p></dd>
 
 <dt>aa</dt>
-<dd><p>Semimajor axis \(a\) in astronomical units (au).</p></dd>
+<dd><p>Semimajor axis in astronomical units (au).</p></dd>
 
 <dt>ee</dt>
-<dd><p>Eccentricity \(e\) (unitless).</p></dd>
+<dd><p>Eccentricity (unitless).</p></dd>
 
 <dt>inc</dt>
-<dd><p>Inclination \(I\) (degrees).</p></dd>
+<dd><p>Inclination (degrees).</p></dd>
 
 <dt>lph</dt>
-<dd><p>Longitude of perihelion \(\varpi\) (degrees).</p></dd>
+<dd><p>Long periapse (degrees).</p></dd>
 
 <dt>lan</dt>
-<dd><p>Longitude of the ascending node \(\Omega\) (degrees).</p></dd>
+<dd><p>Long ascending node (degrees).</p></dd>
 
 <dt>arp</dt>
-<dd><p>Argument of perihelion \(\omega\) (degrees).</p></dd>
+<dd><p>Argument of periapse (degrees).</p></dd>
 
 <dt>mna</dt>
-<dd><p>Mean anomaly \(M\) (degrees).</p></dd>
-
+<dd><p>Mean anomaly (degrees).</p></dd>
 
 The following columns were computed from the above input:
-
 <dt>lphu</dt>
-<dd><p>Unwrapped longitude of perihelion \(\varpi\) (degrees without
-jumps).</p></dd>
-
+<dd><p>Unwrapped long periapse (degrees).</p></dd>
 
 <dt>lanu</dt>
-<dd><p>Unwrapped longitude of the ascending node \(\Omega\)
-(degrees without jumps).</p></dd>
-
+<dd><p>Unwrapped long ascending node (degrees).</p></dd>
 
 <dt>hh</dt>
-<dd><p>Variable: \(e\sin(\varpi)\).</p></dd>
-
+<dd><p>Helper: <code>ee * sin(lph / R2D)</code>.</p></dd>
 
 <dt>kk</dt>
-<dd><p>Variable: \(e\cos(\varpi)\).</p></dd>
-
+<dd><p>Helper: <code>ee * cos(lph / R2D)</code>.</p></dd>
 
 <dt>pp</dt>
-<dd><p>Variable: \(2\sin(0.5I)\sin(\Omega)\).</p></dd>
-
+<dd><p>Helper: <code>2 * sin(0.5 * inc / R2D) * sin(lan / R2D)</code>.</p></dd>
 
 <dt>qq</dt>
-<dd><p>Variable: \(2\sin(0.5I)\cos(\Omega)\).</p></dd>
-
+<dd><p>Helper: <code>2 * sin(0.5 * inc / R2D) * cos(lan / R2D)</code>.</p></dd>
 
 <dt>cc</dt>
-<dd><p>Helper: \(\cos(I)\).</p></dd>
-
+<dd><p>Helper: <code>cos(inc / R2D)</code>.</p></dd>
 
 <dt>dd</dt>
-<dd><p>Helper: \(\cos(I)/2\).</p></dd>
-
+<dd><p>Helper: <code>cos(inc / R2D / 2)</code>.</p></dd>
 
 <dt>nnx, nny, nnz</dt>
-<dd><p>The \(x\), \(y\), and \(z\)-components of the
-Eart's orbit unit normal vector \(\boldsymbol{n}\), normal to Earth's
-instantaneous orbital plane.</p></dd>
-
+<dd><p>Vector of Earth's orbit normal.</p></dd>
 
 
 </dl></div>
@@ -138,10 +123,8 @@ instantaneous orbital plane.</p></dd>
     <div class="section level2">
     <h2 id="source">Source<a class="anchor" aria-label="anchor" href="#source"></a></h2>
     
-<ul><li><p>All orbital solutions can be found on
-<a href="http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html" class="external-link">http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html</a>.</p></li>
-<li><p>The specific one we use here is available at
-<a href="http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat" class="external-link">http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat</a>.</p></li>
+<ul><li><p>All orbital solutions can be found on <a href="http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html" class="external-link">http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html</a>.</p></li>
+<li><p>The specific one we use here is available at <a href="http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat" class="external-link">http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat</a>.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
