@@ -53,7 +53,7 @@
 #' }
 #' @source
 #'
-#' * All orbital solutions can be found on
+#' * All orbital solutions by Zeebe can be found on
 #'   <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html>.
 #'
 #' * The specific one we use here is available at

@@ -120,7 +120,7 @@
 #'
 #' Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
 #'   Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
-#'   System Chaos. _The Astronomical Journal_, 164(3), 107.
+#'   System Chaos. _The Astronomical Journal_, 164(3),
 #'   [doi:10.3847/1538-3881/ac80f8](https://doi.org/10.3847/1538-3881/ac80f8).
 #'
 #' Wikipedia page on Orbital Elements:
@@ -128,7 +128,7 @@
 #'
 #' Karline Soetaert, Thomas Petzoldt, R. Woodrow Setzer (2010). Solving
 #'   Differential Equations in R: Package deSolve. Journal of Statistical
-#'   Software, 33(9), 1--25. [doi:10.18637/jss.v033.i09](https:doi.org/10.18637/jss.v033.i09).
+#'   Software, 33(9), 1–25. [doi:10.18637/jss.v033.i09](https:doi.org/10.18637/jss.v033.i09).
 #'
 #' @examples
 #' # default call

@@ -8,3 +8,4 @@
 * Added `snvec()` `output` parameter with choice to select `"ode"`, `"all"`, or `"nice"` (default).
 * Added a vignette with a grid of variations on Td and Ed.
 * Added a bookdown website rendering.
+* Released a version to Zenodo and assigned a doi.
