@@ -116,24 +116,24 @@ snvec()
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.
-\emph{Science}, 365(6456), 926–929. \url{https://doi.org/10.1126/science.aax0612}
+\emph{Science}, 365(6456), 926–929. \href{https://doi.org/10.1126/science.aax0612}{doi:10.1126/science.aax0612}.
 
 Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
 paleo-applications utilizing obliquity and precession cycles: The role of
 dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
-Paleoclimatology}, e2021PA004349. \url{https://doi.org/10.1029/2021PA004349}
+Paleoclimatology}, e2021PA004349. \href{https://doi.org/10.1029/2021PA004349}{doi:10.1029/2021PA004349}.
 
 Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
 Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
 System Chaos. \emph{The Astronomical Journal}, 164(3), 107.
-\url{https://doi.org/10.3847/1538-3881/ac80f8}
+\href{https://doi.org/10.3847/1538-3881/ac80f8}{doi:10.3847/1538-3881/ac80f8}.
 
 Wikipedia page on Orbital Elements:
 \url{https://en.wikipedia.org/wiki/Orbital_elements}
 
 Karline Soetaert, Thomas Petzoldt, R. Woodrow Setzer (2010). Solving
 Differential Equations in R: Package deSolve. Journal of Statistical
-Software, 33(9), 1--25. \url{https:doi.org/10.18637/jss.v033.i09}
+Software, 33(9), 1--25. \href{https:doi.org/10.18637/jss.v033.i09}{doi:10.18637/jss.v033.i09}.
 }
 \seealso{
 \code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., (2010) for the ODE solver

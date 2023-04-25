@@ -19,7 +19,9 @@ defaults to ZB18a from Zeebe and Lourens (2019)) and assumed or
 reconstructed values for tidal dissipation (T<sub>d</sub>) and dynamical
 ellipticity (E<sub>d</sub>). This is a translation and adaptation of the
 C-code in the supplementary material to Zeebe and Lourens (2022), with
-furher details on the methodology described in Zeebe (2022).
+furher details on the methodology described in Zeebe (2022). The name of
+the C-routine is snvec, which refers to the key units of computation:
+spin vector s and orbit normal vector n.
 
 ## Installation
 
@@ -42,16 +44,18 @@ solution <- snvec()
 #> • `td` = 0
 #> • `orbital_solution` = "ZB18a"
 #> • `tres` = 0.4 kyr
-#> • `tolerance` = 1e-07
-#> ℹ started at "2023-04-14 18:01:43"
+#> • `atol` = 1e-05
+#> • `rtol` = 0
+#> • `solver` = "vode"
+#> ℹ started at "2023-04-25 09:20:22.81489"
 #> Final values:
-#> • s[1][2][3]: 0.404167901494707 -0.0538203738703376 0.91304080670958
-#> • s-error = |s|-1: -5.40814828743352e-05
+#> • s[1][2][3]: 0.404184487124565 -0.0537555129057148 0.913036138471423
+#> • s-error = |s|-1: 0.353152142725588
 #> Final values:
-#> • obliquity: 0.413062053389373 rad
-#> • precession: -0.562524050187854 rad
-#> ℹ stopped at "2023-04-14 18:01:45"
-#> ℹ total duration: 1.85s
+#> • obliquity: 0.413060472710089 rad
+#> • precession: -0.562357122261027 rad
+#> ℹ stopped at "2023-04-25 09:20:24.141462"
+#> ℹ total duration: 1.33s
 ```
 
 see `?snvec` for further documentation.
@@ -80,17 +84,19 @@ solution |>
 
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.
-*Science*, 365(6456), 926–929. <https://doi.org/10.1126/science.aax0612>
+*Science*, 365(6456), 926–929.
+[doi:10.1126/science.aax0612](https://doi.org/10.1126/science.aax0612).
 
 Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
 paleo-applications utilizing obliquity and precession cycles: The role
 of dynamical ellipticity and tidal dissipation. *Paleoceanography and
-Paleoclimatology*, e2021PA004349. <https://doi.org/10.1029/2021PA004349>
+Paleoclimatology*, e2021PA004349.
+[doi:10.1029/2021PA004349](https://doi.org/10.1029/2021PA004349).
 
 Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
 Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
 System Chaos. *The Astronomical Journal*, 164(3), 107.
-<https://doi.org/10.3847/1538-3881/ac80f8>
+[doi:10.3847/1538-3881/ac80f8](https://doi.org/10.3847/1538-3881/ac80f8).
 
 Wikipedia page on Orbital Elements:
 <https://en.wikipedia.org/wiki/Orbital_elements>

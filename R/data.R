@@ -60,7 +60,9 @@
 #' <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
 #'
 #' @references
+#'
 #' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 #'   Paleocene–Eocene boundary age constrained by geology and astronomy.
-#'   _Science_, 365(6456), 926–929. <https://doi.org/10.1126/science.aax0612>
+#'   _Science_, 365(6456), 926–929.
+#'   [doi:10.1126/science.aax0612](https://doi.org/10.1126/science.aax0612).
 "ZB18a"

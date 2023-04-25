@@ -111,24 +111,24 @@
 #'
 #' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 #'  Paleocene–Eocene boundary age constrained by geology and astronomy.
-#'  _Science_, 365(6456), 926–929. <https://doi.org/10.1126/science.aax0612>
+#'  _Science_, 365(6456), 926–929. [doi:10.1126/science.aax0612](https://doi.org/10.1126/science.aax0612).
 #'
 #' Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
 #'   paleo-applications utilizing obliquity and precession cycles: The role of
 #'   dynamical ellipticity and tidal dissipation. _Paleoceanography and
-#'   Paleoclimatology_, e2021PA004349. <https://doi.org/10.1029/2021PA004349>
+#'   Paleoclimatology_, e2021PA004349. [doi:10.1029/2021PA004349](https://doi.org/10.1029/2021PA004349).
 #'
 #' Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
 #'   Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
 #'   System Chaos. _The Astronomical Journal_, 164(3), 107.
-#'   <https://doi.org/10.3847/1538-3881/ac80f8>
+#'   [doi:10.3847/1538-3881/ac80f8](https://doi.org/10.3847/1538-3881/ac80f8).
 #'
 #' Wikipedia page on Orbital Elements:
 #'   <https://en.wikipedia.org/wiki/Orbital_elements>
 #'
 #' Karline Soetaert, Thomas Petzoldt, R. Woodrow Setzer (2010). Solving
 #'   Differential Equations in R: Package deSolve. Journal of Statistical
-#'   Software, 33(9), 1--25. <https:doi.org/10.18637/jss.v033.i09>
+#'   Software, 33(9), 1--25. [doi:10.18637/jss.v033.i09](https:doi.org/10.18637/jss.v033.i09).
 #'
 #' @examples
 #' # default call

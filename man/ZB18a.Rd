@@ -69,6 +69,7 @@ describes what the components relate to in order to uniquely specify an orbital 
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.
-\emph{Science}, 365(6456), 926–929. \url{https://doi.org/10.1126/science.aax0612}
+\emph{Science}, 365(6456), 926–929.
+\href{https://doi.org/10.1126/science.aax0612}{doi:10.1126/science.aax0612}.
 }
 \keyword{datasets}
