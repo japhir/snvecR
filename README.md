@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![DOI](https://zenodo.org/badge/627092810.svg)](https://zenodo.org/badge/latestdoi/627092810)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org/package=snvecR)
 [![GPL-3](https://img.shields.io/github/license/japhir/snvecR?logo=gnu&.svg)](https://github.com/japhir/snvecR/blob/master/LICENSE.md)
@@ -47,15 +48,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2023-04-25 09:20:22.81489"
+#> ℹ started at "2023-04-25 12:17:40.752939"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565 -0.0537555129057148 0.913036138471423
 #> • s-error = |s|-1: 0.353152142725588
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261027 rad
-#> ℹ stopped at "2023-04-25 09:20:24.141462"
-#> ℹ total duration: 1.33s
+#> ℹ stopped at "2023-04-25 12:17:42.050567"
+#> ℹ total duration: 1.3s
 ```
 
 see `?snvec` for further documentation.
@@ -95,7 +96,7 @@ Paleoclimatology*, e2021PA004349.
 
 Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
 Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
-System Chaos. *The Astronomical Journal*, 164(3), 107.
+System Chaos. *The Astronomical Journal*, 164(3),
 [doi:10.3847/1538-3881/ac80f8](https://doi.org/10.3847/1538-3881/ac80f8).
 
 Wikipedia page on Orbital Elements:
