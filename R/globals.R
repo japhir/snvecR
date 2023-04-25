@@ -1,4 +1,4 @@
-VER <- "snvecR VERSION: 3.7.5 2023-04-06"
+VER <- "snvecR VERSION: 3.7.5 2023-04-25"
 
 AU <- 1.49597870700e11 # m
 GM <- 1.32712440041e20 # m3/s2

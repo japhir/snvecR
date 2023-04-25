@@ -1,5 +1,8 @@
-# snvecR 3.7.5.9000 (development version)
+# snvecR (development version)
+
+# snvecR 3.7.5
 * Added a `NEWS.md` file to track changes to the package.
+* Note: version number is consistent with snvec C package.
 * Implemented first public version based on C-code in [Zeebe and Lourens
   2022](https://doi.org/10.1029/2021PA004349), as explained .
 * Added `snvec()` function that does all the work.
