@@ -83,7 +83,7 @@ Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
 
 Zeebe, R. E. (2022). Reduced Variations in Earth’s and Mars’ Orbital
   Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar
-  System Chaos. _The Astronomical Journal_, 164(3), 107.
+  System Chaos. _The Astronomical Journal_, 164(3),
   [doi:10.3847/1538-3881/ac80f8](https://doi.org/10.3847/1538-3881/ac80f8).
 
 Wikipedia page on Orbital Elements:

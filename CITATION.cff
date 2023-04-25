@@ -1,25 +1,87 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
 cff-version: 1.2.0
-message: If you use this software, please cite it using the metadata from this file.
+title: >-
+  snvecR: Calculate Earth’s Obliquity and Precession in the
+  Past
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
 type: software
-title: 'snvecR: Calculate Earth’s Obliquity and Precession in the Past'
-version: 3.7.5.9000
-date-released: 2023-04-06
-abstract: Easily calculate precession and obliquity from an orbital solution
-  (defaults to ZB18a from Zeebe and Lourens (2019)
-  <doi:10.1126/science.aax0612>) and assumed or reconstructed values for tidal
-  dissipation (Td) and dynamical ellipticity (Ed). This is a translation and
-  adaptation of the C-code in the supplementary material to Zeebe and Lourens
-  (2022) <doi:10.1029/2021PA004349>, with furher details on the methodology
-  described in Zeebe (2022) <doi:10.3847/1538-3881/ac80f8>. The name of the
-  C-routine is snvec, which refers to the key units of computation: spin vector
-  s and orbit normal vector n.
 authors:
-- family-names: Kocken
-  given-names: Ilja
-  email: ikocken@hawaii.edu
-  orcid: 0000-0003-2196-8718
-- family-names: Zeebe
-  given-names: Richard
-  email: zeebe@hawaii.edu
-  orcid: 0000-0003-0806-8387
-license: GPL (>= 3)
+  - family-names: Kocken
+    given-names: Ilja
+    email: ikocken@hawaii.edu
+    orcid: 'https://orcid.org/0000-0003-2196-8718'
+  - family-names: Zeebe
+    given-names: Richard
+    email: zeebe@soest.hawaii.edu
+    orcid: 'https://orcid.org/0000-0003-0806-8387'
+repository-code: 'https://github.com/japhir/snvecR'
+url: 'https://japhir.github.io/snvecR/'
+abstract: >-
+  Easily calculate precession and obliquity from an orbital
+  solution (defaults to ZB18a from Zeebe and Lourens (2019)
+  <doi:10.1126/science.aax0612>) and assumed or
+  reconstructed values for tidal dissipation (Td) and
+  dynamical ellipticity (Ed). This is a translation and
+  adaptation of the C-code in the supplementary material to
+  Zeebe and Lourens (2022) <doi:10.1029/2021PA004349>, with
+  furher details on the methodology described in Zeebe
+  (2022) <doi:10.3847/1538-3881/ac80f8>. The name of the
+  C-routine is snvec, which refers to the key units of
+  computation: spin vector s and orbit normal vector n.
+keywords:
+  - orbital forcing
+  - precession
+  - obliquity
+  - tilt
+  - tidal dissipation
+  - dynamical ellipticity
+  - astronomical solution
+  - Milankovitch
+  - snvec
+  - cyclostratigraphy
+  - palaeoceanography
+  - peleoceanography
+  - paleoclimate
+  - earth sciences
+  - marine sciences
+license: GPL-3.0-or-later
+version: 3.7.5.9000
+date-released: '2023-04-06'
+references:
+- authors:
+  - family-names: Zeebe
+    given-names: Richard E.
+  - family-names: Lourens
+    given-names: Lucas J.
+  year: 2019
+  title: "Solar System chaos and the Paleocene–Eocene boundary age constrained by geology and astronomy."
+  journal: Science
+  volume: 365
+  issue: 6456
+  pages: 926-929
+  doi: 10.1126/science.aax0612
+  type: article
+- authors:
+  - family-names: Zeebe
+    given-names: Richard E.
+  - family-names: Lourens
+    given-names: Lucas J.
+  year: 2022
+  title: "A deep-time dating tool for paleo-applications utilizing obliquity and precession cycles: The role of dynamical ellipticity and tidal dissipation."
+  journal: "Paleoceanography and Paleoclimatology"
+  doi: 10.1029/2021PA004349
+  type: article
+- authors:
+  - family-names: Zeebe
+    given-names: Richard E.
+  year: 2022
+  title: "Reduced Variations in Earth’s and Mars’ Orbital Inclination and Earth’s Obliquity from 58 to 48 Myr ago due to Solar System Chaos."
+  journal: "The Astronomical Journal"
+  volume: 164
+  issue: 3
+  doi: 10.3847/1538-3881/ac80f8
+  type: article
