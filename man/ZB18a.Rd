@@ -50,7 +50,7 @@ instantaneous orbital plane.}
 }
 \source{
 \itemize{
-\item All orbital solutions can be found on
+\item All orbital solutions by Zeebe can be found on
 \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
 \item The specific one we use here is available at
 \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
