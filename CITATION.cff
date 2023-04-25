@@ -18,8 +18,13 @@ authors:
     given-names: Richard
     email: zeebe@soest.hawaii.edu
     orcid: 'https://orcid.org/0000-0003-0806-8387'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.7865279
+    description: Zenodo
 repository-code: 'https://github.com/japhir/snvecR'
 url: 'https://japhir.github.io/snvecR/'
+repository-artifact: 'https://zenodo.org/record/7865280'
 abstract: >-
   Easily calculate precession and obliquity from an orbital
   solution (defaults to ZB18a from Zeebe and Lourens (2019)

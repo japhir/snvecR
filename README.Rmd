@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # snvecR
 
 <!-- badges: start -->
+[![DOI](https://zenodo.org/badge/627092810.svg)](https://zenodo.org/badge/latestdoi/627092810)
 [![CRAN status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org/package=snvecR)
 [![GPL-3](https://img.shields.io/github/license/japhir/snvecR?logo=gnu&.svg)](https://github.com/japhir/snvecR/blob/master/LICENSE.md)
 [![release](https://img.shields.io/github/v/release/japhir/snvecR.svg)](https://github.com/japhir/snvecR/releases)
