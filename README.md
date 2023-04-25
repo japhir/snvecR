@@ -26,10 +26,10 @@ spin vector s and orbit normal vector n.
 
 ## Installation
 
-You can install the development version of snvecR like so:
+You can install snvecR like so:
 
 ``` r
-remotes::install_github("japhir/snvecR")
+install.packages("snvecR")
 ```
 
 ## Example
