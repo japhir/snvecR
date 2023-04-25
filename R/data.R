@@ -43,11 +43,11 @@
 #'   \item{dd}{Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.}
 #'
 #'   \item{nnx, nny, nnz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-#'   Eart's orbit unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+#'   Eart's orbit unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
 #'   instantaneous orbital plane.}
 #    HCI = heliocentric inertial
 #   \item{npx, npy, npz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-#   unit normal vector \eqn{\boldsymbol{n}'}{n'}, relative to ECLIPJ2000.}
+#   unit normal vector \eqn{\vec{n}'}{n'}, relative to ECLIPJ2000.}
 #   IOP = instantaneous orbit plane
 #'
 #' }

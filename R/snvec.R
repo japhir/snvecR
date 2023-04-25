@@ -72,7 +72,7 @@
 #' typically interpolated to output timescale.
 #'
 #'   * `sx`, `sy`, `sz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
-#'   spin axis unit vector \eqn{\boldsymbol{s}}{s} in the heliocentric inertial
+#'   spin axis unit vector \eqn{\vec{s}}{s} in the heliocentric inertial
 #'   reference frame.
 #   this one is in HCI
 #'
@@ -81,7 +81,7 @@
 #'
 # #'
 # #'   * `nnx`, `nny`, `nnz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-# #'   unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+# #'   unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
 # #'   instantaneous orbital plane.
 # #   this one is in HCI
 # #'
@@ -89,13 +89,13 @@
 # #'
 # #'   * `lani` Unwrapped longitude of the ascending node \eqn{\Omega} (radians).
 # #'
-# #'   * `u` Spin axis unit vector \eqn{\boldsymbol{s}}{s} as a list-column.
+# #'   * `u` Spin axis unit vector \eqn{\vec{s}}{s} as a list-column.
 # #'
-# #'   * `nv` Unit normal vector to the orbital plane \eqn{\boldsymbol{n}}{n} as
+# #'   * `nv` Unit normal vector to the orbital plane \eqn{\vec{n}}{n} as
 # #'   a list-column.
 # #'
-# #'   * `up` Vector \eqn{\boldsymbol{u}'}{u'}, euler transform of
-# #'   \eqn{\boldsymbol{u}}{u} to the instantaneous orbit plane (relative to
+# #'   * `up` Vector \eqn{\vec{u}'}{u'}, euler transform of
+# #'   \eqn{\vec{u}}{u} to the instantaneous orbit plane (relative to
 # #'   \eqn{\phi(t=0)=0} at J2000) as a list column.
 # #   this one is in inertial frame ECLIPJ2000
 #'
@@ -382,7 +382,8 @@ snvec <- function(tend = -1e3,
     cli::cli_inform(c(
       "Final values:",
       "*" = "s[1][2][3]: {paste(fin[2], fin[3], fin[4])}",
-      "*" = "s-error = |s|-1: {sqrt(pracma::dot(u, u))-1}"
+      ## "*" = "s-error = |s|-1: {sqrt(pracma::dot(u, u))-1}"
+      "*" = "s-error = |s|-1: {sqrt(u[1]^+u[2]^2+u[3]^2)-1}"
     ))
   }
 

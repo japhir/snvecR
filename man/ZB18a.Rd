@@ -42,7 +42,7 @@ jumps).}
 \item{dd}{Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.}
 
 \item{nnx, nny, nnz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-Eart's orbit unit normal vector \eqn{\boldsymbol{n}}{n}, normal to Earth's
+Eart's orbit unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
 instantaneous orbital plane.}
 
 }
