@@ -20,8 +20,8 @@ defaults to ZB18a from Zeebe and Lourens (2019)) and assumed or
 reconstructed values for tidal dissipation (T<sub>d</sub>) and dynamical
 ellipticity (E<sub>d</sub>). This is a translation and adaptation of the
 C-code in the supplementary material to Zeebe and Lourens (2022), with
-furher details on the methodology described in Zeebe (2022). The name of
-the C-routine is snvec, which refers to the key units of computation:
+further details on the methodology described in Zeebe (2022). The name
+of the C-routine is snvec, which refers to the key units of computation:
 spin vector s and orbit normal vector n.
 
 ## Installation
