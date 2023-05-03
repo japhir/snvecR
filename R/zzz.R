@@ -10,7 +10,14 @@
         ZB18a_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat"
 
         # ask user to download it
-        if (menu(c("Yes", "No"), title = "Would you like to download and process it now?") == 1L) {
+        if (interactive()) {
+          choice <- utils::menu(c("Yes", "No"), title = "Would you like to download and process it now?")
+        } else {
+          # default to Yes if not interactive (i.e. GitHub actions)
+          choice <- 1L
+        }
+
+        if (choice == 1L) {
           cli::cli_alert_info("Downloading ems-plan3.dat from website {ZB18a_url}.")
           dir.create(cachedir, recursive = TRUE, showWarnings = FALSE)
 
