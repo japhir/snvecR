@@ -43,5 +43,5 @@ instantaneous orbital plane.
 }
 }
 \seealso{
-ZB18a \code{\link[=get_solution]{get_solution()}}
+\code{\link[=get_ZB18a]{get_ZB18a()}} \code{\link[=get_solution]{get_solution()}}
 }

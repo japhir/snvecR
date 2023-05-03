@@ -3,6 +3,8 @@
 #' @param orbital_solution Character vector with the name of the orbital
 #'   solution to use. One of `"ZB18a"` (default) from Zeebe and Lourens (2019),
 #'   or `"La11"` (not yet implemented!).
+#' @seealso [get_ZB18a()]
+#' @inherit get_ZB18a references
 get_solution <- function(orbital_solution = "ZB18a") {
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {

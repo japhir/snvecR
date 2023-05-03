@@ -11,7 +11,7 @@
 #' * `inc` Inclination \eqn{I} (degrees).
 #'
 #' @returns A [tibble][tibble::tibble-package] with the new columns added.
-#' @seealso ZB18a [get_solution()]
+#' @seealso [get_ZB18a()] [get_solution()]
 #'
 #' @details
 #' New columns include:

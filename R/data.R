@@ -66,5 +66,4 @@
 #'   Paleocene–Eocene boundary age constrained by geology and astronomy.
 #'   _Science_, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
 #' @name ZB18a
-#' @seealso get_solution get_ZB18a
 NULL
