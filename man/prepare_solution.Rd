@@ -7,12 +7,13 @@
 prepare_solution(data)
 }
 \arguments{
-\item{data}{The output of \code{\link[=get_solution]{get_solution()}}. It needs to contain columns:
+\item{data}{The output of \code{\link[=get_solution]{get_solution()}}.
+It needs to contain columns:
 \itemize{
-\item \code{t}
-\item \code{lph}
-\item \code{lan}
-\item \code{inc}
+\item \code{t} Time \eqn{t} (days).
+\item \code{lph} Longitude of perihelion \eqn{\varpi} (degrees).
+\item \code{lan} Longitude of the ascending node \eqn{\Omega} (degrees).
+\item \code{inc} Inclination \eqn{I} (degrees).
 }}
 }
 \value{

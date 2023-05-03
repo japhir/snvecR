@@ -2,18 +2,18 @@
 #'
 #' Calculates helper columns from an orbital solution input.
 #'
-#' @param data The output of [get_solution()]. It needs to contain columns:
+#' @param data The output of [get_solution()].
+#' It needs to contain columns:
 #'
-#' * `t`
-#' * `lph`
-#' * `lan`
-#' * `inc`
+#' * `t` Time \eqn{t} (days).
+#' * `lph` Longitude of perihelion \eqn{\varpi} (degrees).
+#' * `lan` Longitude of the ascending node \eqn{\Omega} (degrees).
+#' * `inc` Inclination \eqn{I} (degrees).
 #'
 #' @returns A [tibble][tibble::tibble-package] with the new columns added.
 #' @seealso ZB18a [get_solution()]
 #'
 #' @details
-#'
 #' New columns include:
 #'
 #' * `lphu` Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
