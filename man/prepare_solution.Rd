@@ -7,7 +7,13 @@
 prepare_solution(data)
 }
 \arguments{
-\item{data}{The output of \code{\link[=get_solution]{get_solution()}}.}
+\item{data}{The output of \code{\link[=get_solution]{get_solution()}}. It needs to contain columns:
+\itemize{
+\item \code{t}
+\item \code{lph}
+\item \code{lan}
+\item \code{inc}
+}}
 }
 \value{
 A \link[tibble:tibble-package]{tibble} with the new columns added.
@@ -18,25 +24,23 @@ Calculates helper columns from an orbital solution input.
 \details{
 New columns include:
 \itemize{
-\item lphu Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
+\item \code{lphu} Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
 jumps).
-\item lanu Unwrapped longitude of the ascending node \eqn{\Omega}
-(degrees without jumps).
-\item hh Variable: \eqn{e\sin(\varpi)}{ee * sin(lph / R2D)}.
-\item kk Variable: \eqn{e\cos(\varpi)}{ee * cos(lph / R2D)}.
-\item 
-\item pp Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 * sin(0.5 * inc / R2D) *
-* n  R2D)}.
-\item 
-\item qq Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 * sin(0.5 * inc / R2D) *
-* n  R2D)}.
-\item 
-\item cc Helper: \eqn{\cos(I)}{cos(inc / R2D)}.
-\item 
-\item dd Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.
-\item 
-\item nnx, nny, nnz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
-Eart's orbit unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
+\item \code{lanu} Unwrapped longitude of the ascending node \eqn{\Omega} (degrees
+without jumps).
+\item \code{hh} Variable: \eqn{e\sin(\varpi)}{ee * sin(lph / R2D)}.
+\item \code{kk} Variable: \eqn{e\cos(\varpi)}{ee * cos(lph / R2D)}.
+\item \code{pp} Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 * sin(0.5 * inc / R2D) * n
+  R2D)}.
+\item \code{qq} Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 * sin(0.5 * inc / R2D) *
+  n  R2D)}.
+\item \code{cc} Helper: \eqn{\cos(I)}{cos(inc / R2D)}.
+\item \code{dd} Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.
+\item \code{nnx}, \code{nny}, \code{nnz} The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+Earth's orbit unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
 instantaneous orbital plane.
 }
+}
+\seealso{
+ZB18a \code{\link[=get_solution]{get_solution()}}
 }

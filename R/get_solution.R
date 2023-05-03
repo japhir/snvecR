@@ -27,7 +27,8 @@ get_solution <- function(orbital_solution = "ZB18a") {
 
 #' Get the ZB18a solution from the cache
 #'
-# The cache is created in when the package is loaded, in zzz.R
+# The cache is created in when the package is loaded, in zzz.R.
+#' @rdname ZB18a
 get_ZB18a <- function() {
   cachedir <- tools::R_user_dir("snvecR", which = "cache")
   ZB18apath <- paste0(cachedir, "/ZB18a.rds")

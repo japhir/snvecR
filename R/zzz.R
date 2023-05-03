@@ -18,8 +18,8 @@
         }
 
         if (choice == 1L) {
-          cli::cli_alert_info("Downloading ems-plan3.dat from website {ZB18a_url}.")
           dir.create(cachedir, recursive = TRUE, showWarnings = FALSE)
+          cli::cli_alert_info("Downloading ems-plan3.dat from website {ZB18a_url}.")
 
           # read the file from the website
           ZB18a <- readr::read_table(ZB18a_url,
