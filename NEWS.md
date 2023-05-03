@@ -12,3 +12,5 @@
 * Added a vignette with a grid of variations on Td and Ed.
 * Added a bookdown website rendering.
 * Released a version to Zenodo and assigned a doi.
+* Added the caching code to the .onLoad call in zzz.R
+* Added functions get_solution, get_ZB18a, prepare_solution
