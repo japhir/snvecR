@@ -11,9 +11,7 @@
 #'   Defaults to `1.0`.
 #' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
 #'   to `0.0`.
-#' @param orbital_solution Character vector with the name of the orbital
-#'   solution to use. One of `"ZB18a"` (default) from Zeebe and Lourens (2019),
-#'   or `"La11"` (not yet implemented!).
+#' @inheritParams get_solution
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
 #'   to `0.4`.
 #' @param atol Numerical absolute tolerance passed to [deSolve::ode()]'s
