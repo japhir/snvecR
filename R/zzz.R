@@ -37,7 +37,7 @@
       # prepare the solution and save to rds
       ZB18a <- ZB18a |>
         prepare_solution() |>
-        readr::write_rds(ZB18apath)
-      cli::cli_alert_info("Saved solution with helper columns to {ZB18apath}")
+        readr::write_rds(rds_path)
+      cli::cli_alert_info("Saved solution with helper columns to {rds_path}")
     }
 }

@@ -14,5 +14,6 @@
 #' @importFrom tidyr unnest
 #' @importFrom tidyselect all_of
 #' @importFrom withr local_options
+#' @importFrom utils menu
 ## usethis namespace: end
 NULL

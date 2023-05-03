@@ -2,6 +2,7 @@
 #'
 #' Calculates helper columns from an orbital solution input.
 #'
+#' @param data The output of [get_solution()].
 #' @returns A [tibble][tibble::tibble-package] with the new columns added.
 #'
 #' @details
@@ -43,21 +44,20 @@ prepare_solution <- function(data) {
   cli::cli_alert_info("Calculating helper columns")
   data |>
     dplyr::mutate(
-      # this function is not exported so we need to use three colons
-      lphu = snvecR:::unwrap(lph),
-      lanu = snvecR:::unwrap(lan)
+      lphu = unwrap(.data$lph),
+      lanu = unwrap(.data$lan)
     ) |>
-    dplyr::mutate(age = -t / KY2D, .after = t) |>
+    dplyr::mutate(age = -.data$t / KY2D, .after = .data$t) |>
     dplyr::mutate(
-      hh = ee * sin(lph / R2D),
-      kk = ee * cos(lph / R2D),
-      pp = 2 * sin(0.5 * inc / R2D) * sin(lan / R2D),
-      qq = 2 * sin(0.5 * inc / R2D) * cos(lan / R2D),
-      cc = cos(inc / R2D),
-      dd = cos(inc / R2D / 2),
+      hh = .data$ee * sin(.data$lph / R2D),
+      kk = .data$ee * cos(.data$lph / R2D),
+      pp = 2 * sin(0.5 * .data$inc / R2D) * sin(.data$lan / R2D),
+      qq = 2 * sin(0.5 * .data$inc / R2D) * cos(.data$lan / R2D),
+      cc = cos(.data$inc / R2D),
+      dd = cos(.data$inc / R2D / 2),
       ## /* nn <- nvec(t): normal to orbit */
-      nnx = sin(inc / R2D) * sin(lan / R2D),
-      nny = -sin(inc / R2D) * cos(lan / R2D),
-      nnz = cos(inc / R2D)
+      nnx = sin(.data$inc / R2D) * sin(.data$lan / R2D),
+      nny = -sin(.data$inc / R2D) * cos(.data$lan / R2D),
+      nnz = cos(.data$inc / R2D)
     )
 }

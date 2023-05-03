@@ -6,6 +6,9 @@
 \usage{
 prepare_solution(data)
 }
+\arguments{
+\item{data}{The output of \code{\link[=get_solution]{get_solution()}}.}
+}
 \value{
 A \link[tibble:tibble-package]{tibble} with the new columns added.
 }
