@@ -20,3 +20,4 @@
 ^pkgdown$
 ^cran-comments\.md$
 _cache/*
+^CRAN-SUBMISSION$

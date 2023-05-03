@@ -15,7 +15,6 @@ RoxygenNote: 7.2.3
 Suggests:
     ggplot2,
     testthat,
-    microbenchmark,
     roxygen2,
     knitr,
     rmarkdown
@@ -36,7 +35,5 @@ Imports:
 Config/testthat/edition: 3
 Depends:
     R (>= 3.5.0)
-LazyData: true
-LazyDataCompression: xz
 VignetteBuilder: knitr
 URL: https://japhir.github.io/snvecR/

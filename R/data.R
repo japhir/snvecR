@@ -1,4 +1,5 @@
-## document the data
+# document the orbital solutions
+# we now cache them locally, so I document them with @name and return type NULL.
 
 #' Orbital Solution ZB18a
 #'
@@ -64,4 +65,5 @@
 #' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 #'   Paleocene–Eocene boundary age constrained by geology and astronomy.
 #'   _Science_, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
-"ZB18a"
+#' @name ZB18a
+NULL

@@ -145,22 +145,9 @@ snvec <- function(tend = -1e3,
                   solver = "vode",
                   quiet = FALSE,
                   output = "nice") {
-  ## select the desired orbital solution
-  solutions <- c("ZB18a", "La11")
-  if (!orbital_solution %in% solutions) {
-    cli::cli_abort(c("{.var orbital_solution} must be one of: {.or {.q {solutions}}}",
-                     "x" = "You've supplied {.q {orbital_solution}}"))
-  }
-  if (orbital_solution == "ZB18a") {
-    dat <- snvecR::ZB18a
-  }
-  if (orbital_solution == "La11") {
-    ## dat <- snvecR::La11
-    cli::cli_abort(c("Orbital solution: La11 currently not supported.",
-      "!" = "The input OS for snvec must be in the Heliocentric Inertial Reference frame (HCI) (J2000).",
-      "x" = "The La11 solution is in the invariant reference frame.",
-      "i" = "Pull requests welcome."))
-  }
+
+  dat <- get_solution(orbital_solution = orbital_solution)
+
   outputs <- c("nice", "all", "ode")
   if (!output %in% outputs) {
     cli::cli_abort(c("{.var output} must be one of {.or {.q {outputs}}}",

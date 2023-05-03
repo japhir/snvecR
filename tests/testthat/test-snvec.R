@@ -1,4 +1,4 @@
-test_that("snvecR inputs are checked", {
+test_that("snvec() inputs are checked", {
   expect_error(snvec(orbital_solution = "hoi"))
   expect_error(snvec(orbital_solution = "La11"))
   expect_error(snvec(tend = -Inf))
@@ -16,7 +16,7 @@ test_that("snvecR inputs are checked", {
   expect_warning(snvec(rtol = 1.1e-3, tend = -1, tres = .5, quiet = TRUE))
 })
 
-test_that("snvecR basic call works", {
+test_that("snvec() works", {
   withr::local_options(width = 57)
   # I test a snapshot of the output
   expect_snapshot(snvec(tend = -49, # limit output to 50 ka so it takes <5 s (CRAN check)
@@ -37,7 +37,7 @@ test_that("snvecR basic call works", {
                     print(n = 50))
 })
 
-test_that("snvecR output columns are correct", {
+test_that("snvec() output columns are correct", {
   # we have the desired columns
   expect_equal(snvec(tend = -1, tres = 0.5, quiet = TRUE, output = "nice") |>
                  colnames(),

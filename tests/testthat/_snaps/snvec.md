@@ -1,4 +1,4 @@
-# snvecR basic call works
+# snvec() works
 
     Code
       print(dplyr::select(snvec(tend = -49, ed = 1, td = 0,
