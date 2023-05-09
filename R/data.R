@@ -5,8 +5,11 @@
 #'
 #' The HNBody output of Zeebe & Lourens (2019).
 #'
-#' The wikipedia page on [Orbital elements](https://en.wikipedia.org/wiki/Orbital_elements)
-#' describes what the components relate to in order to uniquely specify an orbital plane.
+#' The wikipedia page on [Orbital
+#' elements](https://en.wikipedia.org/wiki/Orbital_elements) describes what the
+#' components relate to in order to uniquely specify an orbital plane. The
+#' function asks to download the files to the user's cache directory so that they
+#' can be accessed more quickly in the future.
 #'
 #' @format ## `ZB18a`
 #' A data frame with 250,001 rows and 20 columns:

@@ -10,6 +10,7 @@
 #' @importFrom purrr map2_dbl
 #' @importFrom readr write_rds read_rds read_table
 #' @importFrom rlang .data
+#' @importFrom stats approxfun
 #' @importFrom tibble tibble
 #' @importFrom tidyr unnest
 #' @importFrom tidyselect all_of

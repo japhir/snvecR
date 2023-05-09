@@ -4,7 +4,7 @@
 \alias{prepare_solution}
 \title{Prepare Orbital Solution}
 \usage{
-prepare_solution(data)
+prepare_solution(data, quiet = FALSE)
 }
 \arguments{
 \item{data}{The output of \code{\link[=get_solution]{get_solution()}}.
@@ -14,6 +14,12 @@ It needs to contain columns:
 \item \code{lph} Longitude of perihelion \eqn{\varpi} (degrees).
 \item \code{lan} Longitude of the ascending node \eqn{\Omega} (degrees).
 \item \code{inc} Inclination \eqn{I} (degrees).
+}}
+
+\item{quiet}{Be quiet?
+\itemize{
+\item If \code{TRUE}, hide info messages.
+\item If \code{FALSE} (the default) print info messages and timing.
 }}
 }
 \value{

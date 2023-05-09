@@ -1,6 +1,5 @@
 test_that("snvec() inputs are checked", {
-  expect_error(snvec(orbital_solution = "hoi"))
-  expect_error(snvec(orbital_solution = "La11"))
+  # we test the orbital_solution inputs for the get_solution helper in stead
   expect_error(snvec(tend = -Inf))
   expect_error(snvec(tend = 5))
   expect_error(snvec(tres = -5))

@@ -32,6 +32,12 @@ You can install snvecR like so:
 install.packages("snvecR")
 ```
 
+To use the development version of the package, use:
+
+``` r
+remotes::install_github("japhir/snvecR")
+```
+
 ## Example
 
 Here’s the main function that does the work in action:
@@ -48,15 +54,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2023-04-25 13:41:24.335834"
+#> ℹ started at "2023-05-08 13:39:45.6343"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565 -0.0537555129057148 0.913036138471423
 #> • s-error = |s|-1: 0.353152142725588
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261027 rad
-#> ℹ stopped at "2023-04-25 13:41:25.580669"
-#> ℹ total duration: 1.25s
+#> ℹ stopped at "2023-05-08 13:39:47.579519"
+#> ℹ total duration: 1.95s
 ```
 
 see `?snvec` for further documentation.

@@ -9,7 +9,8 @@
 #' * `lph` Longitude of perihelion \eqn{\varpi} (degrees).
 #' * `lan` Longitude of the ascending node \eqn{\Omega} (degrees).
 #' * `inc` Inclination \eqn{I} (degrees).
-#'
+# inherit quiet
+#' @inheritParams get_ZB18a
 #' @returns A [tibble][tibble::tibble-package] with the new columns added.
 #' @seealso [get_ZB18a()] [get_solution()]
 #'
@@ -43,18 +44,18 @@
 #  \item{npx, npy, npz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the unit
 #   normal vector \eqn{\vec{n}'}{n'}, relative to ECLIPJ2000.}
 # IOP = instantaneous orbit plane
-prepare_solution <- function(data) {
+prepare_solution <- function(data, quiet = FALSE) {
   if (!all(c("lph", "lan", "t", "inc") %in% colnames(data))) {
     cli::cli_abort("Column names 't', 'lph', 'lan', 'inc' must be in data.")
   }
 
-  cli::cli_alert_info("Calculating helper columns")
+  if (!quiet) cli::cli_alert_info("Calculating helper columns.")
   data |>
     dplyr::mutate(
       lphu = unwrap(.data$lph),
       lanu = unwrap(.data$lan)
     ) |>
-    dplyr::mutate(age = -.data$t / KY2D, .after = .data$t) |>
+    dplyr::mutate(age = -.data$t / KY2D, .after = "t") |>
     dplyr::mutate(
       hh = .data$ee * sin(.data$lph / R2D),
       kk = .data$ee * cos(.data$lph / R2D),

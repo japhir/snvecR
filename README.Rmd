@@ -41,6 +41,12 @@ You can install snvecR like so:
 install.packages("snvecR")
 ```
 
+To use the development version of the package, use:
+
+```r
+remotes::install_github("japhir/snvecR")
+```
+
 ## Example
 
 Here's the main function that does the work in action:

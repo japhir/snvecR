@@ -98,3 +98,5 @@ usethis::use_data(ZB18a,
 )
 
 rm(dat)
+
+# all of this is now a part of the fuction get_ZB18a()!

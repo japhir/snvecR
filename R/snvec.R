@@ -11,6 +11,7 @@
 #'   Defaults to `1.0`.
 #' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
 #'   to `0.0`.
+# orbital_solution comes from get_solution
 #' @inheritParams get_solution
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
 #'   to `0.4`.
@@ -21,12 +22,9 @@
 #' @param solver Character vector specifying the method passed to
 #'   [deSolve::ode()]'s `method`. Defaults to `"vode"` for stiff problems
 #'   with a variable timestep.
-#' @param quiet Be quiet?
-#'
-#'   * If `TRUE`, hide info messages.
-#'
-#'   * If `FALSE` (the default) print info messages and timing.
-#'
+# quiet comes from get_ZB18a. Force does too, but I hope that because we don't
+# use it here, it won't get inherited.
+#' @inheritParams get_ZB18a
 #' @param output Character vector with name of desired output. One of:
 #'
 #'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
@@ -45,8 +43,7 @@
 #'   2010) means that the R routine returns an evenly-spaced time grid, whereas
 #'   the C-routine has a variable time-step.
 #'
-#' @returns `snvec()` returns different output depending on the `outputs`
-#'   argument.
+#' @returns `snvec()` returns different output depending on the `outputs` argument.
 #'
 #' If `output = "nice"` (the default), returns a
 #' [tibble][tibble::tibble-package] with the following columns:
@@ -102,8 +99,15 @@
 #' `sy`, and `sz` (see above). This can be useful for i.e.
 #' [deSolve::diagnostics()].
 #'
-#' @seealso [deSolve::ode()] from Soetaert et al., (2010) for the ODE solver
-#'   that we use.
+#' @seealso
+#'
+#' * [deSolve::ode()] from Soetaert et al., (2010) for the ODE solver that we
+#'   use.
+#'
+#' * [get_ZB18a()] Documents the default orbital solution input.
+#'
+#' * [get_solution()] A general function that in the future may be used to get
+#'   other orbital solutions.
 #'
 #' @references
 #'
@@ -144,22 +148,20 @@ snvec <- function(tend = -1e3,
                   quiet = FALSE,
                   output = "nice") {
 
-  dat <- get_solution(orbital_solution = orbital_solution)
-
   outputs <- c("nice", "all", "ode")
   if (!output %in% outputs) {
-    cli::cli_abort(c("{.var output} must be one of {.or {.q {outputs}}}",
-                     "x" = "You've supplied {.q {output}}"))
+    cli::cli_abort(c("{.var output} must be one of {.or {.q {outputs}}}.",
+                     "x" = "You've supplied {.q {output}}."))
   }
   ## tend
   if (tend >= 0) {
-    cli::cli_abort(c("{.var tend} must be < 0",
-      "x" = "You've supplied {tend}"
+    cli::cli_abort(c("{.var tend} must be < 0.",
+      "x" = "You've supplied {tend}."
     ))
   }
-  if (tend < min(dat$t / KY2D)) {
-    cli::cli_abort(c("{.var tend} must be > the orbital solution {min(dat$t)/KY2D}",
-      "x" = "You've supplied {tend}"
+  if (tend < -1e5) {
+    cli::cli_abort(c("{.var tend} must be > the orbital solution {-1e5}, e.g. -100 Ma.",
+      "x" = "You've supplied {tend}."
     ))
   }
 
@@ -182,13 +184,13 @@ snvec <- function(tend = -1e3,
   if (ed < .9 | ed > 1.1) {
     cli::cli_warn(c("!" = "Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past 45 Ma!",
                     "i" = "{.var ed} = {ed}",
-                    "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>"))
+                    "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."))
   }
 
   if (td < 0 | td > 1.2) {
     cli::cli_warn(c("Tidal dissipation likely varied between 0 and 1!",
                     "i" = "{.var td} = {td}",
-                    "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>"))
+                    "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."))
   }
 
   if (atol < 1e-12 | atol > 1e-3) {
@@ -197,6 +199,8 @@ snvec <- function(tend = -1e3,
   if (rtol > 1e-3) {
     cli::cli_warn("Input relative tolerance should be smaller than 1e-3.")
   }
+
+  dat <- get_solution(orbital_solution = orbital_solution)
 
   # message user about inputs
   if (!quiet) {

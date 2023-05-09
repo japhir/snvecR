@@ -1,15 +1,6 @@
-## unwrap function
-## :PROPERTIES:
-## :header-args:R: :tangle R/unwrap.R :comments org :session *R:snvec-R* :exports both :results output :eval no-export
-## :END:
-## :LOGBOOK:
-## - State "SOME"       from              [2023-03-24 Fri 14:38]
-## :END:
-## [[file:snvec-3.7.5/snvec-3.7.5.c::=== unwrap()][unwrap()]]
-
-#' unwrap angle.
+#' Unwrap angle.
 #'
-#' Unwrap angle. Maps jumps greater than pi to their 2pi complement.
+#' Maps jumps greater than pi to their 2pi complement.
 #'
 #' @param y Input vector in degrees.
 #' @returns Unwrapped vector in degrees.

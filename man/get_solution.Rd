@@ -4,15 +4,28 @@
 \alias{get_solution}
 \title{Get an Orbital Solution}
 \usage{
-get_solution(orbital_solution = "ZB18a")
+get_solution(orbital_solution = "ZB18a", quiet = FALSE)
 }
 \arguments{
 \item{orbital_solution}{Character vector with the name of the orbital
 solution to use. One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
 or \code{"La11"} (not yet implemented!).}
+
+\item{quiet}{Be quiet?
+\itemize{
+\item If \code{TRUE}, hide info messages.
+\item If \code{FALSE} (the default) print info messages and timing.
+}}
+}
+\value{
+\code{get_solution()} returns a \link[tibble:tibble-package]{tibble} with the
+orbital solution input and some preprocessed new columns.
 }
 \description{
 Get an Orbital Solution
+}
+\examples{
+get_solution()
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the

@@ -60,8 +60,7 @@ interpolated columns.
 }}
 }
 \value{
-\code{snvec()} returns different output depending on the \code{outputs}
-argument.
+\code{snvec()} returns different output depending on the \code{outputs} argument.
 
 If \code{output = "nice"} (the default), returns a
 \link[tibble:tibble-package]{tibble} with the following columns:
@@ -136,6 +135,11 @@ Differential Equations in R: Package deSolve. Journal of Statistical
 Software, 33(9), 1–25. \doi{10.18637/jss.v033.i09}.
 }
 \seealso{
-\code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., (2010) for the ODE solver
-that we use.
+\itemize{
+\item \code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., (2010) for the ODE solver that we
+use.
+\item \code{\link[=get_ZB18a]{get_ZB18a()}} Documents the default orbital solution input.
+\item \code{\link[=get_solution]{get_solution()}} A general function that in the future may be used to get
+other orbital solutions.
+}
 }

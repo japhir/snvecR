@@ -57,17 +57,40 @@ instantaneous orbital plane.}
 }
 }
 \usage{
-get_ZB18a()
+get_ZB18a(quiet = FALSE, force = FALSE)
+}
+\arguments{
+\item{quiet}{Be quiet?
+\itemize{
+\item If \code{TRUE}, hide info messages.
+\item If \code{FALSE} (the default) print info messages and timing.
+}}
+
+\item{force}{Force re-downloading the results, even if the solution is saved
+to the cache.}
+}
+\value{
+\code{get_ZB18a()} returns a \link[tibble:tibble-package]{tibble} with the
+orbital solution input and some preprocessed new columns.
 }
 \description{
 The HNBody output of Zeebe & Lourens (2019).
 }
 \details{
-The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements}
-describes what the components relate to in order to uniquely specify an orbital plane.
+The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements} describes what the
+components relate to in order to uniquely specify an orbital plane. The
+function asks to download the files to the user's cache directory so that they
+can be accessed more quickly in the future.
+}
+\examples{
+get_ZB18a()
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.
 \emph{Science}, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
+}
+\seealso{
+\code{\link[=prepare_solution]{prepare_solution()}} Processes orbital solution input to include
+helper columns.
 }
