@@ -71,12 +71,15 @@
 <p>You can install snvecR like so:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"snvecR"</span><span class="op">)</span></span></code></pre></div>
+<p>To use the development version of the package, use:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"japhir/snvecR"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <p>Here’s the main function that does the work in action:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://japhir.github.io/snvecR/">snvecR</a></span><span class="op">)</span></span>
 <span><span class="va">solution</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/snvec.html">snvec</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Integration parameters:</span></span>
@@ -88,18 +91,18 @@
 <span><span class="co">#&gt; • `atol` = 1e-05</span></span>
 <span><span class="co">#&gt; • `rtol` = 0</span></span>
 <span><span class="co">#&gt; • `solver` = "vode"</span></span>
-<span><span class="co">#&gt; ℹ started at "2023-04-25 13:41:24.335834"</span></span>
+<span><span class="co">#&gt; ℹ started at "2023-05-08 13:39:45.6343"</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • s[1][2][3]: 0.404184487124565 -0.0537555129057148 0.913036138471423</span></span>
 <span><span class="co">#&gt; • s-error = |s|-1: 0.353152142725588</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • obliquity: 0.413060472710089 rad</span></span>
 <span><span class="co">#&gt; • precession: -0.562357122261027 rad</span></span>
-<span><span class="co">#&gt; ℹ stopped at "2023-04-25 13:41:25.580669"</span></span>
-<span><span class="co">#&gt; ℹ total duration: 1.25s</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ stopped at "2023-05-08 13:39:47.579519"</span></span>
+<span><span class="co">#&gt; ℹ total duration: 1.95s</span></span></code></pre></div>
 <p>see <code><a href="reference/snvec.html">?snvec</a></code> for further documentation.</p>
 <p>Here we create a quick plot of the calculated climatic precession with the eccentricity envelope:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="va">solution</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">age</span>, y <span class="op">=</span> <span class="va">cp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

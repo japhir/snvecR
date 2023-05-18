@@ -51,7 +51,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prepare_solution</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">prepare_solution</span><span class="op">(</span><span class="va">data</span>, quiet <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +62,12 @@ It needs to contain columns:</p><ul><li><p><code>t</code> Time \(t\) (days).</p>
 <li><p><code>lph</code> Longitude of perihelion \(\varpi\) (degrees).</p></li>
 <li><p><code>lan</code> Longitude of the ascending node \(\Omega\) (degrees).</p></li>
 <li><p><code>inc</code> Inclination \(I\) (degrees).</p></li>
+</ul></dd>
+
+
+<dt>quiet</dt>
+<dd><p>Be quiet?</p><ul><li><p>If <code>TRUE</code>, hide info messages.</p></li>
+<li><p>If <code>FALSE</code> (the default) print info messages and timing.</p></li>
 </ul></dd>
 
 </dl></div>
