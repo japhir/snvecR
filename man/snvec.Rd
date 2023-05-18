@@ -109,8 +109,9 @@ the C-routine has a variable time-step.
 }
 \examples{
 # default call
+\donttest{
 snvec()
-
+}
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the

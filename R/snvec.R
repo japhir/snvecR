@@ -134,8 +134,9 @@
 #'
 #' @examples
 #' # default call
+#' \donttest{
 #' snvec()
-#'
+#' }
 #' @export
 snvec <- function(tend = -1e3,
                   ed = 1,

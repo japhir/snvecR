@@ -12,5 +12,7 @@
 * Added a vignette with a grid of variations on Td and Ed.
 * Added a bookdown website rendering.
 * Released a version to Zenodo and assigned a doi.
-* Added the caching code to the .onLoad call in zzz.R
-* Added functions get_solution, get_ZB18a, prepare_solution
+* Removed `ZB18a` dataset from the package because it was too large.
+* Added functions get_solution, get_ZB18a, prepare_solution.
+* Added caching code for the orbital solution.
+* Remove the cache directory after running tests, so that reproducible environments remain clean.

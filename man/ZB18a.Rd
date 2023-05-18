@@ -83,7 +83,9 @@ function asks to download the files to the user's cache directory so that they
 can be accessed more quickly in the future.
 }
 \examples{
+\donttest{
 get_ZB18a()
+}
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the

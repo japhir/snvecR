@@ -25,7 +25,9 @@ orbital solution input and some preprocessed new columns.
 Get an Orbital Solution
 }
 \examples{
+\donttest{
 get_solution()
+}
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the

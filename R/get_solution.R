@@ -10,7 +10,9 @@
 #' @returns `get_solution()` returns a [tibble][tibble::tibble-package] with the
 #'   orbital solution input and some preprocessed new columns.
 #' @examples
+#' \donttest{
 #' get_solution()
+#' }
 #' @export
 get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE) {
   solutions <- c("ZB18a", "La11")
@@ -49,7 +51,9 @@ get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE) {
 #' @seealso [prepare_solution()] Processes orbital solution input to include
 #'   helper columns.
 #' @examples
+#' \donttest{
 #' get_ZB18a()
+#' }
 #' @export
 get_ZB18a <- function(quiet = FALSE, force = FALSE) {
   ZB18a_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat"
@@ -67,8 +71,8 @@ get_ZB18a <- function(quiet = FALSE, force = FALSE) {
       # default to Yes downloading if not interactive (i.e. GitHub actions)
       if (!interactive()) {
         download <- TRUE
-        # default to no caching, so that we're not writing to the user's directory
-        save_cache <- FALSE
+        # default to cache
+        save_cache <- TRUE
       } else {# we're interactive
         # a logical, TRUE if Yes, no if otherwise
         download <- utils::menu(c("Yes", "No"), title = "Would you like to download and process it now?") == 1L
