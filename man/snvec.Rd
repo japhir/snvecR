@@ -111,6 +111,8 @@ the C-routine has a variable time-step.
 # default call
 \donttest{
 snvec()
+# remove the directory with the cached orbital solution to clean up
+unlink(tools::R_user_dir("snvecR", which = "cache"))
 }
 }
 \references{
