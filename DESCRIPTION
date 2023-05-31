@@ -1,6 +1,6 @@
 Package: snvecR
 Title: Calculate Earth’s Obliquity and Precession in the Past
-Version: 3.7.5.9000
+Version: 3.7.6
 Authors@R:
     c(person("Ilja", "Kocken", , "ikocken@hawaii.edu", role = c("aut", "cre", "trl", "cph"),
              comment = c(ORCID = "0000-0003-2196-8718")),
