@@ -99,7 +99,8 @@ get_ZB18a <- function(quiet = FALSE, force = FALSE) {
                                                  "arp", # argument of periapse
                                                  "mna"), # mean anomaly
                                    skip = 3,
-                                   comment = "#") #|>
+                                   comment = "#",
+                                   show_col_types = FALSE)
 
         if (save_cache) {
           dir.create(cachedir, recursive = TRUE, showWarnings = FALSE)
@@ -114,7 +115,7 @@ get_ZB18a <- function(quiet = FALSE, force = FALSE) {
         }
       }
     } else {# if we've downloaded the file but haven't prepared the solution somehow
-      ZB18a <- readr::read_csv(csv_path)
+      ZB18a <- readr::read_csv(csv_path, show_col_types = FALSE)
     }
 
     # prepare the solution (i.e. calculate helper columns)
