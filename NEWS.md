@@ -1,3 +1,5 @@
+# snvecR (development version)
+
 # snvecR 3.7.6
 * Remove cache directory after last example (even though it's in a donttest environment).
 
