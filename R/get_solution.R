@@ -120,7 +120,7 @@ get_ZB18a <- function(quiet = FALSE, force = FALSE) {
 
     # prepare the solution (i.e. calculate helper columns)
     ZB18a <- ZB18a |>
-      prepare_solution()
+      prepare_solution(quiet = quiet)
 
     if (save_cache) {
       readr::write_rds(ZB18a, rds_path)
