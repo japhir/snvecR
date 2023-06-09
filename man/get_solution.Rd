@@ -4,7 +4,7 @@
 \alias{get_solution}
 \title{Get an Orbital Solution}
 \usage{
-get_solution(orbital_solution = "ZB18a", quiet = FALSE)
+get_solution(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE)
 }
 \arguments{
 \item{orbital_solution}{Character vector with the name of the orbital
@@ -16,6 +16,9 @@ or \code{"La11"} (not yet implemented!).}
 \item If \code{TRUE}, hide info messages.
 \item If \code{FALSE} (the default) print info messages and timing.
 }}
+
+\item{force}{Force re-downloading the results, even if the solution is saved
+to the cache.}
 }
 \value{
 \code{get_solution()} returns a \link[tibble:tibble-package]{tibble} with the

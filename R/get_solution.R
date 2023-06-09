@@ -14,7 +14,7 @@
 #' get_solution()
 #' }
 #' @export
-get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE) {
+get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE) {
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {
     cli::cli_abort(c("{.var orbital_solution} must be one of: {.or {.q {solutions}}}",
@@ -23,7 +23,7 @@ get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE) {
 
   if (orbital_solution == "ZB18a") {
     # read in the (new?) cached result
-    dat <- get_ZB18a(quiet = quiet)
+    dat <- get_ZB18a(quiet = quiet, force = force)
   }
   if (orbital_solution == "La11") {
     ## dat <- snvecR::La11
@@ -59,79 +59,98 @@ get_ZB18a <- function(quiet = FALSE, force = FALSE) {
   ZB18a_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat"
 
   cachedir <- tools::R_user_dir("snvecR", which = "cache")
+
   raw_path <- paste0(cachedir, "/ems-plan3.dat")
   csv_path <- paste0(cachedir, "/ZB18a.csv")
   rds_path <- paste0(cachedir, "/ZB18a.rds")
 
-  # if it doesn't exist, or the user wants to override the file
-  if (!file.exists(rds_path) || force) {
-    if (!file.exists(csv_path) || force) {
-      if (!quiet) cli::cli_alert_info("The orbital solution ZB18a has not been downloaded.")
+  raw_col_names <- c("t", # time in days
+                     "aa", # semimajor axis
+                     "ee", # eccentricity
+                     "inc", # inclination
+                     "lph", # long periapse
+                     "lan", # long ascending node
+                     "arp", # argument of periapse
+                     "mna") # mean anomaly
 
-      # default to Yes downloading if not interactive (i.e. GitHub actions)
-      if (!interactive()) {
-        download <- TRUE
-        # default to cache
-        save_cache <- TRUE
-      } else {# we're interactive
-        # a logical, TRUE if Yes, no if otherwise
-        download <- utils::menu(c("Yes", "No"), title = "Would you like to download and process it now?") == 1L
-      }
+  # read final processed file from cache if available
+  if (!force && file.exists(rds_path)) {
+    ZB18a <- readr::read_rds(rds_path)
+    return(ZB18a)
+  }
 
-      # the user would NOT like to download and process the orbital solution
-      if (!download) {
-        cli::cli_abort("Cannot `get_ZB18a()` without downloading the file.")
-      } else {# the user would like to download and process the orbital solution
-        if (interactive()) {
-          save_cache <- utils::menu(c("Yes", "No"), title = "Would you like to save the results to the cache?") == 1L
-        }
-
-        if (!quiet) cli::cli_alert_info("Reading {.file {basename(raw_path)}} from website {.url {ZB18a_url}}.")
-
-        # read the file from the website
-        ZB18a <- readr::read_table(ZB18a_url,
-                                   col_names = c("t", # time in days
-                                                 "aa", # semimajor axis
-                                                 "ee", # eccentricity
-                                                 "inc", # inclination
-                                                 "lph", # long periapse
-                                                 "lan", # long ascending node
-                                                 "arp", # argument of periapse
-                                                 "mna"), # mean anomaly
-                                   skip = 3,
-                                   comment = "#",
-                                   show_col_types = FALSE)
-
-        if (save_cache) {
-          dir.create(cachedir, recursive = TRUE, showWarnings = FALSE)
-          if (!quiet) cli::cli_alert_info("The cache directory is {.file {cachedir}}.")
-          # also copy the raw file to disk, even though we've read it in using read_table directly
-          curl::curl_download(ZB18a_url, destfile = raw_path)
-          if (!quiet) cli::cli_alert_info("Saved {.file {basename(raw_path)}} to cache.")
-
-          # write intermediate result to csv
-          readr::write_csv(ZB18a, csv_path)
-          if (!quiet) cli::cli_alert_info("Saved cleaned-up {.file {basename(csv_path)}} to cache.")
-        }
-      }
-    } else {# if we've downloaded the file but haven't prepared the solution somehow
-      ZB18a <- readr::read_csv(csv_path, show_col_types = FALSE)
+  # read raw intermediate steps from disk
+  if (!force && (file.exists(csv_path) || file.exists(raw_path))) {
+    if (file.exists(csv_path)) {
+      ZB18a_raw <- readr::read_csv(csv_path, show_col_types = FALSE)
     }
 
-    # prepare the solution (i.e. calculate helper columns)
-    ZB18a <- ZB18a |>
-      prepare_solution(quiet = quiet)
+    if (file.exists(raw_path)) {
+      ZB18a_raw <- readr::read_table(raw_path,
+                                     col_names = raw_col_names,
+                                     skip = 3, comment = "#",
+                                     show_col_types = FALSE)
+    }
+  } else {# files don't exist or force
+    if (!quiet) cli::cli_alert_info("The orbital solution ZB18a has not been downloaded.")
 
-    if (save_cache) {
+    # default to downloading/caching if not interactive (i.e. GitHub actions)
+    if (force || !interactive()) {
+      download <- TRUE
+      save_cache <- TRUE
+    } else {
+      # a logical, TRUE if Yes, no if otherwise
+      download <- utils::menu(c("Yes", "No"),
+                              title = "Would you like to download and process it now?") == 1L
+      if (download) {
+        save_cache <- utils::menu(c("Yes", "No"),
+                                  title = "Would you like to save the results to {
+.file .csv} and {
+.file .rds}?") == 1L
+      } else {
+        save_cache <- FALSE
+      }
+    }
+
+    # the user would NOT like to download and process the orbital solution
+    if (!download) {
+      cli::cli_abort("Cannot `get_ZB18a()` without downloading the file.")
+    }
+
+    # read the file from the website
+    ZB18a_raw <- readr::read_table(ZB18a_url,
+                                   col_names = raw_col_names,
+                                   skip = 3, comment = "#",
+                                   show_col_types = FALSE)
+    if (!quiet) cli::cli_alert_info("Read {.file {basename(raw_path)}} from website {.url {ZB18a_url}}.")
+
+    # calculate helper columns
+    ZB18a <- ZB18a_raw |> prepare_solution(quiet = quiet)
+
+    if (!save_cache) {
+      return(ZB18a)
+    } else {
+      if (!dir.exists(cachedir)) {
+        dir.create(cachedir, recursive = TRUE, showWarnings = TRUE)
+      }
+      if (!quiet) cli::cli_alert_info("The cache directory is {.file {cachedir}}.")
+
+      # also copy the raw file to disk
+      # even though we've read it in using read_table directly
+      curl::curl_download(ZB18a_url, destfile = raw_path)
+      if (!quiet) cli::cli_alert_info("Saved {.file {basename(raw_path)}} to cache.")
+
+      # write intermediate result to csv
+      readr::write_csv(ZB18a_raw, csv_path)
+      if (!quiet) cli::cli_alert_info("Saved cleaned-up {.file {basename(csv_path)}} to cache.")
+
+      # write final result to rds cache
       readr::write_rds(ZB18a, rds_path)
       if (!quiet) {
         cli::cli_alert("Saved solution with helper columns {.file {basename(rds_path)}} to cache.",
                        "i" = "Future runs will read from the cache, unless you specify `force = TRUE`.")
       }
     }
-  } else {# if the rds file already exist, read it from the cache
-    ZB18a <- readr::read_rds(rds_path)
+    return(ZB18a)
   }
-
-  return(ZB18a)
 }
