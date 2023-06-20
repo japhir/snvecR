@@ -1,4 +1,5 @@
 # snvecR (development version)
+* Fix snapshot tests for CI (overwrite the cache dir, which is unique to each test).
 
 # snvecR 3.7.7
 * Fix CRAN issues by revising the logic for checking the cache.
