@@ -21,7 +21,7 @@
       i The orbital solution ZB18a has not been downloaded.
       i Read 'ems-plan3.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
       i Calculating helper columns.
-      i The cache directory is '/home/japhir/.cache/R/snvecR'.
+      i The cache directory is 'transformed-for-CI'.
       i Saved 'ems-plan3.dat' to cache.
       i Saved cleaned-up 'ZB18a.csv' to cache.
       > Saved solution with helper columns 'ZB18a.rds' to cache.

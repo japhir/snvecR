@@ -104,9 +104,7 @@ get_ZB18a <- function(quiet = FALSE, force = FALSE) {
                               title = "Would you like to download and process it now?") == 1L
       if (download) {
         save_cache <- utils::menu(c("Yes", "No"),
-                                  title = "Would you like to save the results to {
-.file .csv} and {
-.file .rds}?") == 1L
+                                  title = "Would you like to save the results to .csv and .rds?") == 1L
       } else {
         save_cache <- FALSE
       }
