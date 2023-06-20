@@ -8,6 +8,7 @@
 [![DOI](https://zenodo.org/badge/627092810.svg)](https://zenodo.org/badge/latestdoi/627092810)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/snvecR)](https://CRAN.R-project.org/package=snvecR)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/snvecR)](https://cran.r-project.org/package=snvecR)
 [![GPL-3](https://img.shields.io/github/license/japhir/snvecR?logo=gnu&.svg)](https://github.com/japhir/snvecR/blob/master/LICENSE.md)
 [![release](https://img.shields.io/github/v/release/japhir/snvecR.svg)](https://github.com/japhir/snvecR/releases)
 [![R-CMD-check](https://github.com/japhir/snvecR/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/japhir/snvecR/actions/workflows/check-standard.yaml)
@@ -54,15 +55,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2023-05-08 13:39:45.6343"
+#> ℹ started at "2023-06-20 10:46:50.62214"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565 -0.0537555129057148 0.913036138471423
 #> • s-error = |s|-1: 0.353152142725588
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261027 rad
-#> ℹ stopped at "2023-05-08 13:39:47.579519"
-#> ℹ total duration: 1.95s
+#> ℹ stopped at "2023-06-20 10:46:51.950145"
+#> ℹ total duration: 1.33s
 ```
 
 see `?snvec` for further documentation.
