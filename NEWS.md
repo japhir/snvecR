@@ -1,6 +1,7 @@
 # snvecR (development version)
 
 # snvecR 3.7.7
+* Fix CRAN issues by revising the logic for checking the cache.
 
 # snvecR 3.7.6
 * Remove cache directory after last example (even though it's in a donttest environment).
