@@ -1,18 +1,16 @@
 test_that("snvec() inputs are checked", {
   # we test the orbital_solution inputs for the get_solution helper in stead
   expect_error(snvec(tend = -Inf))
-  expect_error(snvec(tend = 5))
-  expect_error(snvec(tres = -5))
   expect_error(snvec(tres = -Inf))
   expect_error(snvec(output = "banaan"))
   expect_error(snvec(solver = "banaan"))
-  expect_warning(snvec(ed = 1.1001, tend = -1, tres = .5, quiet = TRUE))
-  expect_warning(snvec(ed = 0.8999, tend = -1, tres = .5, quiet = TRUE))
-  expect_warning(snvec(td = 1.2001, tend = -1, tres = .5, quiet = TRUE))
-  expect_warning(snvec(td = -0.0001, tend = -1, tres = .5, quiet = TRUE))
-  expect_warning(snvec(atol = 0.9e-12, tend = -1, tres = .5, quiet = TRUE))
-  expect_warning(snvec(atol = 1.1e-3, tend = -1, tres = .5, quiet = TRUE))
-  expect_warning(snvec(rtol = 1.1e-3, tend = -1, tres = .5, quiet = TRUE))
+  expect_warning(snvec(ed = 1.1001, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(ed = 0.8999, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(td = 1.2001, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(td = -0.0001, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(atol = 0.9e-12, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(atol = 1.1e-3, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(rtol = 1.1e-3, tend = -1, tres = -.5, quiet = TRUE))
 })
 
 test_that("snvec() works", {
@@ -23,7 +21,7 @@ test_that("snvec() works", {
                         ed = 1,
                         td = 0,
                         # return results at a very low resolution for speed
-                        tres = 1,
+                        tres = -1,
                         # do not show info messages because some have timestamps
                         quiet = TRUE,
                         # provide output = all so that we can see if the vectors are doing well
@@ -38,11 +36,11 @@ test_that("snvec() works", {
 
 test_that("snvec() output columns are correct", {
   # we have the desired columns
-  expect_equal(snvec(tend = -1, tres = 0.5, quiet = TRUE, output = "nice") |>
+  expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice") |>
                  colnames(),
                c("time", "age", "eei", "epl", "phi", "cp"))
   # we have a deSolve matrix
-  expect_equal(snvec(tend = -1, tres = 0.5, quiet = TRUE, output = "ode") |>
+  expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "ode") |>
                  class(),
                c("deSolve", "matrix"))
 })

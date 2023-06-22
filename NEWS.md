@@ -1,5 +1,10 @@
 # snvecR (development version)
 * Fix snapshot tests for CI (overwrite the cache dir, which is unique to each test).
+* Make it possible for the user to specify a custom orbital solution as a
+  data.frame. It should either have the same column names as the output of
+  get_ZB18a() or as the output of [orbitN](https://github.com/rezeebe/orbitN);
+  we automatically convert the column names to snvec columns names for
+  convenience.
 
 # snvecR 3.7.7
 * Fix CRAN issues by revising the logic for checking the cache.

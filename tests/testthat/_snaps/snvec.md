@@ -2,7 +2,7 @@
 
     Code
       print(dplyr::select(snvec(tend = -49, ed = 1, td = 0,
-        tres = 1, quiet = TRUE, output = "all"), dplyr::all_of(
+        tres = -1, quiet = TRUE, output = "all"), dplyr::all_of(
         c("age", "sx", "sy", "sz", "epl", "phi", "cp"))), n = 50)
     Output
       # A tibble: 50 x 7

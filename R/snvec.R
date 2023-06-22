@@ -378,7 +378,7 @@ snvec <- function(tend = -1e3,
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(
-      age = .data$time / KY2D,
+      age = -.data$time / KY2D,
       nnx = approxdat(dat, "nnx")(.data$time),
       nny = approxdat(dat, "nny")(.data$time),
       nnz = approxdat(dat, "nnz")(.data$time),
