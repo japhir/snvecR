@@ -3,6 +3,7 @@
 export(.data)
 export(get_ZB18a)
 export(get_solution)
+export(prepare_solution)
 export(snvec)
 importFrom(cli,cli_abort)
 importFrom(cli,cli_inform)

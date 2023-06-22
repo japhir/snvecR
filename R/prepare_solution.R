@@ -2,6 +2,7 @@
 #'
 #' Calculates helper columns from an orbital solution input.
 #'
+#' @export
 #' @param data The output of [get_solution()].
 #' It needs to contain columns:
 #'
@@ -45,8 +46,12 @@
 #   normal vector \eqn{\vec{n}'}{n'}, relative to ECLIPJ2000.}
 # IOP = instantaneous orbit plane
 prepare_solution <- function(data, quiet = FALSE) {
-  if (!all(c("lph", "lan", "t", "inc") %in% colnames(data))) {
-    cli::cli_abort("Column names 't', 'lph', 'lan', 'inc' must be in data.")
+  mandatory_cols <- c("t", "ee", "inc", "lph", "lan")
+  if (!all(mandatory_cols %in% colnames(data))) {
+    cli::cli_abort(c(
+      "Column{?s} {.col {mandatory_cols}} must be present in 'data'.",
+      "x" = "Column{?s} {.col {mandatory_cols[!mandatory_cols %in% colnames(data)]}} {?is/are} missing."
+    ))
   }
 
   if (!quiet) cli::cli_alert_info("Calculating helper columns.")
