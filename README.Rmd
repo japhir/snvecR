@@ -65,7 +65,7 @@ eccentricity envelope:
 ```{r plot, fig.width = 9, fig.height = 7}
 library(ggplot2)
 solution |>
-  ggplot(aes(x = age, y = cp)) +
+  ggplot(aes(x = -t_ka, y = cp)) +
   labs(x = "Age (ka)", y = "(-)", colour = "Orbital Element") +
   # the age scale goes from old to young
   scale_x_reverse() +

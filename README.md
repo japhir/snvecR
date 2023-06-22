@@ -51,19 +51,19 @@ solution <- snvec()
 #> • `ed` = 1
 #> • `td` = 0
 #> • `orbital_solution` = "ZB18a"
-#> • `tres` = 0.4 kyr
+#> • `tres` = -0.4 kyr
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2023-06-20 10:46:50.62214"
+#> ℹ started at "2023-06-21 16:20:21.610892"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565 -0.0537555129057148 0.913036138471423
 #> • s-error = |s|-1: 0.353152142725588
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261027 rad
-#> ℹ stopped at "2023-06-20 10:46:51.950145"
-#> ℹ total duration: 1.33s
+#> ℹ stopped at "2023-06-21 16:20:23.021408"
+#> ℹ total duration: 1.41s
 ```
 
 see `?snvec` for further documentation.
@@ -74,7 +74,7 @@ the eccentricity envelope:
 ``` r
 library(ggplot2)
 solution |>
-  ggplot(aes(x = age, y = cp)) +
+  ggplot(aes(x = -t_ka, y = cp)) +
   labs(x = "Age (ka)", y = "(-)", colour = "Orbital Element") +
   # the age scale goes from old to young
   scale_x_reverse() +
