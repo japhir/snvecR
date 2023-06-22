@@ -144,7 +144,7 @@ snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
                   orbital_solution = "ZB18a",
-                  tres = 0.4,
+                  tres = -0.4,
                   atol = 1e-5,
                   rtol = 0,
                   solver = "vode",
@@ -156,12 +156,7 @@ snvec <- function(tend = -1e3,
     cli::cli_abort(c("{.var output} must be one of {.or {.q {outputs}}}.",
                      "x" = "You've supplied {.q {output}}."))
   }
-  ## tend
-  if (tend >= 0) {
-    cli::cli_abort(c("{.var tend} must be < 0.",
-      "x" = "You've supplied {tend}."
-    ))
-  }
+
   if (tend < -1e5) {
     cli::cli_abort(c("{.var tend} must be > the orbital solution {-1e5}, e.g. -100 Ma.",
       "x" = "You've supplied {tend}."
@@ -170,16 +165,11 @@ snvec <- function(tend = -1e3,
 
   ## tres
   ## a quick dumb input test for now
-  if (tres < tend) {
-    cli::cli_abort(c("{.var tres} must be < {.var tend}.",
+  if (abs(tres) > abs(tend)) {
+    cli::cli_abort(c("abs({.var tres}) must be < abs({.var tend}).",
       "i" = "{.var tres} = {tres}",
       "i" = "{.var tend} = {tend}"
     ))
-  }
-
-  if (tres <= 0) {
-    cli::cli_abort(c("{.var tres} must be > 0.",
-                     "i" = "{.var tres} = {tres}"))
   }
 
   # this warning is too strict and kind of annoying
@@ -216,7 +206,7 @@ snvec <- function(tend = -1e3,
       "*" = "{.var tend} = {tend} ka",
       "*" = "{.var ed} = {ed}",
       "*" = "{.var td} = {td}",
-      "*" = "{.var orbital_solution} = {.q {orbital_solution}}",
+      "*" = "{.var orbital_solution} = {.q {if ('data.frame' %in% class(orbital_solution)) 'user provided' else orbital_solution}}",
       "*" = "{.var tres} = {tres} kyr",
       "*" = "{.var atol} = {atol}",
       "*" = "{.var rtol} = {rtol}",
@@ -342,7 +332,7 @@ snvec <- function(tend = -1e3,
 
   ## a linear sequence of steps
   times <- seq(0, tend * KY2D,
-               by = -tres * KY2D
+               by = tres * KY2D
                # ~ tres = 0.4 is the average diff in the C-output
                # snv_sout$time |> diff() |> median() = 0.396013
   )
@@ -388,7 +378,7 @@ snvec <- function(tend = -1e3,
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(
-      age = -.data$time / KY2D,
+      age = .data$time / KY2D,
       nnx = approxdat(dat, "nnx")(.data$time),
       nny = approxdat(dat, "nny")(.data$time),
       nnz = approxdat(dat, "nnz")(.data$time),

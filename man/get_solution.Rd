@@ -8,7 +8,8 @@ get_solution(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE)
 }
 \arguments{
 \item{orbital_solution}{Character vector with the name of the orbital
-solution to use. One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
+solution to use or a \code{data.frame} with a custom orbital solution.
+One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
 or \code{"La11"} (not yet implemented!).}
 
 \item{quiet}{Be quiet?
@@ -21,8 +22,8 @@ or \code{"La11"} (not yet implemented!).}
 to the cache.}
 }
 \value{
-\code{get_solution()} returns a \link[tibble:tibble-package]{tibble} with the
-orbital solution input and some preprocessed new columns.
+\code{get_solution()} returns a \link[tibble:tibble-package]{tibble} with
+the orbital solution input and some preprocessed new columns.
 }
 \description{
 Get an Orbital Solution

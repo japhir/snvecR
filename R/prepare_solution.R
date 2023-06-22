@@ -48,10 +48,16 @@
 prepare_solution <- function(data, quiet = FALSE) {
   mandatory_cols <- c("t", "ee", "inc", "lph", "lan")
   if (!all(mandatory_cols %in% colnames(data))) {
-    cli::cli_abort(c(
-      "Column{?s} {.col {mandatory_cols}} must be present in 'data'.",
-      "x" = "Column{?s} {.col {mandatory_cols[!mandatory_cols %in% colnames(data)]}} {?is/are} missing."
-    ))
+    if (all(c("t", "a", "e", "i", "om", "oom", "vpi", "mn") %in% colnames(data))) {
+      # we're dealing with orbitN output
+      cli::cli_alert_info("Renaming orbital solution columns from orbitN syntax to snvec syntax.")
+      data <- data |> dplyr::rename(ee = e, inc = i, lph = vpi, lan = oom)
+    } else {
+      cli::cli_abort(c(
+        "Column{?s} {.col {mandatory_cols}} must be present in 'data'.",
+        "x" = "Column{?s} {.col {mandatory_cols[!mandatory_cols %in% colnames(data)]}} {?is/are} missing."
+      ))
+    }
   }
 
   if (!quiet) cli::cli_alert_info("Calculating helper columns.")
@@ -60,7 +66,8 @@ prepare_solution <- function(data, quiet = FALSE) {
       lphu = unwrap(.data$lph),
       lanu = unwrap(.data$lan)
     ) |>
-    dplyr::mutate(age = -.data$t / KY2D, .after = "t") |>
+    dplyr::mutate(t_ka = .data$t / KY2D, .after = "t") |>
+    dplyr::mutate(age = -.data$t_ka, .after = "t_ka") |>
     dplyr::mutate(
       hh = .data$ee * sin(.data$lph / R2D),
       kk = .data$ee * cos(.data$lph / R2D),

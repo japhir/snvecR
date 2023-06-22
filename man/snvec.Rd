@@ -9,7 +9,7 @@ snvec(
   ed = 1,
   td = 0,
   orbital_solution = "ZB18a",
-  tres = 0.4,
+  tres = -0.4,
   atol = 1e-05,
   rtol = 0,
   solver = "vode",
@@ -28,7 +28,8 @@ Defaults to \code{1.0}.}
 to \code{0.0}.}
 
 \item{orbital_solution}{Character vector with the name of the orbital
-solution to use. One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
+solution to use or a \code{data.frame} with a custom orbital solution.
+One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
 or \code{"La11"} (not yet implemented!).}
 
 \item{tres}{Output timestep resolution in thousands of years (kyr). Defaults

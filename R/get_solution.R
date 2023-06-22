@@ -1,20 +1,25 @@
 #' Get an Orbital Solution
 #'
 #' @param orbital_solution Character vector with the name of the orbital
-#'   solution to use. One of `"ZB18a"` (default) from Zeebe and Lourens (2019),
+#'   solution to use or a `data.frame` with a custom orbital solution.
+#'   One of `"ZB18a"` (default) from Zeebe and Lourens (2019),
 #'   or `"La11"` (not yet implemented!).
 # quiet and force are documented in get_ZB18a
 #' @inheritParams get_ZB18a
 #' @seealso [get_ZB18a()]
 #' @inherit get_ZB18a references
-#' @returns `get_solution()` returns a [tibble][tibble::tibble-package] with the
-#'   orbital solution input and some preprocessed new columns.
+#' @returns `get_solution()` returns a [tibble][tibble::tibble-package] with
+#'   the orbital solution input and some preprocessed new columns.
 #' @examples
 #' \donttest{
 #' get_solution()
 #' }
 #' @export
 get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE) {
+  if ("data.frame" %in% class(orbital_solution)) {
+    return(prepare_solution(orbital_solution))
+  }
+
   solutions <- c("ZB18a", "La11")
   if (!orbital_solution %in% solutions) {
     cli::cli_abort(c("{.var orbital_solution} must be one of: {.or {.q {solutions}}}",
