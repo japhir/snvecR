@@ -29,7 +29,7 @@ test_that("snvec() works", {
                     # report only the columns of interest (the ones returned by the C-routine)
                     # this means that if I change my mind about which columns to report it doesn't matter,
                     # as long as the output of these columns remains the same.
-                    dplyr::select(dplyr::all_of(c("age", "sx", "sy", "sz", "epl", "phi", "cp"))) |>
+                    dplyr::select(dplyr::all_of(c("t_ka", "sx", "sy", "sz", "epl", "phi", "cp"))) |>
                     # print the full 100 rows to monitor changes
                     print(n = 50))
 })
@@ -38,7 +38,7 @@ test_that("snvec() output columns are correct", {
   # we have the desired columns
   expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice") |>
                  colnames(),
-               c("time", "age", "eei", "epl", "phi", "cp"))
+               c("time", "t_ka", "eei", "epl", "phi", "cp"))
   # we have a deSolve matrix
   expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "ode") |>
                  class(),

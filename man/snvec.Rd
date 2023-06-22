@@ -33,7 +33,8 @@ One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
 or \code{"La11"} (not yet implemented!).}
 
 \item{tres}{Output timestep resolution in thousands of years (kyr). Defaults
-to \code{0.4}.}
+to \code{-0.4}. To determine the sign, think of from \code{0} to \code{tend} by timestep
+\code{tres}.}
 
 \item{atol}{Numerical absolute tolerance passed to \code{\link[deSolve:ode]{deSolve::ode()}}'s
 \code{atol}. Defaults to \code{1e-5}.}
@@ -42,8 +43,9 @@ to \code{0.4}.}
 \code{rtol}. Defaults to \code{0}.}
 
 \item{solver}{Character vector specifying the method passed to
-\code{\link[deSolve:ode]{deSolve::ode()}}'s \code{method}. Defaults to \code{"vode"} for stiff problems
-with a variable timestep.}
+\code{\link[deSolve:ode]{deSolve::ode()}}'s \code{method}. Defaults to \code{"vode"} for stiff problems with
+a variable timestep. # quiet comes from get_ZB18a. Force does too, but I
+hope that because we don't # use it here, it won't get inherited.}
 
 \item{quiet}{Be quiet?
 \itemize{
@@ -54,7 +56,7 @@ with a variable timestep.}
 \item{output}{Character vector with name of desired output. One of:
 \itemize{
 \item \code{"nice"} (the default) A \link[tibble:tibble-package]{tibble} with the
-columns \code{time}, \code{age}, \code{eei}, \code{epl}, \code{phi}, \code{cp}.
+columns \code{time}, \code{t_ka}, \code{eei}, \code{epl}, \code{phi}, \code{cp}.
 \item \code{"full"} A \link[tibble:tibble-package]{tibble} with all the computed and
 interpolated columns.
 \item \code{"ode"} A matrix with the output of the ODE solver.
@@ -67,7 +69,7 @@ If \code{output = "nice"} (the default), returns a
 \link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
 \item \code{time} Time \eqn{t} (days).
-\item \code{age} Age in thousands of years ago (ka).
+\item \code{t_ka} Time in thousands of years (ka).
 \item \code{eei} Orbital solution's eccentricity \eqn{e}, interpolated to output
 timescale (-).
 \item \code{epl} Calculated Obliquity \eqn{\epsilon} (radians).
@@ -90,8 +92,7 @@ steps.
 
 If \code{output = "ode"}, it will return the raw output of the ODE solver, which
 is an object of class \code{deSolve} and \code{matrix}, with columns \code{time}, \code{sx},
-\code{sy}, and \code{sz} (see above). This can be useful for i.e.
-\code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
+\code{sy}, and \code{sz}. This can be useful for i.e. \code{\link[deSolve:diagnostics]{deSolve::diagnostics()}}.
 }
 \description{
 \code{snvec()} computes climatic precession and obliquity (or tilt) from an

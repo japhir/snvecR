@@ -14,21 +14,21 @@
 # orbital_solution comes from get_solution
 #' @inheritParams get_solution
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
-#'   to `0.4`.
+#'   to `-0.4`. To determine the sign, think of from `0` to `tend` by timestep
+#'   `tres`.
 #' @param atol Numerical absolute tolerance passed to [deSolve::ode()]'s
 #'   `atol`. Defaults to `1e-5`.
 #' @param rtol Numerical relative tolerance passed to [deSolve::ode()]'s
 #'   `rtol`. Defaults to `0`.
 #' @param solver Character vector specifying the method passed to
-#'   [deSolve::ode()]'s `method`. Defaults to `"vode"` for stiff problems
-#'   with a variable timestep.
-# quiet comes from get_ZB18a. Force does too, but I hope that because we don't
-# use it here, it won't get inherited.
+#'   [deSolve::ode()]'s `method`. Defaults to `"vode"` for stiff problems with
+#'   a variable timestep. # quiet comes from get_ZB18a. Force does too, but I
+#'   hope that because we don't # use it here, it won't get inherited.
 #' @inheritParams get_ZB18a
 #' @param output Character vector with name of desired output. One of:
 #'
 #'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
-#'     columns `time`, `age`, `eei`, `epl`, `phi`, `cp`.
+#'     columns `time`, `t_ka`, `eei`, `epl`, `phi`, `cp`.
 #'
 #'   * `"full"` A [tibble][tibble::tibble-package] with all the computed and
 #'     interpolated columns.
@@ -50,7 +50,7 @@
 #'
 #'   * `time` Time \eqn{t} (days).
 #'
-#'   * `age` Age in thousands of years ago (ka).
+#'   * `t_ka` Time in thousands of years (ka).
 #'
 #'   * `eei` Orbital solution's eccentricity \eqn{e}, interpolated to output
 #'   timescale (-).
@@ -96,8 +96,7 @@
 #'
 #' If `output = "ode"`, it will return the raw output of the ODE solver, which
 #' is an object of class `deSolve` and `matrix`, with columns `time`, `sx`,
-#' `sy`, and `sz` (see above). This can be useful for i.e.
-#' [deSolve::diagnostics()].
+#' `sy`, and `sz`. This can be useful for i.e. [deSolve::diagnostics()].
 #'
 #' @seealso
 #'
@@ -351,7 +350,7 @@ snvec <- function(tend = -1e3,
   )
 
   ## print the final values for s
-  ## This is at t = tend, it's going back from 0 to -time
+  ## This is at t = tend, it's going back from 0 to -time by default.
   fin <- out[nrow(out), ]
   u <- as.vector(c(fin[2], fin[3], fin[4]))
 
@@ -378,7 +377,7 @@ snvec <- function(tend = -1e3,
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(
-      age = -.data$time / KY2D,
+      t_ka = .data$time / KY2D,
       nnx = approxdat(dat, "nnx")(.data$time),
       nny = approxdat(dat, "nny")(.data$time),
       nnz = approxdat(dat, "nnz")(.data$time),
@@ -440,7 +439,7 @@ snvec <- function(tend = -1e3,
     # we transform the deSolve parameters into simple numeric columns
     # this is so they work better with things like bind_rows etc. via vctrs
     dplyr::mutate(dplyr::across(
-      tidyselect::all_of(c("time", "sx", "sy", "sz", "age", "epl")),
+      tidyselect::all_of(c("time", "t_ka", "sx", "sy", "sz", "epl")),
       as.numeric))
 
   if (output == "all") {
