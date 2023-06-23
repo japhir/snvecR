@@ -4,6 +4,10 @@ test_that("snvec() inputs are checked", {
   expect_error(snvec(tres = -Inf))
   expect_error(snvec(output = "banaan"))
   expect_error(snvec(solver = "banaan"))
+  expect_error(snvec(orbital_solution = "hoi")) # same as get_solution
+  expect_error(snvec(os_ref_frame = "hoi"))
+  expect_error(snvec(os_ref_frame = "J2000", os_omt = 5))
+  expect_error(snvec(os_ref_frame = "J2000", os_inct = 7))
   expect_warning(snvec(ed = 1.1001, tend = -1, tres = -.5, quiet = TRUE))
   expect_warning(snvec(ed = 0.8999, tend = -1, tres = -.5, quiet = TRUE))
   expect_warning(snvec(td = 1.2001, tend = -1, tres = -.5, quiet = TRUE))
@@ -38,7 +42,7 @@ test_that("snvec() output columns are correct", {
   # we have the desired columns
   expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice") |>
                  colnames(),
-               c("time", "t_ka", "eei", "epl", "phi", "cp"))
+               c("time", "t_ka", "epl", "phi", "cp"))
   # we have a deSolve matrix
   expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "ode") |>
                  class(),

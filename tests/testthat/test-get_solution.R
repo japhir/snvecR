@@ -1,7 +1,7 @@
 test_that("get_solution() inputs are checked", {
   expect_error(get_solution(orbital_solution = "hoi"))
   expect_error(get_solution(orbital_solution = "La11"))
-  expect_error(get_solution(orbital_solution = data.frame(x = 1, y = 5)))
+  expect_error(get_solution(orbital_solution = data.frame(x = 1, y = 5))) # this runs via prepare_solution
 })
 
 test_that("get_solution() works", {
