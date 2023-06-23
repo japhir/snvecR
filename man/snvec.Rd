@@ -40,7 +40,7 @@ solution. Either \code{"HCI"} for heliocentric inertial reference frame or
 \code{"J2000"} for ecliptic J2000 reference frame. Defaults to \code{"HCI"} for
 \code{HNBody} output.}
 
-\item{os_omt}{Longitude of ascending node of the the solar equator relative to ECLIPJ2000.}
+\item{os_omt}{Longitude of ascending node of the solar equator relative to ECLIPJ2000.}
 
 \item{os_inct}{Inclination of the solar equator relative to ECLIPJ2000.}
 
@@ -126,7 +126,7 @@ inertial reference frame. This is to align the reference frame with the spin
 vector of the Sun, making J2 corrections intuitive to implement.
 
 Obliquity is typically given in the ecliptic reference frame, so snvec
-converts all outputs to J2000 if the \code{os_ref_frame} is equal to \code{"HCL"} and
+converts all outputs to J2000 if the \code{os_ref_frame} is equal to \code{"HCI"} and
 does no transformations if it is already in \code{"J2000"}.
 
 For this, it uses \eqn{\Omega_{\odot} = 75.5940}{OMT = 75.5940} and
