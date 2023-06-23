@@ -267,14 +267,17 @@ snvec <- function(tend = -1e3,
       ## "Richard E. Zeebe",
       ## "Ilja J. Kocken",
       "Integration parameters:",
-      "*" = "{.var tend} = {tend} ka",
-      "*" = "{.var ed} = {ed}",
-      "*" = "{.var td} = {td}",
-      "*" = "{.var orbital_solution} = {.q {if ('data.frame' %in% class(orbital_solution)) 'user provided' else orbital_solution}}",
-      "*" = "{.var tres} = {tres} kyr",
-      "*" = "{.var atol} = {atol}",
-      "*" = "{.var rtol} = {rtol}",
-      "*" = "{.var solver} = {.q {solver}}",
+      "*" = "{.var tend} = {.val {tend}} ka",
+      "*" = "{.var ed} = {.val {ed}}",
+      "*" = "{.var td} = {.val {td}}",
+      "*" = "{.var orbital_solution} = {.val {if ('data.frame' %in% class(orbital_solution)) 'user provided' else orbital_solution}}",
+      "*" = "{.var os_ref_frame} = {.val {os_ref_frame}}",
+      "*" = "{.var os_omt} = {if (is.null(os_omt)) 'defaulting to' else ''} {.val {OMT}}",
+      "*" = "{.var os_inct} = {if (is.null(os_inct)) 'defaulting to' else ''} {.val {INCT}}",
+      "*" = "{.var tres} = {.val {tres}} kyr",
+      "*" = "{.var atol} = {.val {atol}}",
+      "*" = "{.var rtol} = {.val {rtol}}",
+      "*" = "{.var solver} = {.val {solver}}",
       "i" = "started at {.q {startdate}}"
     ))
   }
@@ -427,9 +430,9 @@ snvec <- function(tend = -1e3,
   if (!quiet) {
     cli::cli_inform(c(
       "Final values:",
-      "*" = "s[1][2][3]: {paste(fin[2], fin[3], fin[4])}",
+      "*" = "s[1][2][3]: {.val {c(fin[2], fin[3], fin[4])}}",
       ## "*" = "s-error = |s|-1: {sqrt(pracma::dot(u, u))-1}"
-      "*" = "s-error = |s|-1: {sqrt(u[1]^+u[2]^2+u[3]^2)-1}"
+      "*" = "s-error = |s|-1: {.val {sqrt(u[1]^2+u[2]^2+u[3]^2)-1}}"
     ))
   }
 
@@ -491,10 +494,10 @@ snvec <- function(tend = -1e3,
   if (!quiet) {
     cli::cli_inform(
       c("Final values:",
-        "*" = "obliquity: {fin[nrow(fin), 'epl']} rad",
-        "*" = "precession: {fin[nrow(fin), 'phi']} rad",
+        "*" = "obliquity: {.val {fin[nrow(fin), 'epl']}} rad",
+        "*" = "precession: {.val {fin[nrow(fin), 'phi']}} rad",
         "i" = "stopped at {.q {lubridate::now()}}",
-        "i" = "total duration:  {lubridate::as.duration(round(lubridate::now() - startdate, 2))}"
+        "i" = "total duration: {.val {lubridate::as.duration(round(lubridate::now() - startdate, 2))}}"
       )
     )
   }

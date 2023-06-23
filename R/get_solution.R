@@ -32,10 +32,14 @@ get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALS
   }
   if (orbital_solution == "La11") {
     ## dat <- snvecR::La11
-    cli::cli_abort(c("Orbital solution: La11 currently not supported.",
-      "!" = "The input OS for snvec must be in the Heliocentric Inertial Reference frame (HCI) (J2000).",
-      "x" = "The La11 solution is in the invariant reference frame.",
-      "i" = "Pull requests welcome."))
+    cli::cli_abort(c("i" = "Orbital solution: La11 currently not supported.",
+                     "!" = "The input OS for snvec must be either in the:",
+                     "*" = "Heliocentric inertial reference frame (HCI)",
+                     "*" = "Ecliptic reference frame (J2000).",
+                     "x" = "The La11 solution is in the invariant/inertial reference frame.",
+                     "i" = "To resolve this, you need the positions/velocities and masses of all the bodies.",
+                     "i" = "Or the angles between their inertial reference frame and J2000.",
+                     "i" = "Pull requests welcome."))
   }
 
   return(dat)
