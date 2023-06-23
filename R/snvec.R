@@ -10,9 +10,19 @@
 #' @param ed Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
 #'   Defaults to `1.0`.
 #' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
-#'   to `0.0`.
-# orbital_solution comes from get_solution
+#'   to `0.0`. # orbital_solution comes from get_solution
+
+# inherit orbital_solution and quiet from get_solution
 #' @inheritParams get_solution
+
+#' @param os_ref_frame Character vector with the reference frame of the orbital
+#'   solution. Either `"HCI"` for heliocentric inertial reference frame or
+#'   `"J2000"` for ecliptic J2000 reference frame. Defaults to `"HCI"` for
+#'   `HNBody` output.
+#' @param os_omt Longitude of ascending node of the the solar equator relative to ECLIPJ2000.
+#' @param os_inct Inclination of the solar equator relative to ECLIPJ2000.
+
+# ODE solver parameters
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
 #'   to `-0.4`. To determine the sign, think of from `0` to `tend` by timestep
 #'   `tres`.
@@ -22,9 +32,8 @@
 #'   `rtol`. Defaults to `0`.
 #' @param solver Character vector specifying the method passed to
 #'   [deSolve::ode()]'s `method`. Defaults to `"vode"` for stiff problems with
-#'   a variable timestep. # quiet comes from get_ZB18a. Force does too, but I
-#'   hope that because we don't # use it here, it won't get inherited.
-#' @inheritParams get_ZB18a
+#'   a variable timestep.
+
 #' @param output Character vector with name of desired output. One of:
 #'
 #'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
@@ -39,9 +48,28 @@
 #'   information of Zeebe & Lourens (2022). The terms are explained in detail
 #'   in Zeebe (2022).
 #'
-#'   Note that the different ODE solver algorithm we use (Soetaert et al.,
-#'   2010) means that the R routine returns an evenly-spaced time grid, whereas
-#'   the C-routine has a variable time-step.
+#' @section Reference Frames of Orbital Solutions:
+#'
+#' NASA provides their asteroid and planet positions in the ecliptic J2000
+#' reference frame, while long-term orbital solution integrations are often
+#' performed in the heliocentric inertial reference frame (HCI) or in the
+#' inertial reference frame. This is to align the reference frame with the spin
+#' vector of the Sun, making J2 corrections intuitive to implement.
+#'
+#' Obliquity is typically given in the ecliptic reference frame, so snvec
+#' converts all outputs to J2000 if the `os_ref_frame` is equal to `"HCL"` and
+#' does no transformations if it is already in `"J2000"`.
+#'
+#' For this, it uses \eqn{\Omega_{\odot} = 75.5940}{OMT = 75.5940} and
+#' \eqn{i_{\odot = 7.155}}{INCT = 7.155} as in Zeebe (2017). You can overwrite
+#' these defaults with `os_omt` and `os_inct` if desired.
+#'
+#' @section ODE Solver:
+#'
+#' Note that the different ODE solver algorithm we use (Soetaert et al.,
+#' 2010) means that the R routine returns an evenly-spaced time grid, whereas
+#' the C-routine has a variable time-step.
+#' We use need more function arguments because of this, because we need to explicitly define the step size (`tres`).
 #'
 #' @returns `snvec()` returns different output depending on the `outputs` argument.
 #'
@@ -110,6 +138,10 @@
 #'
 #' @references
 #'
+#' Zeebe, R.E. (2017). Numerical Solutions for the Orbital Motion of the Solar
+#'   System over the Past 100 Myr: Limits and New Results. _The Astronomical
+#'   Journal_, 154(5), \doi{10.3847/1538-3881/aa8cce}.
+#'
 #' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 #'  Paleocene–Eocene boundary age constrained by geology and astronomy.
 #'  _Science_, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
@@ -143,6 +175,8 @@ snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
                   orbital_solution = "ZB18a",
+                  os_ref_frame = "HCI",
+                  os_omt = NULL, os_inct = NULL,
                   tres = -0.4,
                   atol = 1e-5,
                   rtol = 0,
@@ -184,6 +218,37 @@ snvec <- function(tend = -1e3,
                     "i" = "{.var td} = {td}",
                     "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."))
   }
+
+  hci_refs <- c("heliocentric intertial", "HCI")
+  j2000_refs <- c("ecliptic", "ECLIPJ2000", "J2000")
+  if (!os_ref_frame %in% c(hci_refs, j2000_refs)) {
+    cli::cli_abort(c(
+      "i" = "{.var os_ref_frame} must be one of {.or {.q {reference_frames}}}",
+      "x" = "{.var os_ref_frame} = {.q {os_ref_frame}}"
+    ))
+  } else {
+    # get rid of aliases
+    if (os_ref_frame %in% hci_refs) os_ref_frame <- "HCI"
+    if (os_ref_frame %in% j2000_refs) os_ref_frame <- "J2000"
+  }
+
+  if (os_ref_frame != "HCI") {
+    if (!is.null(os_omt)) cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_omt}.")
+    if (!is.null(os_inct)) cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_inct}.")
+  }
+
+  # if the reference frame is already J2000, just set the angles to 0
+  # (this makes the codebase simpler, no need for ifelse statements throughout.)
+  if (os_ref_frame == "HCI" && is.null(os_omt) && is.null(os_inct)) {
+    OMT <- 75.5940
+    INCT <- 7.155
+  } else if (os_ref_frame == "J2000") {
+    if (is.null(os_omt)) OMT <- 0
+    if (is.null(os_inct)) INCT <- 0
+  }
+  # or if the user has specified their own rotation, that's fine too!
+  if (!is.null(os_omt)) OMT <- os_omt
+  if (!is.null(os_inct)) INCT <- os_inct
 
   if (atol < 1e-12 | atol > 1e-3) {
     cli::cli_warn("Input absolute tolerance should be between 1e-12 and 1e-3.")
