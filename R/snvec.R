@@ -310,8 +310,12 @@ snvec <- function(tend = -1e3,
     as.matrix() |>
     as.vector()
 
-  # transform n => n'
-  np <- euler(ninit, inct, omt, TRUE)
+  if (os_ref_frame != "J2000") {
+    # transform n => n'
+    np <- euler(ninit, inct, omt, TRUE)
+  } else {
+    np <- ninit
+  }
 
   # solve quadratic equation for s0'y
   a <- np[2] * np[2] + np[3] * np[3]
@@ -325,8 +329,12 @@ snvec <- function(tend = -1e3,
   s0p[1] <- 0
   as.matrix(s0p)
 
-  # transform s0' to s0
-  s0 <- euler(s0p, inct, omt, 0)
+  if (os_ref_frame != "J2000") {
+    # transform s0' to s0
+    s0 <- euler(s0p, inct, omt, FALSE)
+  } else {
+    s0 <- s0p
+  }
 
   ## set the deSolve state
   state <- c(
@@ -472,7 +480,7 @@ snvec <- function(tend = -1e3,
     dplyr::mutate(
       u = list(matrix(c(.data$sx, .data$sy, .data$sz), ncol = 1, nrow = 3)),
       nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
-      # coords: fixed HCI => moving orbit plane
+      # coords: fixed => moving orbit plane
       up = list(euler(.data$u, .data$inci / R2D, .data$lani / R2D, 0)),
       # coords: relative to phi(t=0)=0 at J2000
       up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D - pi / 2, 0)),
