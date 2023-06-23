@@ -513,12 +513,9 @@ snvec <- function(tend = -1e3,
 
   if (output == "nice") {
     fin |>
-      # get rid of columns that we do not like
-      dplyr::select(-tidyselect::all_of(c(
-        "sx", "sy", "sz",
-        "nnx", "nny", "nnz",
-        "inci", "lphi", "lani",
-        "tmp",
-        "u", "nv", "up")))
+      dplyr::select(tidyselect::all_of(c(
+        "time", "t_ka",
+        "epl", "phi", "cp"
+      )))
   }
 }
