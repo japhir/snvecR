@@ -9,6 +9,9 @@ snvec(
   ed = 1,
   td = 0,
   orbital_solution = "ZB18a",
+  os_ref_frame = "HCI",
+  os_omt = NULL,
+  os_inct = NULL,
   tres = -0.4,
   atol = 1e-05,
   rtol = 0,
@@ -25,12 +28,21 @@ Defaults to \code{-1000} ka.}
 Defaults to \code{1.0}.}
 
 \item{td}{Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
-to \code{0.0}.}
+to \code{0.0}. # orbital_solution comes from get_solution}
 
 \item{orbital_solution}{Character vector with the name of the orbital
 solution to use or a \code{data.frame} with a custom orbital solution.
 One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
 or \code{"La11"} (not yet implemented!).}
+
+\item{os_ref_frame}{Character vector with the reference frame of the orbital
+solution. Either \code{"HCI"} for heliocentric inertial reference frame or
+\code{"J2000"} for ecliptic J2000 reference frame. Defaults to \code{"HCI"} for
+\code{HNBody} output.}
+
+\item{os_omt}{Longitude of ascending node of the the solar equator relative to ECLIPJ2000.}
+
+\item{os_inct}{Inclination of the solar equator relative to ECLIPJ2000.}
 
 \item{tres}{Output timestep resolution in thousands of years (kyr). Defaults
 to \code{-0.4}. To determine the sign, think of from \code{0} to \code{tend} by timestep
@@ -44,8 +56,7 @@ to \code{-0.4}. To determine the sign, think of from \code{0} to \code{tend} by 
 
 \item{solver}{Character vector specifying the method passed to
 \code{\link[deSolve:ode]{deSolve::ode()}}'s \code{method}. Defaults to \code{"vode"} for stiff problems with
-a variable timestep. # quiet comes from get_ZB18a. Force does too, but I
-hope that because we don't # use it here, it won't get inherited.}
+a variable timestep.}
 
 \item{quiet}{Be quiet?
 \itemize{
@@ -104,11 +115,34 @@ of ordinary differential equations.
 This is a re-implementation of the C-code in the supplementary
 information of Zeebe & Lourens (2022). The terms are explained in detail
 in Zeebe (2022).
+}
+\section{Reference Frames of Orbital Solutions}{
+
+
+NASA provides their asteroid and planet positions in the ecliptic J2000
+reference frame, while long-term orbital solution integrations are often
+performed in the heliocentric inertial reference frame (HCI) or in the
+inertial reference frame. This is to align the reference frame with the spin
+vector of the Sun, making J2 corrections intuitive to implement.
+
+Obliquity is typically given in the ecliptic reference frame, so snvec
+converts all outputs to J2000 if the \code{os_ref_frame} is equal to \code{"HCL"} and
+does no transformations if it is already in \code{"J2000"}.
+
+For this, it uses \eqn{\Omega_{\odot} = 75.5940}{OMT = 75.5940} and
+\eqn{i_{\odot = 7.155}}{INCT = 7.155} as in Zeebe (2017). You can overwrite
+these defaults with \code{os_omt} and \code{os_inct} if desired.
+}
+
+\section{ODE Solver}{
+
 
 Note that the different ODE solver algorithm we use (Soetaert et al.,
 2010) means that the R routine returns an evenly-spaced time grid, whereas
 the C-routine has a variable time-step.
+We use need more function arguments because of this, because we need to explicitly define the step size (\code{tres}).
 }
+
 \examples{
 # default call
 \donttest{
@@ -118,6 +152,10 @@ unlink(tools::R_user_dir("snvecR", which = "cache"), recursive = TRUE)
 }
 }
 \references{
+Zeebe, R.E. (2017). Numerical Solutions for the Orbital Motion of the Solar
+System over the Past 100 Myr: Limits and New Results. \emph{The Astronomical
+Journal}, 154(5), \doi{10.3847/1538-3881/aa8cce}.
+
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.
 \emph{Science}, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
