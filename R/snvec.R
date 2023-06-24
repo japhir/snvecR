@@ -483,7 +483,7 @@ snvec <- function(tend = -1e3,
       # coords: fixed => moving orbit plane
       up = list(euler(.data$u, .data$inci / R2D, .data$lani / R2D, 0)),
       # coords: relative to phi(t=0)=0 at J2000
-      up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D - pi / 2, 0)),
+      up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D + pi / 2, 0)),
       # get 2nd and 1st column of up
       phi = map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
     ) |>
@@ -492,10 +492,7 @@ snvec <- function(tend = -1e3,
       # normalize to first value of phi
       tmp = first(.data$phi),
       phi = .data$phi - .data$tmp,
-      cp = .data$eei * sin((.data$lphi + OMT) / R2D - .data$phi),
-      # phi is now mapped between 0 and 2 pi, whereas RZ's output is wrapped
-      # between -pi and pi
-      phi = ifelse(.data$phi > pi, .data$phi - 2 * pi, .data$phi)
+      cp = .data$eei * sin((.data$lphi + OMT) / R2D - .data$phi)
     )
 
   ## message user about final values
