@@ -190,19 +190,21 @@ snvec <- function(tend = -1e3,
                      "x" = "You've supplied {.q {output}}."))
   }
 
-  if (tend < -1e5) {
-    cli::cli_abort(c("{.var tend} must be > the orbital solution {-1e5}, e.g. -100 Ma.",
-      "x" = "You've supplied {tend}."
-    ))
+  ## tres
+  if (sign(tres) != sign(tend)) {
+    cli::cli_abort(c("{.var tres} must be given in the same sign as {.var tend}.",
+                     "i" = "{.var tres} = {tres}",
+                     "i" = "{.var tend} = {tend}"
+                     ))
   }
 
-  ## tres
+
   ## a quick dumb input test for now
   if (abs(tres) > abs(tend)) {
     cli::cli_abort(c("abs({.var tres}) must be < abs({.var tend}).",
-      "i" = "{.var tres} = {tres}",
-      "i" = "{.var tend} = {tend}"
-    ))
+                     "i" = "{.var tres} = {tres}",
+                     "i" = "{.var tend} = {tend}"
+                     ))
   }
 
   # this warning is too strict and kind of annoying
@@ -232,19 +234,26 @@ snvec <- function(tend = -1e3,
     if (os_ref_frame %in% j2000_refs) os_ref_frame <- "J2000"
   }
 
+  # if the user specifies a value for os_omt and/or os_inct, they cannot
+  # specify a non-default os_ref_frame
   if (os_ref_frame != "HCI") {
-    if (!is.null(os_omt)) cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_omt}.")
-    if (!is.null(os_inct)) cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_inct}.")
+    if (!is.null(os_omt)) {
+      cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_omt}.")
+    }
+    if (!is.null(os_inct)) {
+      cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_inct}.")
+    }
   }
 
   # if the reference frame is already J2000, just set the angles to 0
   # (this makes the codebase simpler, no need for ifelse statements throughout.)
+  # but we will put in explicit ifelse's for optimisation
   if (os_ref_frame == "HCI" && is.null(os_omt) && is.null(os_inct)) {
     OMT <- 75.5940
     INCT <- 7.155
   } else if (os_ref_frame == "J2000") {
-    if (is.null(os_omt)) OMT <- 0
-    if (is.null(os_inct)) INCT <- 0
+    if (is.null(os_omt)) OMT <- 0.
+    if (is.null(os_inct)) INCT <- 0.
   }
   # or if the user has specified their own rotation, that's fine too!
   if (!is.null(os_omt)) OMT <- os_omt
@@ -259,13 +268,21 @@ snvec <- function(tend = -1e3,
 
   dat <- get_solution(orbital_solution = orbital_solution)
 
+  if ((sign(tend) != sign(dat$t_ka[2])) || (abs(tend) > max(abs(dat$t_ka)))) {
+    cli::cli_abort(c("{.var tend} must fall within orbital solution age.",
+                     "i" = "The orbital solution {sign(dat$t_ka[2])*max(abs(dat$t_ka))}.",
+                     "x" = "{.var tend} = {tend}."
+                     ))
+  }
+
   # message user about inputs
   if (!quiet) {
     startdate <- lubridate::now()
     cli::cli_inform(c(
-      ## "This is {VER}",
-      ## "Richard E. Zeebe",
-      ## "Ilja J. Kocken",
+      "This is {VER}",
+      "Richard E. Zeebe",
+      "Ilja J. Kocken",
+      "",
       "Integration parameters:",
       "*" = "{.var tend} = {.val {tend}} ka",
       "*" = "{.var ed} = {.val {ed}}",
@@ -359,10 +376,10 @@ snvec <- function(tend = -1e3,
     with(as.list(c(state, parameters)), {
       # the the index of the current timestep in the orbital solution
       m <- min(round(abs(t / dts) + 1), nrow(dat))
-
-      ## quickly interpolate orbital solution input value at the current
-      ## timestep
+      # quickly interpolate orbital solution input value at the current
+      # timestep
       dx <- t - dat$t[m]
+
       qqi <- qinterp(dat$qq, dts, dx, m)
       ppi <- qinterp(dat$pp, dts, dx, m)
       cci <- qinterp(dat$cc, dts, dx, m)
@@ -410,7 +427,7 @@ snvec <- function(tend = -1e3,
                by = tres * KY2D
                # ~ tres = 0.4 is the average diff in the C-output
                # snv_sout$time |> diff() |> median() = 0.396013
-  )
+               )
 
   ## solve it
   ## [[file:snvec-3.7.5/snvec-3.7.5.c::%%% solver][odeint()]]
@@ -463,35 +480,43 @@ snvec <- function(tend = -1e3,
       lani = approxdat(dat, "lanu")(.data$time)
     )
 
-  ## calculate obliquity
-  fin <- fin |>
-    # calculate the dotproduct, Richard's vvdot
-    dplyr::mutate(
-      tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
-      epl = acos(.data$tmp)
-    )
+  ## ## calculate obliquity
+  ## fin <- fin |>
+  ##   # calculate the dotproduct, Richard's vvdot
+  ##   dplyr::mutate(
+  ##     tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
+  ##     epl = acos(.data$tmp)
+  ##   )
 
-  ## calculate precession and climatic precession
   fin <- fin |>
     # for each row, NOTE this makes it very slow!!
     dplyr::rowwise() |>
-    # create list columns of matrices
     # extract sx, sy, sz, and nnx, nny, nnz
     dplyr::mutate(
+      # create list columns of vectors
       u = list(matrix(c(.data$sx, .data$sy, .data$sz), ncol = 1, nrow = 3)),
       nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
+
+      # calculate obliquity
+      tmp = pracma::dot(u, nv),
+      ## tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
+      # calculate obliquity
+      epl = acos(.data$tmp),
+
       # coords: fixed => moving orbit plane
-      up = list(euler(.data$u, .data$inci / R2D, .data$lani / R2D, 0)),
+      up = list(euler(.data$u, .data$inci / R2D, .data$lani / R2D, FALSE)),
       # coords: relative to phi(t=0)=0 at J2000
-      up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D + pi / 2, 0)),
+      up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D + pi / 2, FALSE)),
       # get 2nd and 1st column of up
+
+      ## calculate axial precession
       phi = map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
     ) |>
     dplyr::ungroup() |>
     dplyr::mutate(
       # normalize to first value of phi
-      tmp = first(.data$phi),
-      phi = .data$phi - .data$tmp,
+      phi = .data$phi - first(.data$phi),
+      # calculate climatic precession
       cp = .data$eei * sin((.data$lphi + OMT) / R2D - .data$phi)
     )
 
@@ -503,7 +528,7 @@ snvec <- function(tend = -1e3,
         "*" = "precession: {.val {fin[nrow(fin), 'phi']}} rad",
         "i" = "stopped at {.q {lubridate::now()}}",
         "i" = "total duration: {.val {lubridate::as.duration(round(lubridate::now() - startdate, 2))}}"
-      )
+        )
     )
   }
 
