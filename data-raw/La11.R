@@ -1,4 +1,4 @@
-# La11 is available on <http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010d_alkhqp3L.dat>
+# La11 is available on <http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010c_alkhqp3L.dat>
 # the readme says:
 # The file La2010X_alkhqp3.dat and La2010X_alkhqp3L.dat contain t, a,l,k,h,q,p
 # where t is  the time from J2000 (in kyr)
@@ -28,11 +28,13 @@ cli::cli_abort(c("i" = "The input OS for snvec must be in the Heliocentric Inert
 library(readr)
 library(snvecR) # for the unwrap function
 
-dat <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010a_alkhqp3L.dat",
-                             col_names = c("t", "a", "l", "k","h", "q", "p"))
+# this only downloads solution "c".
+# Richard told me he prefers b & c the most (<50 Ma?) from Zeebe & Lourens 2019 table 1
+dat <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010b_alkhqp3L.dat",
+                             col_names = c("t_ka", "a", "l", "k","h", "q", "p"))
 
-ecc <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010a_ecc3L.dat",
-                             col_names = c("t", "ecc"))
+ecc <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010b_ecc3L.dat",
+                             col_names = c("t_ka", "e"))
 
 
 dplyr::glimpse(dat)
