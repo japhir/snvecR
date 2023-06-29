@@ -17,7 +17,7 @@
 #' @export
 get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE) {
   if ("data.frame" %in% class(orbital_solution)) {
-    return(prepare_solution(orbital_solution))
+    return(prepare_solution(orbital_solution, quiet = quiet))
   }
 
   solutions <- c("ZB18a", "La11")

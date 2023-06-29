@@ -30,7 +30,7 @@ test_that("qinterp() works", {
   # target timestep half-way between rows 5 and 6
   tmv <- (dat$t[6] + dat$t[5]) / 2 # -0.9
   # index integer m, this is 5
-  m <- min(round(abs(tmv / dts)) + 1, nrow(fut))
+  m <- min(round(abs(tmv / dts)) + 1, nrow(dat))
   ## dx <- dat$t[m] - t # i've experimented with this as well
   dx <- tmv - dat$t[m]
   ## # visualize the fake data
@@ -98,4 +98,13 @@ test_that("qinterp() works", {
   # does it still work if we flip time?
   expect_equal(qinterp(y = ee, ds = -dts, dx = -dx, m = m), yi)
 
+})
+
+test_that("qinterp and approxdat give the same results", {
+  dat <- tibble(t = seq(0, -10, -.2),
+                y = sin(seq(-2 * pi, 2 * pi, length.out = length(t))))
+  expect_equal(approxdat(dat, "y")((dat$t[6] + dat$t[5]) / 2),
+               qinterp(y = dat$y, ds = dat$t[2] - dat$t[1],
+                       dx = ((dat$t[6] + dat$t[5]) / 2) - dat$t[5],
+                       m = 5))
 })

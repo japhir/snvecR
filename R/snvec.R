@@ -266,7 +266,7 @@ snvec <- function(tend = -1e3,
     cli::cli_warn("Input relative tolerance should be smaller than 1e-3.")
   }
 
-  dat <- get_solution(orbital_solution = orbital_solution)
+  dat <- get_solution(orbital_solution = orbital_solution, quiet = quiet)
 
   if ((sign(tend) != sign(dat$t_ka[2])) || (abs(tend) > max(abs(dat$t_ka)))) {
     cli::cli_abort(c("{.var tend} must fall within orbital solution age.",
@@ -362,8 +362,8 @@ snvec <- function(tend = -1e3,
 
   ## define deSolve parameters
   parameters <- c(
-    ed = ed,
-    td = td,
+    ## ed = ed,
+    ## td = td,
     k0d = k0d,
     wdw = wdw,
     ndn = ndn
@@ -512,7 +512,7 @@ snvec <- function(tend = -1e3,
       ## calculate axial precession
       phi = map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
     ) |>
-    dplyr::ungroup() |>
+    dplyr::ungroup() |> # end rowwise
     dplyr::mutate(
       # normalize to first value of phi
       phi = .data$phi - first(.data$phi),

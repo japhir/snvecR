@@ -37,6 +37,7 @@ approxdat <- function(dat, col) {
 #' @noRd
 qinterp <- function(y, ds, dx, m) {
   # this is needed to make the C output smooth
+  yi <- y[m]
   if (abs(dx) > .Machine$double.eps) {
     if (ds <0) {
       mm <- m - sign(dx)
@@ -44,7 +45,7 @@ qinterp <- function(y, ds, dx, m) {
       mm <- m + sign(dx)
     }
     dy <- y[mm] - y[m]
-    yi <- y[m] + dy * abs(dx) / abs(ds)
+    yi <- yi + dy * abs(dx) / abs(ds)
   }
   return(yi)
 }

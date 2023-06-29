@@ -10,8 +10,8 @@ test_that("test_solution() works", {
                           row.names = c(NA, -2L),
                           class = c("tbl_df", "tbl", "data.frame"))
 
-  expect_error(prepare_solution(data.frame(x = 1, y = 2)))
-  expect_equal(colnames(prepare_solution(ZB18a_head)),
+  expect_error(prepare_solution(data.frame(x = 1, y = 2), quiet = TRUE))
+  expect_equal(colnames(prepare_solution(ZB18a_head, quiet = TRUE)),
                c("t", "t_ka", "age",
                  "aa", "ee", "inc", "lph", "lan", "arp", "mna",
                  "lphu", "lanu",
