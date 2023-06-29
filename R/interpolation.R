@@ -12,8 +12,7 @@
 #' @noRd
 approxdat <- function(dat, col) {
   # I'm not putting any input checks because it's an internal function
-  dat |>
-    dplyr::select(all_of(c("t", col))) |>
+  dat[, c("t", col)] |>
     approxfun(rule = 1)
 }
 

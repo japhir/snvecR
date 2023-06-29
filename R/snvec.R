@@ -362,8 +362,6 @@ snvec <- function(tend = -1e3,
 
   ## define deSolve parameters
   parameters <- c(
-    ## ed = ed,
-    ## td = td,
     k0d = k0d,
     wdw = wdw,
     ndn = ndn
