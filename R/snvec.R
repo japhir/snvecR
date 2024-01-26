@@ -493,7 +493,7 @@ snvec <- function(tend = -1e3,
       nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
 
       # calculate obliquity
-      tmp = pracma::dot(u, nv),
+      tmp = pracma::dot(.data$u, .data$nv),
       ## tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
       # calculate obliquity
       epl = acos(.data$tmp),
