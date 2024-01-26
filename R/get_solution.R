@@ -68,8 +68,8 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
   return(dat)
 }
 
-#' Get a ZB solution
-#'
+# #' Get a ZB solution
+# #'
 #' @param astronomical_solution Character vector with the name of the desired
 #'   solution.
 #' @param quiet Be quiet?
@@ -81,8 +81,8 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 #'   to the cache.
 #' @returns A [tibble][tibble::tibble-package] with the astronomical solution
 #'   input and, in the case of the PT-ZB18a, some preprocessed new columns.
-#' @seealso [prepare_solution()] Processes precession-tilt astronomical
-#'   solution input to include helper columns.
+# #' @seealso [prepare_solution()] Processes precession-tilt astronomical
+# #'   solution input to include helper columns.
 #' @inherit PT_ZB18a references
 # #' @examples
 # #' \donttest{
