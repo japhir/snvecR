@@ -126,7 +126,7 @@ converts all outputs to J2000 if the \code{os_ref_frame} is equal to \code{"HCI"
 does no transformations if it is already in \code{"J2000"}.
 
 For this, it uses \eqn{\Omega_{\odot} = 75.5940}{OMT = 75.5940} and
-\eqn{i_{\odot = 7.155}}{INCT = 7.155} as in Zeebe (2017). You can overwrite
+\eqn{i_{\odot} = 7.155}{INCT = 7.155} as in Zeebe (2017). You can overwrite
 these defaults with \code{os_omt} and \code{os_inct} if desired.
 }
 
@@ -136,7 +136,7 @@ these defaults with \code{os_omt} and \code{os_inct} if desired.
 Note that the different ODE solver algorithm we use (Soetaert et al.,
 2010) means that the R routine returns an evenly-spaced time grid, whereas
 the C-routine has a variable time-step.
-This means we need to explicitly step size (\code{tres}).
+This means we need to explicitly set the stepsize \code{tres}.
 }
 
 \examples{

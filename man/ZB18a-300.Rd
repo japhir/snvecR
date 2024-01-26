@@ -29,4 +29,7 @@ Astronomical Solution ZB18a for the Past 300 Myr
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.
 \emph{Science}, 365(6456), 926–929. \doi{10.1126/science.aax0612}.'
+Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
+astronomical solutions for the Cenozoic era. \emph{Earth and Planetary Science
+Letters}. \doi{10.1016/j.epsl.2022.117595}
 }

@@ -124,6 +124,9 @@ NULL
 #' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 #'   Paleocene–Eocene boundary age constrained by geology and astronomy.
 #'   _Science_, 365(6456), 926–929. \doi{10.1126/science.aax0612}.'
+#' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
+#'   astronomical solutions for the Cenozoic era. _Earth and Planetary Science
+#'   Letters_. \doi{10.1016/j.epsl.2022.117595}
 #' @name ZB18a-300
 #' @aliases ZB18a
 NULL

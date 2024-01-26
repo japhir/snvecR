@@ -57,7 +57,7 @@
 #' does no transformations if it is already in `"J2000"`.
 #'
 #' For this, it uses \eqn{\Omega_{\odot} = 75.5940}{OMT = 75.5940} and
-#' \eqn{i_{\odot = 7.155}}{INCT = 7.155} as in Zeebe (2017). You can overwrite
+#' \eqn{i_{\odot} = 7.155}{INCT = 7.155} as in Zeebe (2017). You can overwrite
 #' these defaults with `os_omt` and `os_inct` if desired.
 #'
 #' @section ODE Solver:
@@ -65,7 +65,7 @@
 #' Note that the different ODE solver algorithm we use (Soetaert et al.,
 #' 2010) means that the R routine returns an evenly-spaced time grid, whereas
 #' the C-routine has a variable time-step.
-#' This means we need to explicitly step size (`tres`).
+#' This means we need to explicitly set the stepsize `tres`.
 #'
 #' @returns `snvec()` returns different output depending on the `outputs` argument.
 #'
