@@ -2,9 +2,9 @@
 % Please edit documentation in R/data.R
 \name{ZB20}
 \alias{ZB20}
-\title{Astronomical Solution ZB20}
+\title{Astronomical Solutions ZB20}
 \description{
-Astronomical Solution ZB20
+Astronomical Solutions ZB20
 }
 \references{
 Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained

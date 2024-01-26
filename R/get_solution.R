@@ -2,8 +2,8 @@
 #'
 # astronomical_solution, quiet, and force are documented in get_ZB
 #' @inheritParams get_ZB
-#' @seealso [get_ZB()]
-#' @inherit ZB18a references
+#' @inherit get_ZB references
+#' @seealso [PT_ZB18a], [ZB17], [ZB18a], [ZB20]
 #' @returns A [tibble][tibble::tibble-package] with the astronomical solution
 #'   (and some preprocessed new columns).
 #' @examples
@@ -18,7 +18,12 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 
   # effectively this is a wrapper that checks only for valid solutions...
   solutions <- c("PT-ZB18a", # the default
+                 # special case to catch ambiguous naming
+                 "ZB18a",
                  "PT-La11", # just to thow an error
+                 # we rely on astrochron to get these for us
+                 "La04", "La10a", "La10b", "La10c", "La10d", "La11",
+                 # we get these ourselves
                  "ZB17a", "ZB17b", "ZB17c", "ZB17d",
                  "ZB17e", "ZB17f", "ZB17h", "ZB17i",
                  "ZB17j", "ZB17k", "ZB17p",
@@ -31,8 +36,16 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
                      "x" = "You've supplied {.q {astronomical_solution}}"))
   }
 
+  if (astronomical_solution == "ZB18a") {
+    cli::cli_abort(c("i" = "There are multiple versions of {.q ZB18a} available.",
+                     "!" = "Please select the one you want:",
+                     "*" = "{.q PT-ZB18a}: for the precession-tilt solutions",
+                     "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Ma",
+"*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Ma"))
+  }
+
   if (astronomical_solution == "PT-La11") {
-    cli::cli_abort(c("i" = "Astronomical solution: La11 currently not supported.",
+    cli::cli_abort(c("i" = "Astronomical solution {.q PT-La11} is not supported.",
                      "!" = "The input OS for snvec must be either in the:",
                      "*" = "Heliocentric inertial reference frame (HCI)",
                      "*" = "Ecliptic reference frame (J2000).",
@@ -42,6 +55,12 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
                      "i" = "Pull requests welcome."))
   }
 
+  if (stringr::str_detect(astronomical_solution,
+                          "^La[0-9][a-z]?")) {
+    dat <- astrochron::getLaskar(
+      sol = stringr::str_to_lower(astronomical_solution)) |>
+      tibble::as_tibble()
+  }
 
   if (astronomical_solution == "PT-ZB18a" ||
         stringr::str_detect(astronomical_solution, "^ZB[0-9][0-9][a-z]")) {
@@ -66,6 +85,7 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 #'   input and, in the case of the PT-ZB18a, some preprocessed new columns.
 #' @seealso [prepare_solution()] Processes precession-tilt astronomical
 #'   solution input to include helper columns.
+#' @inherit PT_ZB18a references
 #' @examples
 #' \donttest{
 #' get_ZBa()

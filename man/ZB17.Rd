@@ -2,9 +2,9 @@
 % Please edit documentation in R/data.R
 \name{ZB17}
 \alias{ZB17}
-\title{Astronomical Solution ZB17}
+\title{Astronomical Solutions ZB17}
 \description{
-Astronomical Solution ZB17
+Astronomical Solutions ZB17
 }
 \references{
 Zeebe, R. E. (2017). Numerical Solutions for the orbital motion of the Solar

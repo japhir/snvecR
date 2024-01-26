@@ -7,8 +7,7 @@
 Astronomical Solution ZB18a
 }
 \references{
-Zeebe, R. E. and Lourens, L. J. (2022). A deep-time dating tool for
-paleo-applications utilizing obliquity and precession cycles: The role of
-dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
-Paleoclimatology}. \doi{10.1029/2021PA004349}
+Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
+Paleocene–Eocene boundary age constrained by geology and astronomy.
+\emph{Science}, 365(6456), 926–929. \doi{10.1126/science.aax0612}.'
 }
