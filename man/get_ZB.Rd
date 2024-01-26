@@ -28,7 +28,7 @@ Get a ZB solution
 }
 \examples{
 \donttest{
-get_ZBa()
+get_ZB()
 }
 }
 \references{

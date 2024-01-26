@@ -86,8 +86,9 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 #' @inherit PT_ZB18a references
 #' @examples
 #' \donttest{
-#' get_ZBa()
+#' get_ZB()
 #' }
+# NOTE: I don't export this anymore.
 get_ZB <- function(astronomical_solution = "PT-ZB18a",
                    quiet = FALSE,
                    force = FALSE) {
