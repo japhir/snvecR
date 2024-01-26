@@ -28,7 +28,7 @@ Defaults to \code{-1000} ka.}
 Defaults to \code{1.0}.}
 
 \item{td}{Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
-to \code{0.0}. # astronomical_solution comes from get_solution}
+to \code{0.0}.}
 
 \item{astronomical_solution}{Character vector with the name of the desired
 solution.}

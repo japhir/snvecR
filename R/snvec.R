@@ -10,18 +10,15 @@
 #' @param ed Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
 #'   Defaults to `1.0`.
 #' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
-#'   to `0.0`. # astronomical_solution comes from get_solution
-
+#'   to `0.0`.
 # inherit astronomical_solution and quiet from get_solution
 #' @inheritParams get_solution
-
 #' @param os_ref_frame Character vector with the reference frame of the astronomical
 #'   solution. Either `"HCI"` for heliocentric inertial reference frame or
 #'   `"J2000"` for ecliptic J2000 reference frame. Defaults to `"HCI"` for
 #'   `HNBody` output.
 #' @param os_omt Longitude of ascending node of the solar equator relative to ECLIPJ2000.
 #' @param os_inct Inclination of the solar equator relative to ECLIPJ2000.
-
 # ODE solver parameters
 #' @param tres Output timestep resolution in thousands of years (kyr). Defaults
 #'   to `-0.4`. To determine the sign, think of from `0` to `tend` by timestep
@@ -33,7 +30,6 @@
 #' @param solver Character vector specifying the method passed to
 #'   [deSolve::ode()]'s `method`. Defaults to `"vode"` for stiff problems with
 #'   a variable timestep.
-
 #' @param output Character vector with name of desired output. One of:
 #'
 #'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
