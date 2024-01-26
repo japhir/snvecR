@@ -51,7 +51,10 @@ prepare_solution <- function(data, quiet = FALSE) {
     if (all(c("t", "a", "e", "i", "om", "oom", "vpi", "mn") %in% colnames(data))) {
       # we're dealing with orbitN output
       cli::cli_alert_info("Renaming astronomical solution columns from orbitN syntax to snvec syntax.")
-      data <- data |> dplyr::rename(ee = e, inc = i, lph = vpi, lan = oom)
+      data <- data |> dplyr::rename(ee = .data$e,
+                                    inc = .data$i,
+                                    lph = .data$vpi,
+                                    lan = .data$oom)
     } else {
       cli::cli_abort(c(
         "Column{?s} {.col {mandatory_cols}} must be present in 'data'.",
