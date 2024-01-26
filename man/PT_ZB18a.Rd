@@ -2,9 +2,10 @@
 % Please edit documentation in R/data.R
 \name{PT_ZB18a}
 \alias{PT_ZB18a}
-\title{Astronomical Solution ZB18a}
+\alias{PT-ZB18a}
+\title{Full Astronomical Solution ZB18a for the past 100 Myr}
 \format{
-\subsection{\code{get_solution("PT_ZB18a")}}{
+\subsection{\code{get_solution("PT-ZB18a")}}{
 
 A data frame with 250,001 rows and 20 columns:
 \describe{
@@ -18,7 +19,7 @@ A data frame with 250,001 rows and 20 columns:
 \item{arp}{Argument of perihelion \eqn{\omega} (degrees).}
 \item{mna}{Mean anomaly \eqn{M} (degrees).}
 
-The following columns were computed from the above input:
+The following columns were computed from the above input with \code{\link[=prepare_solution]{prepare_solution()}}:
 
 \item{lphu}{Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
 jumps).}
@@ -51,15 +52,12 @@ instantaneous orbital plane.}
 \itemize{
 \item All astronomical solutions by Zeebe can be found on
 \url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
-\item The specific one we use here is available at
-\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat}.
+They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 }
 \description{
-The HNBody output of Zeebe & Lourens (2019) after some pre-processing.
-}
-\details{
-The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements} describes what the
+The HNBody output of Zeebe & Lourens (2019) after some pre-processing using
+\code{\link[=prepare_solution]{prepare_solution()}}. The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements} describes what the
 components relate to in order to uniquely specify an orbital plane. The
 function asks to download the files to the user's cache directory so that
 they can be accessed more quickly in the future.

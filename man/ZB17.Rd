@@ -2,9 +2,38 @@
 % Please edit documentation in R/data.R
 \name{ZB17}
 \alias{ZB17}
-\title{Astronomical Solutions ZB17}
+\alias{ZB17a}
+\alias{ZB17b}
+\alias{ZB17c}
+\alias{ZB17d}
+\alias{ZB17e}
+\alias{ZB17f}
+\alias{ZB17h}
+\alias{ZB17i}
+\alias{ZB17j}
+\alias{ZB17k}
+\alias{ZB17p}
+\title{Astronomical Solutions ZB17 for the past 100 Myr}
+\format{
+\subsection{\code{get_solution("ZB17x")}}{
+
+A data frame with 62,501 rows and 3 columns:
+\describe{
+\item{age}{Age in thousands of years before present (ka).}
+\item{ecc}{Eccentricity \eqn{e} (unitless).}
+\item{inc}{Inclination \eqn{I} (degrees).}
+}
+}
+}
+\source{
+\itemize{
+\item All astronomical solutions by Zeebe can be found on
+\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
+They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
+}
+}
 \description{
-Astronomical Solutions ZB17
+Astronomical Solutions ZB17 for the past 100 Myr
 }
 \references{
 Zeebe, R. E. (2017). Numerical Solutions for the orbital motion of the Solar

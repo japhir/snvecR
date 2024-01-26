@@ -2,9 +2,31 @@
 % Please edit documentation in R/data.R
 \name{ZB20}
 \alias{ZB20}
-\title{Astronomical Solutions ZB20}
+\alias{ZB20a}
+\alias{ZB20b}
+\alias{ZB20c}
+\alias{ZB20d}
+\title{Astronomical Solutions ZB20 for the past 300 Myr}
+\format{
+\subsection{\code{get_solution("ZB12x")}}{
+
+A data frame with 187,501 rows and 3 columns:
+\describe{
+\item{age}{Age in thousands of years before present (ka).}
+\item{ee}{Eccentricity \eqn{e} (unitless).}
+\item{inc}{Inclination \eqn{I} (degrees).}
+}
+}
+}
+\source{
+\itemize{
+\item All astronomical solutions by Zeebe can be found on
+\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
+They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
+}
+}
 \description{
-Astronomical Solutions ZB20
+Astronomical Solutions ZB20 for the past 300 Myr
 }
 \references{
 Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
