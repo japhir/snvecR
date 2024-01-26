@@ -65,7 +65,7 @@
 #' Note that the different ODE solver algorithm we use (Soetaert et al.,
 #' 2010) means that the R routine returns an evenly-spaced time grid, whereas
 #' the C-routine has a variable time-step.
-#' We use need more function arguments because of this, because we need to explicitly define the step size (`tres`).
+#' This means we need to explicitly step size (`tres`).
 #'
 #' @returns `snvec()` returns different output depending on the `outputs` argument.
 #'
