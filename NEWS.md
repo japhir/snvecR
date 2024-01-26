@@ -5,8 +5,12 @@
   get_ZB18a() or as the output of [orbitN](https://github.com/rezeebe/orbitN);
   we automatically convert the column names to snvec columns names for
   convenience.
-* Migrate get_ZB18a to get_ZB so that the user can easily get all the Zeebe solutions from the website (and cache them as well).
 * Rename orbital solution to astronomical solution throughout.
+* Migrate get_ZB18a to get_ZB so that the user can easily get all the Zeebe
+  solutions from the website (and cache them as well).
+* Added support for reading all Zeebe astronomical solutions to function
+  get_solution(). Also a added a wrapper for `astrochron::getLaskar()` if the
+  user provides a supported Laskar solution name.
 
 # snvecR 3.7.7
 * Fix CRAN issues by revising the logic for checking the cache.
