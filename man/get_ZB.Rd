@@ -26,11 +26,6 @@ input and, in the case of the PT-ZB18a, some preprocessed new columns.
 \description{
 Get a ZB solution
 }
-\examples{
-\donttest{
-get_ZB()
-}
-}
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 Paleocene–Eocene boundary age constrained by geology and astronomy.

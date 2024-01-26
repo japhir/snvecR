@@ -84,10 +84,10 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 #' @seealso [prepare_solution()] Processes precession-tilt astronomical
 #'   solution input to include helper columns.
 #' @inherit PT_ZB18a references
-#' @examples
-#' \donttest{
-#' get_ZB()
-#' }
+# #' @examples
+# #' \donttest{
+# #' get_ZB()
+# #' }
 # NOTE: I don't export this anymore.
 get_ZB <- function(astronomical_solution = "PT-ZB18a",
                    quiet = FALSE,
