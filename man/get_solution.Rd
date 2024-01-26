@@ -24,11 +24,18 @@ A \link[tibble:tibble-package]{tibble} with the astronomical solution
 (and some preprocessed new columns).
 }
 \description{
-Get an Astronomical Solution
+Download supported astronomical solutions from the web and store it in the
+user's cache directory. The next use of the function will load the data from
+the cache rather than downloading it again. This also provides a wrapper for
+\code{\link[astrochron:getLaskar]{astrochron::getLaskar()}} if one of their supported solutions is specified,
+but converts the output to a \link[tibble:tibble-package]{tibble}. Note that we
+do not cache these solutions locally, however.
 }
 \examples{
 \donttest{
-get_solution()
+get_solution("PT-ZB18a")
+get_solution("ZB20a")
+get_solution("La11")
 }
 }
 \references{

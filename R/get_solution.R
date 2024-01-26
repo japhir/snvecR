@@ -1,5 +1,12 @@
 #' Get an Astronomical Solution
 #'
+#' Download supported astronomical solutions from the web and store it in the
+#' user's cache directory. The next use of the function will load the data from
+#' the cache rather than downloading it again. This also provides a wrapper for
+#' [astrochron::getLaskar()] if one of their supported solutions is specified,
+#' but converts the output to a [tibble][tibble::tibble-package]. Note that we
+#' do not cache these solutions locally, however.
+#'
 # astronomical_solution, quiet, and force are documented in get_ZB
 #' @inheritParams get_ZB
 #' @inherit get_ZB references
@@ -8,7 +15,9 @@
 #'   (and some preprocessed new columns).
 #' @examples
 #' \donttest{
-#' get_solution()
+#' get_solution("PT-ZB18a")
+#' get_solution("ZB20a")
+#' get_solution("La11")
 #' }
 #' @export
 get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, force = FALSE) {
