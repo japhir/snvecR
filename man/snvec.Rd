@@ -79,8 +79,6 @@ If \code{output = "nice"} (the default), returns a
 \itemize{
 \item \code{time} Time \eqn{t} (days).
 \item \code{t_ka} Time in thousands of years (ka).
-\item \code{eei} Astronomical solution's eccentricity \eqn{e}, interpolated to output
-timescale (-).
 \item \code{epl} Calculated Obliquity \eqn{\epsilon} (radians).
 \item \code{phi} Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
 \item \code{cp} Calculated Climatic precession (-) as \eqn{e\sin(\varpi)}.

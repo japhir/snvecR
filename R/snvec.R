@@ -76,9 +76,10 @@
 #'
 #'   * `t_ka` Time in thousands of years (ka).
 #'
-#'   * `eei` Astronomical solution's eccentricity \eqn{e}, interpolated to output
-#'   timescale (-).
-#'
+# I removed this earlier
+# #'   * `eei` Astronomical solution's eccentricity \eqn{e}, interpolated to output
+# #'   timescale (-).
+# #'
 #'   * `epl` Calculated Obliquity \eqn{\epsilon} (radians).
 #'
 #'   * `phi` Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
