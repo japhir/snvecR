@@ -131,7 +131,7 @@
 #' * [deSolve::ode()] from Soetaert et al., (2010) for the ODE solver that we
 #'   use.
 #'
-#' * [get_ZB18a()] Documents the default orbital solution input.
+#' * [get_ZB()] Documents the default astronomical solution input.
 #'
 #' * [get_solution()] A general function that in the future may be used to get
 #'   other astronomical solutions.
@@ -167,7 +167,7 @@
 #' # default call
 #' \donttest{
 #' snvec()
-#' # remove the directory with the cached orbital solution to clean up
+#' # remove the directory with the cached astronomical solution to clean up
 #' unlink(tools::R_user_dir("snvecR", which = "cache"), recursive = TRUE)
 #' }
 #' @export

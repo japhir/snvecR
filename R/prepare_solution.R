@@ -11,9 +11,9 @@
 #' * `lan` Longitude of the ascending node \eqn{\Omega} (degrees).
 #' * `inc` Inclination \eqn{I} (degrees).
 # inherit quiet
-#' @inheritParams get_ZB18a
+#' @inheritParams get_ZB
 #' @returns A [tibble][tibble::tibble-package] with the new columns added.
-#' @seealso [get_ZB18a()] [get_solution()]
+#' @seealso [get_ZB()] [get_solution()]
 #'
 #' @details
 #' New columns include:

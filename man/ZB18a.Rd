@@ -2,7 +2,6 @@
 % Please edit documentation in R/data.R
 \name{ZB18a}
 \alias{ZB18a}
-\alias{get_ZB18a}
 \title{Astronomical Solution ZB18a}
 \description{
 Astronomical Solution ZB18a

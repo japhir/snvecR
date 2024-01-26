@@ -8,8 +8,8 @@
 #' The wikipedia page on [Orbital
 #' elements](https://en.wikipedia.org/wiki/Orbital_elements) describes what the
 #' components relate to in order to uniquely specify an orbital plane. The
-#' function asks to download the files to the user's cache directory so that they
-#' can be accessed more quickly in the future.
+#' function asks to download the files to the user's cache directory so that
+#' they can be accessed more quickly in the future.
 #'
 #' @format ## `ZB18a`
 #' A data frame with 250,001 rows and 20 columns:
@@ -68,5 +68,34 @@
 #' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
 #'   Paleocene–Eocene boundary age constrained by geology and astronomy.
 #'   _Science_, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
+#' @name PT-ZB18a
+NULL
+
+#' Astronomical Solution ZB17
+#'
+#' @references
+#' Zeebe, R. E. (2017). Numerical Solutions for the orbital motion of the Solar
+#'   System over the Past 100 Myr: Limits and new results. _The Astronomical
+#'   Journal_. \doi{10.3847/1538-3881/aa8cce}
+#' @name ZB17
+NULL
+
+#' Astronomical Solution ZB18a
+#'
+#' @references
+#' Zeebe, R. E. and Lourens, L. J. (2022). A deep-time dating tool for
+#'   paleo-applications utilizing obliquity and precession cycles: The role of
+#'   dynamical ellipticity and tidal dissipation. _Paleoceanography and
+#'   Paleoclimatology_. \doi{10.1029/2021PA004349}
 #' @name ZB18a
+NULL
+
+#' Astronomical Solution ZB20
+#'
+#' @references
+#'
+#' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
+#'   astronomical solutions for the Cenozoic era. _Earth and Planetary Science
+#'   Letters_. \doi{10.1016/j.epsl.2022.117595}
+#' @name ZB20
 NULL
