@@ -131,10 +131,7 @@
 #' * [deSolve::ode()] from Soetaert et al., (2010) for the ODE solver that we
 #'   use.
 #'
-#' * [get_ZB()] Documents the default astronomical solution input.
-#'
-#' * [get_solution()] A general function that in the future may be used to get
-#'   other astronomical solutions.
+#' * [get_solution()] Get astronomical solutions.
 #'
 #' @references
 #'
