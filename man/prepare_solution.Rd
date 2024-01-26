@@ -14,7 +14,7 @@ prepare_solution(data, quiet = FALSE)
 \item \code{lph} Longitude of perihelion \eqn{\varpi} (degrees).
 \item \code{lan} Longitude of the ascending node \eqn{\Omega} (degrees).
 \item \code{inc} Inclination \eqn{I} (degrees).
-The easiest way to get this is with \link{get_solution("PT-ZB18a")}
+The easiest way to get this is with \code{\link[=get_solution]{get_solution()}}.
 }}
 
 \item{quiet}{Be quiet?

@@ -10,7 +10,7 @@
 #' * `lph` Longitude of perihelion \eqn{\varpi} (degrees).
 #' * `lan` Longitude of the ascending node \eqn{\Omega} (degrees).
 #' * `inc` Inclination \eqn{I} (degrees).
-#' The easiest way to get this is with [get_solution("PT-ZB18a")]
+#' The easiest way to get this is with [get_solution()].
 # inherit quiet
 #' @inheritParams get_ZB
 #' @returns A [tibble][tibble::tibble-package] with the new columns added.
