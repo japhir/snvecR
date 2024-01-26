@@ -210,7 +210,7 @@ these defaults with <code>os_omt</code> and <code>os_inct</code> if desired.</p>
 <p>Note that the different ODE solver algorithm we use (Soetaert et al.,
 2010) means that the R routine returns an evenly-spaced time grid, whereas
 the C-routine has a variable time-step.
-We use need more function arguments because of this, because we need to explicitly define the step size (<code>tres</code>).</p>
+This means we need to explicitly step size (<code>tres</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
@@ -269,15 +269,15 @@ use.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `atol` = <span style="color: #0000BB;">1e-05</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `rtol` = <span style="color: #0000BB;">0</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `solver` = <span style="color: #0000BB;">"vode"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-01-26 13:50:57.264939"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-01-26 13:55:04.299367"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: <span style="color: #0000BB;">0.404184487124565</span>, <span style="color: #0000BB;">-0.0537555129057148</span>, and <span style="color: #0000BB;">0.913036138471423</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: <span style="color: #0000BB;">-5.51290422495798e-05</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: <span style="color: #0000BB;">0.413060472710089</span> rad</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: <span style="color: #0000BB;">-0.562357122261026</span> rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-01-26 13:50:58.604147"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">1.34s</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-01-26 13:55:05.651499"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">1.35s</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 5</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        time  t_ka   epl    phi     cp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
