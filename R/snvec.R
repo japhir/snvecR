@@ -215,6 +215,12 @@ snvec <- function(tend = -1e3,
                     "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."))
   }
 
+  if (!"data.frame" %in% class(astronomical_solution) &&
+        !grepl("^TD-", astronomical_solution)) {
+    cli::cli_abort(c("Astronomical Solution must contain all orbital parameters",
+                     "i" = "Did you mean to specify {.q TD-ZB18a}?"))
+  }
+
   hci_refs <- c("heliocentric intertial", "HCI")
   j2000_refs <- c("ecliptic", "ECLIPJ2000", "J2000")
   if (!os_ref_frame %in% c(hci_refs, j2000_refs)) {
