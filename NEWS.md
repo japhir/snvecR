@@ -1,4 +1,4 @@
-# snvecR (development version)
+# snvecR 3.8.0
 * Fix snapshot tests for CI (overwrite the cache dir, which is unique to each test).
 * Make it possible for the user to specify a custom orbital solution as a
   data.frame. It should either have the same column names as the output of
