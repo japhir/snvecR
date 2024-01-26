@@ -55,15 +55,13 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
                      "i" = "Pull requests welcome."))
   }
 
-  if (stringr::str_detect(astronomical_solution,
-                          "^La[0-9][a-z]?")) {
-    dat <- astrochron::getLaskar(
-      sol = stringr::str_to_lower(astronomical_solution)) |>
+  if (grepl("^La[0-9][a-z]?", astronomical_solution)) {
+    dat <- astrochron::getLaskar(sol = tolower(astronomical_solution)) |>
       tibble::as_tibble()
   }
 
   if (astronomical_solution == "PT-ZB18a" ||
-        stringr::str_detect(astronomical_solution, "^ZB[0-9][0-9][a-z]")) {
+        grepl("^ZB[0-9][0-9][a-z]", astronomical_solution)) {
     dat <- get_ZB(astronomical_solution, quiet = quiet, force = force)
   }
 
@@ -113,12 +111,12 @@ get_ZB <- function(astronomical_solution = "PT-ZB18a",
                        "inc") # inclination
   }
   # different URLs for different solutions
-  if (stringr::str_detect(astronomical_solution, "^ZB1[78][a-z](-100)?$")) {
+  if (grepl("^ZB1[78][a-z](-100)?$", astronomical_solution)) {
     # 17 and 18 are stored in the root directory
-    url <- glue::glue("{base_url}{stringr::str_replace(astronomical_solution, '-100', '')}.dat")
-  } else if (stringr::str_detect(astronomical_solution, "^ZB[0-9][0-9][a-z](-300)?$")){
+    url <- glue::glue("{base_url}{gsub('-100', '', astronomical_solution)}.dat")
+  } else if (grepl("^ZB[0-9][0-9][a-z](-300)?$", astronomical_solution)){
     # ZB20 is stored in 300Myr subdirectory
-    url <- glue::glue("{base_url}300Myr/{stringr::str_replace(astronomical_solution, '-300', '')}.dat")
+    url <- glue::glue("{base_url}300Myr/{gsub('-300', '', astronomical_solution)}.dat")
   }
 
   # where will we save our cached results?
