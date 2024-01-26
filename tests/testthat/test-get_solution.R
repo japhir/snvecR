@@ -1,6 +1,6 @@
 test_that("get_solution() inputs are checked", {
   expect_error(get_solution(astronomical_solution = "hoi"))
-  expect_error(get_solution(astronomical_solution = "La11"))
+  expect_error(get_solution(astronomical_solution = "PT-La11"))
   expect_error(get_solution(astronomical_solution = data.frame(x = 1, y = 5))) # this runs via prepare_solution
 })
 
