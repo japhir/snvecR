@@ -130,7 +130,7 @@ NULL
 
 #' Astronomical Solutions ZB20 for the past 300 Myr
 #'
-#' @format ## `get_solution("ZB12x")`
+#' @format ## `get_solution("ZB20x")`
 #' A data frame with 187,501 rows and 3 columns:
 #' \describe{
 #'   \item{age}{Age in thousands of years before present (ka).}
