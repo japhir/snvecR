@@ -8,7 +8,7 @@ snvec(
   tend = -1000,
   ed = 1,
   td = 0,
-  orbital_solution = "ZB18a",
+  astronomical_solution = "PT-ZB18a",
   os_ref_frame = "HCI",
   os_omt = NULL,
   os_inct = NULL,
@@ -28,14 +28,14 @@ Defaults to \code{-1000} ka.}
 Defaults to \code{1.0}.}
 
 \item{td}{Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
-to \code{0.0}. # orbital_solution comes from get_solution}
+to \code{0.0}. # astronomical_solution comes from get_solution}
 
-\item{orbital_solution}{Character vector with the name of the orbital
-solution to use or a \code{data.frame} with a custom orbital solution.
-One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
-or \code{"La11"} (not yet implemented!).}
+\item{astronomical_solution}{Character vector with the name of the
+astronomical solution to use or a \code{data.frame} with a custom astronomical
+solution. One of \code{"PT-ZB18a"} (default) from Zeebe and Lourens (2019),
+or ZB17\link{a-p} from Zeebe 2017, or ZB20\link{a-d} from Zeebe and Lourens (2022).}
 
-\item{os_ref_frame}{Character vector with the reference frame of the orbital
+\item{os_ref_frame}{Character vector with the reference frame of the astronomical
 solution. Either \code{"HCI"} for heliocentric inertial reference frame or
 \code{"J2000"} for ecliptic J2000 reference frame. Defaults to \code{"HCI"} for
 \code{HNBody} output.}
@@ -81,7 +81,7 @@ If \code{output = "nice"} (the default), returns a
 \itemize{
 \item \code{time} Time \eqn{t} (days).
 \item \code{t_ka} Time in thousands of years (ka).
-\item \code{eei} Orbital solution's eccentricity \eqn{e}, interpolated to output
+\item \code{eei} Astronomical solution's eccentricity \eqn{e}, interpolated to output
 timescale (-).
 \item \code{epl} Calculated Obliquity \eqn{\epsilon} (radians).
 \item \code{phi} Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
@@ -107,7 +107,7 @@ is an object of class \code{deSolve} and \code{matrix}, with columns \code{time}
 }
 \description{
 \code{snvec()} computes climatic precession and obliquity (or tilt) from an
-orbital solution (OS) input and input values for dynamical ellipticity
+astronomical solution (AS) input and input values for dynamical ellipticity
 (\eqn{E_{d}}{Ed}) and tidal dissipation (\eqn{T_{d}}{Td}). It solves a set
 of ordinary differential equations.
 }
@@ -116,12 +116,12 @@ This is a re-implementation of the C-code in the supplementary
 information of Zeebe & Lourens (2022). The terms are explained in detail
 in Zeebe (2022).
 }
-\section{Reference Frames of Orbital Solutions}{
+\section{Reference Frames of Astronomical Solutions}{
 
 
 NASA provides their asteroid and planet positions in the ecliptic J2000
-reference frame, while long-term orbital solution integrations are often
-performed in the heliocentric inertial reference frame (HCI) or in the
+reference frame, while long-term astronomical solution integrations are
+often performed in the heliocentric inertial reference frame (HCI) or in the
 inertial reference frame. This is to align the reference frame with the spin
 vector of the Sun, making J2 corrections intuitive to implement.
 
@@ -147,7 +147,7 @@ We use need more function arguments because of this, because we need to explicit
 # default call
 \donttest{
 snvec()
-# remove the directory with the cached orbital solution to clean up
+# remove the directory with the cached astronomical solution to clean up
 unlink(tools::R_user_dir("snvecR", which = "cache"), recursive = TRUE)
 }
 }
@@ -181,8 +181,8 @@ Software, 33(9), 1–25. \doi{10.18637/jss.v033.i09}.
 \itemize{
 \item \code{\link[deSolve:ode]{deSolve::ode()}} from Soetaert et al., (2010) for the ODE solver that we
 use.
-\item \code{\link[=get_ZB18a]{get_ZB18a()}} Documents the default orbital solution input.
+\item \code{\link[=get_ZB]{get_ZB()}} Documents the default astronomical solution input.
 \item \code{\link[=get_solution]{get_solution()}} A general function that in the future may be used to get
-other orbital solutions.
+other astronomical solutions.
 }
 }

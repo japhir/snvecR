@@ -1,7 +1,7 @@
 #' Calculate Earth’s Obliquity and Precession in the Past
 #'
 #' `snvec()` computes climatic precession and obliquity (or tilt) from an
-#' orbital solution (OS) input and input values for dynamical ellipticity
+#' astronomical solution (AS) input and input values for dynamical ellipticity
 #' (\eqn{E_{d}}{Ed}) and tidal dissipation (\eqn{T_{d}}{Td}). It solves a set
 #' of ordinary differential equations.
 #'
@@ -10,12 +10,12 @@
 #' @param ed Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
 #'   Defaults to `1.0`.
 #' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
-#'   to `0.0`. # orbital_solution comes from get_solution
+#'   to `0.0`. # astronomical_solution comes from get_solution
 
-# inherit orbital_solution and quiet from get_solution
+# inherit astronomical_solution and quiet from get_solution
 #' @inheritParams get_solution
 
-#' @param os_ref_frame Character vector with the reference frame of the orbital
+#' @param os_ref_frame Character vector with the reference frame of the astronomical
 #'   solution. Either `"HCI"` for heliocentric inertial reference frame or
 #'   `"J2000"` for ecliptic J2000 reference frame. Defaults to `"HCI"` for
 #'   `HNBody` output.
@@ -48,11 +48,11 @@
 #'   information of Zeebe & Lourens (2022). The terms are explained in detail
 #'   in Zeebe (2022).
 #'
-#' @section Reference Frames of Orbital Solutions:
+#' @section Reference Frames of Astronomical Solutions:
 #'
 #' NASA provides their asteroid and planet positions in the ecliptic J2000
-#' reference frame, while long-term orbital solution integrations are often
-#' performed in the heliocentric inertial reference frame (HCI) or in the
+#' reference frame, while long-term astronomical solution integrations are
+#' often performed in the heliocentric inertial reference frame (HCI) or in the
 #' inertial reference frame. This is to align the reference frame with the spin
 #' vector of the Sun, making J2 corrections intuitive to implement.
 #'
@@ -80,7 +80,7 @@
 #'
 #'   * `t_ka` Time in thousands of years (ka).
 #'
-#'   * `eei` Orbital solution's eccentricity \eqn{e}, interpolated to output
+#'   * `eei` Astronomical solution's eccentricity \eqn{e}, interpolated to output
 #'   timescale (-).
 #'
 #'   * `epl` Calculated Obliquity \eqn{\epsilon} (radians).
@@ -134,7 +134,7 @@
 #' * [get_ZB18a()] Documents the default orbital solution input.
 #'
 #' * [get_solution()] A general function that in the future may be used to get
-#'   other orbital solutions.
+#'   other astronomical solutions.
 #'
 #' @references
 #'
@@ -174,7 +174,7 @@
 snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
-                  orbital_solution = "ZB18a",
+                  astronomical_solution = "PT-ZB18a",
                   os_ref_frame = "HCI",
                   os_omt = NULL, os_inct = NULL,
                   tres = -0.4,
@@ -266,11 +266,11 @@ snvec <- function(tend = -1e3,
     cli::cli_warn("Input relative tolerance should be smaller than 1e-3.")
   }
 
-  dat <- get_solution(orbital_solution = orbital_solution, quiet = quiet)
+  dat <- get_solution(astronomical_solution = astronomical_solution, quiet = quiet)
 
   if ((sign(tend) != sign(dat$t_ka[2])) || (abs(tend) > max(abs(dat$t_ka)))) {
-    cli::cli_abort(c("{.var tend} must fall within orbital solution age.",
-                     "i" = "The orbital solution {sign(dat$t_ka[2])*max(abs(dat$t_ka))}.",
+    cli::cli_abort(c("{.var tend} must fall within astronomical solution age.",
+                     "i" = "The astronomical solution {sign(dat$t_ka[2])*max(abs(dat$t_ka))}.",
                      "x" = "{.var tend} = {tend}."
                      ))
   }
@@ -287,7 +287,7 @@ snvec <- function(tend = -1e3,
       "*" = "{.var tend} = {.val {tend}} ka",
       "*" = "{.var ed} = {.val {ed}}",
       "*" = "{.var td} = {.val {td}}",
-      "*" = "{.var orbital_solution} = {.val {if ('data.frame' %in% class(orbital_solution)) 'user provided' else orbital_solution}}",
+      "*" = "{.var astronomical_solution} = {.val {if ('data.frame' %in% class(astronomical_solution)) 'user provided' else astronomical_solution}}",
       "*" = "{.var os_ref_frame} = {.val {os_ref_frame}}",
       "*" = "{.var os_omt} = {if (is.null(os_omt)) 'defaulting to' else ''} {.val {OMT}}",
       "*" = "{.var os_inct} = {if (is.null(os_inct)) 'defaulting to' else ''} {.val {INCT}}",
@@ -372,9 +372,9 @@ snvec <- function(tend = -1e3,
   # derivatives. RHS of DEQs for spin vector s = y
   eqns <- function(t, state, parameters) {
     with(as.list(c(state, parameters)), {
-      # the the index of the current timestep in the orbital solution
+      # the the index of the current timestep in the astronomical solution
       m <- min(round(abs(t / dts) + 1), nrow(dat))
-      # quickly interpolate orbital solution input value at the current
+      # quickly interpolate astronomical solution input value at the current
       # timestep
       dx <- t - dat$t[m]
 
@@ -464,7 +464,7 @@ snvec <- function(tend = -1e3,
     return(out)
   }
 
-  ## interpolate the full orbital solution onto output timescale
+  ## interpolate the full astronomical solution onto output timescale
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(

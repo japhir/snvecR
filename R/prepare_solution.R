@@ -1,6 +1,6 @@
-#' Prepare Orbital Solution
+#' Prepare Astronomical Solution
 #'
-#' Calculates helper columns from an orbital solution input.
+#' Calculates helper columns from an astronomical solution input.
 #'
 #' @export
 #' @param data The output of [get_solution()].
@@ -50,7 +50,7 @@ prepare_solution <- function(data, quiet = FALSE) {
   if (!all(mandatory_cols %in% colnames(data))) {
     if (all(c("t", "a", "e", "i", "om", "oom", "vpi", "mn") %in% colnames(data))) {
       # we're dealing with orbitN output
-      cli::cli_alert_info("Renaming orbital solution columns from orbitN syntax to snvec syntax.")
+      cli::cli_alert_info("Renaming astronomical solution columns from orbitN syntax to snvec syntax.")
       data <- data |> dplyr::rename(ee = e, inc = i, lph = vpi, lan = oom)
     } else {
       cli::cli_abort(c(

@@ -1,16 +1,16 @@
 test_that("snvec() inputs are checked", {
-  # we test the orbital_solution inputs for the get_solution helper in stead
+  # we test the astronomical_solution inputs for the get_solution helper in stead
   expect_error(snvec(tend = -Inf, quiet = TRUE))
   expect_error(snvec(tres = -Inf, quiet = TRUE))
   expect_error(snvec(tend = -1000, tres = 0.4, quiet = TRUE))
   expect_error(snvec(tend = 1000, tres = -0.4, quiet = TRUE))
-  expect_error(snvec(tend = 1000, tres = 0.4, orbital_solution = "ZB18a", quiet = TRUE))
+  expect_error(snvec(tend = 1000, tres = 0.4, astronomical_solution = "PT-ZB18a", quiet = TRUE))
   expect_error(snvec(tend = -1000, tres = -0.4, quiet = TRUE,
-                     orbital_solution = get_solution("ZB18a", quiet = TRUE) |>
+                     astronomical_solution = get_solution("PT-ZB18a", quiet = TRUE) |>
                        mutate(t = -t, t_ka = -t_ka)))
   expect_error(snvec(output = "banaan", quiet = TRUE))
   expect_error(snvec(solver = "banaan", quiet = TRUE))
-  expect_error(snvec(orbital_solution = "hoi", quiet = TRUE)) # same as get_solution
+  expect_error(snvec(astronomical_solution = "hoi", quiet = TRUE)) # same as get_solution
   expect_error(snvec(os_ref_frame = "hoi", quiet = TRUE))
   expect_error(snvec(os_ref_frame = "J2000", os_omt = 5, quiet = TRUE))
   expect_error(snvec(os_ref_frame = "J2000", os_inct = 7, quiet = TRUE))

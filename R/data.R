@@ -1,7 +1,7 @@
-# document the orbital solutions
+# document the astronomical solutions
 # we now cache them locally, so I document them with @name and return type NULL.
 
-#' Orbital Solution ZB18a
+#' Astronomical Solution ZB18a
 #'
 #' The HNBody output of Zeebe & Lourens (2019).
 #'
@@ -57,7 +57,7 @@
 #' }
 #' @source
 #'
-#' * All orbital solutions by Zeebe can be found on
+#' * All astronomical solutions by Zeebe can be found on
 #'   <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html>.
 #'
 #' * The specific one we use here is available at

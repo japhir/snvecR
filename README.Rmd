@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 [![Launch binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/japhir/snvecR/main)
 <!-- badges: end -->
 
-Easily calculate precession and obliquity from an orbital solution (OS,
+Easily calculate precession and obliquity from an astronomical solution (AS,
 defaults to ZB18a from Zeebe and Lourens (2019)) and assumed or reconstructed
 values for tidal dissipation (T<sub>d</sub>) and dynamical ellipticity
 (E<sub>d</sub>). This is a translation and adaptation of the C-code in the
@@ -71,8 +71,9 @@ solution |>
   scale_x_reverse() +
   # plot climatic precession
   geom_line(aes(colour = "Climatic Precession")) +
-  # add the (interpolated) eccentricity envelope
-  geom_line(aes(y = eei, colour = "Eccentricity")) +
+  # add the eccentricity envelope
+  geom_line(aes(y = ee, colour = "Eccentricity"),
+            data = get_solution() |> dplyr::filter(t_ka > -1000)) +
   scale_color_discrete(type = c("skyblue", "black")) +
   theme(legend.pos = c(.9, .95))
 ```

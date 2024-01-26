@@ -2,7 +2,7 @@
 % Please edit documentation in R/prepare_solution.R
 \name{prepare_solution}
 \alias{prepare_solution}
-\title{Prepare Orbital Solution}
+\title{Prepare Astronomical Solution}
 \usage{
 prepare_solution(data, quiet = FALSE)
 }
@@ -26,7 +26,7 @@ It needs to contain columns:
 A \link[tibble:tibble-package]{tibble} with the new columns added.
 }
 \description{
-Calculates helper columns from an orbital solution input.
+Calculates helper columns from an astronomical solution input.
 }
 \details{
 New columns include:
@@ -49,5 +49,5 @@ instantaneous orbital plane.
 }
 }
 \seealso{
-\code{\link[=get_ZB18a]{get_ZB18a()}} \code{\link[=get_solution]{get_solution()}}
+\code{\link[=get_ZB]{get_ZB()}} \code{\link[=get_solution]{get_solution()}}
 }

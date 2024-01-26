@@ -1,4 +1,4 @@
-#' Get an Orbital Solution
+#' Get an Astronomical Solution
 #'
 #' @param orbital_solution Character vector with the name of the orbital
 #'   solution to use or a `data.frame` with a custom orbital solution.
@@ -15,9 +15,9 @@
 #' get_solution()
 #' }
 #' @export
-get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE) {
-  if ("data.frame" %in% class(orbital_solution)) {
-    return(prepare_solution(orbital_solution, quiet = quiet))
+get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, force = FALSE) {
+  if ("data.frame" %in% class(astronomical_solution)) {
+    return(prepare_solution(astronomical_solution, quiet = quiet))
   }
 
   solutions <- c("ZB18a", "La11")
@@ -30,9 +30,9 @@ get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALS
     # read in the (new?) cached result
     dat <- get_ZB18a(quiet = quiet, force = force)
   }
-  if (orbital_solution == "La11") {
-    ## dat <- snvecR::La11
-    cli::cli_abort(c("i" = "Orbital solution: La11 currently not supported.",
+
+  if (astronomical_solution == "PT-La11") {
+    cli::cli_abort(c("i" = "Astronomical solution: La11 currently not supported.",
                      "!" = "The input OS for snvec must be either in the:",
                      "*" = "Heliocentric inertial reference frame (HCI)",
                      "*" = "Ecliptic reference frame (J2000).",
@@ -42,11 +42,14 @@ get_solution <- function(orbital_solution = "ZB18a", quiet = FALSE, force = FALS
                      "i" = "Pull requests welcome."))
   }
 
+
   return(dat)
 }
 
-#' Get the ZB18a solution
+#' Get a ZB solution
 #'
+#' @param astronomical_solution Character vector with the name of the desired
+#'   solution.
 #' @param quiet Be quiet?
 #'
 #'   * If `TRUE`, hide info messages.

@@ -5,6 +5,7 @@
   get_ZB18a() or as the output of [orbitN](https://github.com/rezeebe/orbitN);
   we automatically convert the column names to snvec columns names for
   convenience.
+* Rename orbital solution to astronomical solution throughout.
 
 # snvecR 3.7.7
 * Fix CRAN issues by revising the logic for checking the cache.

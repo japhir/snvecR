@@ -26,10 +26,10 @@ library(snvecR)  # this package
 
 # Introduction
 
-The function `snvec()` uses some of the parameters of a full orbital solution
-(OS) such as ZB18a from Zeebe and Lourens (2019) in combination with values for
-tidal dissipation (T<sub>d</sub>) and dynamical ellipticity (E<sub>d</sub>) to
-calculate precession and obliquity (or tilt).
+The function `snvec()` uses some of the parameters of a full astronomical
+solution (AS) such as ZB18a from Zeebe and Lourens (2019) in combination with
+values for tidal dissipation (T<sub>d</sub>) and dynamical ellipticity
+(E<sub>d</sub>) to calculate precession and obliquity (or tilt).
 
 In this vignette we show how we would go about using `snvec()` for a range of
 input values.

@@ -2,15 +2,15 @@
 % Please edit documentation in R/get_solution.R
 \name{get_solution}
 \alias{get_solution}
-\title{Get an Orbital Solution}
+\title{Get an Astronomical Solution}
 \usage{
-get_solution(orbital_solution = "ZB18a", quiet = FALSE, force = FALSE)
+get_solution(astronomical_solution = "PT-ZB18a", quiet = FALSE, force = FALSE)
 }
 \arguments{
-\item{orbital_solution}{Character vector with the name of the orbital
-solution to use or a \code{data.frame} with a custom orbital solution.
-One of \code{"ZB18a"} (default) from Zeebe and Lourens (2019),
-or \code{"La11"} (not yet implemented!).}
+\item{astronomical_solution}{Character vector with the name of the
+astronomical solution to use or a \code{data.frame} with a custom astronomical
+solution. One of \code{"PT-ZB18a"} (default) from Zeebe and Lourens (2019),
+or ZB17\link{a-p} from Zeebe 2017, or ZB20\link{a-d} from Zeebe and Lourens (2022).}
 
 \item{quiet}{Be quiet?
 \itemize{
@@ -22,11 +22,11 @@ or \code{"La11"} (not yet implemented!).}
 to the cache.}
 }
 \value{
-\code{get_solution()} returns a \link[tibble:tibble-package]{tibble} with
-the orbital solution input and some preprocessed new columns.
+A \link[tibble:tibble-package]{tibble} with
+the astronomical solution (and some preprocessed new columns).
 }
 \description{
-Get an Orbital Solution
+Get an Astronomical Solution
 }
 \examples{
 \donttest{
@@ -34,10 +34,11 @@ get_solution()
 }
 }
 \references{
-Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
-Paleocene–Eocene boundary age constrained by geology and astronomy.
-\emph{Science}, 365(6456), 926–929. \doi{10.1126/science.aax0612}.
+Zeebe, R. E. and Lourens, L. J. (2022). A deep-time dating tool for
+paleo-applications utilizing obliquity and precession cycles: The role of
+dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
+Paleoclimatology}. \doi{10.1029/2021PA004349}
 }
 \seealso{
-\code{\link[=get_ZB18a]{get_ZB18a()}}
+\code{\link[=get_ZB]{get_ZB()}}
 }

@@ -72,7 +72,7 @@ test_that("qinterp() works", {
   ee <- c(0.016705450449544, 0.016854305837952, 0.017066750754228, 0.017191712714982)
   # desired timesteps
   tmv <- c(0.000000000000000, -137939.394901296764147, -276729.110959491459653, -414382.313519898743834)
-  # change in timestep in input orbital solution
+  # change in timestep in input astronomical solution
   dts <- ts[2] - ts[1]
   # diff between desired time and os time
   ## dx <- tmv[2] - ts[2]
