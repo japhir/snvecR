@@ -147,7 +147,12 @@ expanded |>
   facet_grid(rows = vars(Td)) +
   geom_line() +
   # add eccentricity
-  geom_line(aes(y = eei), colour = "black")
+  geom_line(aes(y = ee),
+            linetype = "solid",
+            colour = "black",
+            data = get_solution() |>
+              filter(t_ka > -1000) |>
+              filter(t_ka < -500))
 ```
 
 Now the analysis can begin!
