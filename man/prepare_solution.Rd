@@ -7,13 +7,14 @@
 prepare_solution(data, quiet = FALSE)
 }
 \arguments{
-\item{data}{The output of \code{\link[=get_solution]{get_solution()}}.
-It needs to contain columns:
+\item{data}{A data frame with the following columns:
 \itemize{
 \item \code{t} Time \eqn{t} (days).
+\item \code{ee} Eccentricity \eqn{e} (unitless).
 \item \code{lph} Longitude of perihelion \eqn{\varpi} (degrees).
 \item \code{lan} Longitude of the ascending node \eqn{\Omega} (degrees).
 \item \code{inc} Inclination \eqn{I} (degrees).
+The easiest way to get this is with \link{get_solution("PT-ZB18a")}
 }}
 
 \item{quiet}{Be quiet?
