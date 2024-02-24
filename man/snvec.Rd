@@ -31,7 +31,7 @@ Defaults to \code{1.0}.}
 to \code{0.0}.}
 
 \item{astronomical_solution}{Character vector with the name of the desired
-solution.}
+solution. Defaults to \code{"PT-ZB18a"}.}
 
 \item{os_ref_frame}{Character vector with the reference frame of the astronomical
 solution. Either \code{"HCI"} for heliocentric inertial reference frame or

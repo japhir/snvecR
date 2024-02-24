@@ -8,7 +8,7 @@ get_solution(astronomical_solution = "PT-ZB18a", quiet = FALSE, force = FALSE)
 }
 \arguments{
 \item{astronomical_solution}{Character vector with the name of the desired
-solution.}
+solution. Defaults to \code{"PT-ZB18a"}.}
 
 \item{quiet}{Be quiet?
 \itemize{

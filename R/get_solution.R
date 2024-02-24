@@ -80,7 +80,7 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 # #' Get a ZB solution
 # #'
 #' @param astronomical_solution Character vector with the name of the desired
-#'   solution.
+#'   solution. Defaults to `"PT-ZB18a"`.
 #' @param quiet Be quiet?
 #'
 #'   * If `TRUE`, hide info messages.
