@@ -9,13 +9,14 @@ prepare_solution(data, quiet = FALSE)
 \arguments{
 \item{data}{A data frame with the following columns:
 \itemize{
-\item \code{t} Time \eqn{t} (days).
+\item \code{t} Time \eqn{t}{t} (days).
 \item \code{ee} Eccentricity \eqn{e} (unitless).
 \item \code{lph} Longitude of perihelion \eqn{\varpi} (degrees).
 \item \code{lan} Longitude of the ascending node \eqn{\Omega} (degrees).
 \item \code{inc} Inclination \eqn{I} (degrees).
-The easiest way to get this is with \code{\link[=get_solution]{get_solution()}}.
-}}
+}
+
+The easiest way to get this is with \code{\link[=get_solution]{get_solution()}}.}
 
 \item{quiet}{Be quiet?
 \itemize{

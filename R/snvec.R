@@ -84,14 +84,14 @@
 #'
 #'   * `phi` Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
 #'
-#'   * `cp` Calculated Climatic precession (-) as \eqn{e\sin(\varpi)}.
+#'   * `cp` Calculated Climatic precession (-) as \eqn{e\sin\bar{\omega}}.
 #'
-#' where \eqn{\varpi} is the longitude of perihelion relative to the moving equinox.
+#' where \eqn{\bar{\omega}} is the longitude of perihelion relative to the moving equinox.
 #'
 #' If `output = "all"` (for developers), additional columns are included,
 #' typically interpolated to output timescale.
 #'
-#'   * `sx`, `sy`, `sz` The \eqn{x}, \eqn{y}, and \eqn{z}-components of Earth's
+#'   * `sx`, `sy`, `sz` The \eqn{x}{s}, \eqn{y}, and \eqn{z}-components of Earth's
 #'   spin axis unit vector \eqn{\vec{s}}{s} in the heliocentric inertial
 #'   reference frame.
 #   this one is in HCI

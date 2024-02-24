@@ -5,11 +5,12 @@
 #' @export
 #' @param data A data frame with the following columns:
 #'
-#' * `t` Time \eqn{t} (days).
+#' * `t` Time \eqn{t}{t} (days).
 #' * `ee` Eccentricity \eqn{e} (unitless).
 #' * `lph` Longitude of perihelion \eqn{\varpi} (degrees).
 #' * `lan` Longitude of the ascending node \eqn{\Omega} (degrees).
 #' * `inc` Inclination \eqn{I} (degrees).
+#'
 #' The easiest way to get this is with [get_solution()].
 # inherit quiet
 #' @inheritParams get_ZB
