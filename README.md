@@ -46,7 +46,7 @@ Here’s the main function that does the work in action:
 ``` r
 library(snvecR)
 solution <- snvec()
-#> This is snvecR VERSION: 3.7.7.9000 2023-06-27(or later)
+#> This is snvecR VERSION: 3.9.0 2024-02-27
 #> Richard E. Zeebe
 #> Ilja J. Kocken
 #> 
@@ -62,15 +62,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-01-26 12:10:55.246008"
+#> ℹ started at "2024-02-27 23:16:30.478952"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-01-26 12:10:56.69328"
-#> ℹ total duration: 1.45s
+#> ℹ stopped at "2024-02-27 23:16:32.044096"
+#> ℹ total duration: 1.57s
 ```
 
 see `?snvec` for further documentation.
@@ -81,17 +81,15 @@ the eccentricity envelope:
 ``` r
 library(ggplot2)
 solution |>
-  ggplot(aes(x = -t_ka, y = cp)) +
-  labs(x = "Age (ka)", y = "(-)", colour = "Orbital Element") +
-  # the age scale goes from old to young
-  scale_x_reverse() +
+  ggplot(aes(x = t_kyr, y = cp)) +
+  labs(x = "Time (kyr)", y = "(-)", colour = "Orbital Element") +
   # plot climatic precession
   geom_line(aes(colour = "Climatic Precession")) +
   # add the eccentricity envelope
   geom_line(aes(y = ee, colour = "Eccentricity"),
-            data = get_solution() |> dplyr::filter(t_ka > -1000)) +
+            data = get_solution() |> dplyr::filter(t_kyr > -1000)) +
   scale_color_discrete(type = c("skyblue", "black")) +
-  theme(legend.pos = c(.9, .95))
+  theme(legend.position.inside = c(.9, .95))
 ```
 
 <img src="man/figures/README-plot-1.png" width="100%" />

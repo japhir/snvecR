@@ -33,7 +33,7 @@
 #' @param output Character vector with name of desired output. One of:
 #'
 #'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
-#'     columns `time`, `t_ka`, `eei`, `epl`, `phi`, `cp`.
+#'     columns `time`, `t_kyr`, `eei`, `epl`, `phi`, `cp`.
 #'
 #'   * `"full"` A [tibble][tibble::tibble-package] with all the computed and
 #'     interpolated columns.
@@ -74,7 +74,7 @@
 #'
 #'   * `time` Time \eqn{t} (days).
 #'
-#'   * `t_ka` Time in thousands of years (ka).
+#'   * `t_kyr` Time in thousands of years (kyr).
 #'
 # I removed this earlier
 # #'   * `eei` Astronomical solution's eccentricity \eqn{e}, interpolated to output
@@ -270,9 +270,9 @@ snvec <- function(tend = -1e3,
 
   dat <- get_solution(astronomical_solution = astronomical_solution, quiet = quiet)
 
-  if ((sign(tend) != sign(dat$t_ka[2])) || (abs(tend) > max(abs(dat$t_ka)))) {
-    cli::cli_abort(c("{.var tend} must fall within astronomical solution age.",
-                     "i" = "The astronomical solution {sign(dat$t_ka[2])*max(abs(dat$t_ka))}.",
+  if ((sign(tend) != sign(dat$t_kyr[2])) || (abs(tend) > max(abs(dat$t_kyr)))) {
+    cli::cli_abort(c("{.var tend} must fall within astronomical solution time.",
+                     "i" = "The astronomical solution {sign(dat$t_kyr[2])*max(abs(dat$t_kyr))}.",
                      "x" = "{.var tend} = {tend}."
                      ))
   }
@@ -470,7 +470,7 @@ snvec <- function(tend = -1e3,
   fin <- out |>
     tibble::as_tibble() |>
     dplyr::mutate(
-      t_ka = .data$time / KY2D,
+      t_kyr = .data$time / KY2D,
       nnx = approxdat(dat, "nnx")(.data$time),
       nny = approxdat(dat, "nny")(.data$time),
       nnz = approxdat(dat, "nnz")(.data$time),
@@ -537,7 +537,7 @@ snvec <- function(tend = -1e3,
     # we transform the deSolve parameters into simple numeric columns
     # this is so they work better with things like bind_rows etc. via vctrs
     dplyr::mutate(dplyr::across(
-      tidyselect::all_of(c("time", "t_ka", "sx", "sy", "sz", "epl")),
+      tidyselect::all_of(c("time", "t_kyr", "sx", "sy", "sz", "epl")),
       as.numeric))
 
   if (output == "all") {
@@ -547,7 +547,7 @@ snvec <- function(tend = -1e3,
   if (output == "nice") {
     fin |>
       dplyr::select(tidyselect::all_of(c(
-        "time", "t_ka",
+        "time", "t_kyr",
         "epl", "phi", "cp"
       )))
   }

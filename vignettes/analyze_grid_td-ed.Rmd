@@ -135,11 +135,10 @@ Let's make a figure of these final values.
 
 ```{r plot}
 expanded |>
-  ggplot(aes(x = -t_ka, y = cp,
+  ggplot(aes(x = t_kyr, y = cp,
              colour = factor(Td),
              linetype = factor(Ed))) +
-  scale_x_reverse() +
-  labs(x = "Age (ka)",
+  labs(x = "Time (kyr)",
        y = "Climatic precession",
        colour = "Tidal dissipation",
        linetype = "Dynamical ellipticity") +
@@ -151,8 +150,8 @@ expanded |>
             linetype = "solid",
             colour = "black",
             data = get_solution() |>
-              filter(t_ka > -1000) |>
-              filter(t_ka < -500))
+              filter(t_kyr > -1000) |>
+              filter(t_kyr < -500))
 ```
 
 Now the analysis can begin!
@@ -217,13 +216,12 @@ biggrid |> # limit to a few experiments
   # unfold the list column
   unnest(fullsol) |>
   # plot the obliquity
-  ggplot(aes(x = -t_ka, y = epl,
+  ggplot(aes(x = t_kyr, y = epl,
              colour = factor(Td),
              linetype = factor(Ed))) +
-  labs(x = "Age (ka)", y = "Obliquity",
+  labs(x = "Time (kyr)", y = "Obliquity",
        colour = "Tidal dissipation",
        linetype = "Dynamical ellipticity") +
-  scale_x_reverse() +
   ## facet_grid(rows = vars(Td)) +
   geom_line()
 ```

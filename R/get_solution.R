@@ -116,7 +116,7 @@ get_ZB <- function(astronomical_solution = "PT-ZB18a",
                        "arp", # argument of periapse
                        "mna") # mean anomaly
   } else {
-    raw_col_names <- c("age", # time in ka, negative
+    raw_col_names <- c("time", # time in kyr, negative
                        "ecc", # eccentricity
                        "inc") # inclination
   }

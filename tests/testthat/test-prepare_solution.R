@@ -12,7 +12,7 @@ test_that("test_solution() works", {
 
   expect_error(prepare_solution(data.frame(x = 1, y = 2), quiet = TRUE))
   expect_equal(colnames(prepare_solution(ZB18a_head, quiet = TRUE)),
-               c("t", "t_ka", "age",
+               c("t", "t_kyr", #"age",
                  "aa", "ee", "inc", "lph", "lan", "arp", "mna",
                  "lphu", "lanu",
                  "hh", "kk", "pp", "qq", "cc", "dd",

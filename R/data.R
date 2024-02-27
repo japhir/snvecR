@@ -14,7 +14,7 @@
 #' A data frame with 250,001 rows and 20 columns:
 #' \describe{
 #'   \item{t}{Time \eqn{t} (days).}
-#'   \item{age}{Age in thousands of years before present (ka).}
+#'   \item{time}{Time in thousands of years (kyr).}
 #'   \item{aa}{Semimajor axis \eqn{a} in astronomical units (au).}
 #'   \item{ee}{Eccentricity \eqn{e} (unitless).}
 #'   \item{inc}{Inclination \eqn{I} (degrees).}

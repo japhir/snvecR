@@ -71,8 +71,8 @@ prepare_solution <- function(data, quiet = FALSE) {
       lphu = unwrap(.data$lph),
       lanu = unwrap(.data$lan)
     ) |>
-    dplyr::mutate(t_ka = .data$t / KY2D, .after = "t") |>
-    dplyr::mutate(age = -.data$t_ka, .after = "t_ka") |>
+    dplyr::mutate(t_kyr = .data$t / KY2D, .after = "t") |>
+    ## dplyr::mutate(age = -.data$t_kyr, .after = "t_kyr") |>
     dplyr::mutate(
       hh = .data$ee * sin(.data$lph / R2D),
       kk = .data$ee * cos(.data$lph / R2D),

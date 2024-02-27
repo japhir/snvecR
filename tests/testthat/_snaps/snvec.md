@@ -3,10 +3,10 @@
     Code
       print(dplyr::select(snvec(tend = -49, ed = 1, td = 0,
         tres = -1, quiet = TRUE, output = "all"), dplyr::all_of(
-        c("t_ka", "sx", "sy", "sz", "epl", "phi", "cp"))), n = 50)
+        c("t_kyr", "sx", "sy", "sz", "epl", "phi", "cp"))), n = 50)
     Output
       # A tibble: 50 x 7
-          t_ka      sx        sy    sz   epl     phi        cp
+         t_kyr      sx        sy    sz   epl     phi        cp
          <dbl>   <dbl>     <dbl> <dbl> <dbl>   <dbl>     <dbl>
        1     0  0.385   0.212    0.898 0.409  0       0.0163  
        2    -1  0.350   0.302    0.887 0.411  0.243   0.0171  

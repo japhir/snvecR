@@ -72,7 +72,7 @@ dat <- dat |>
 ## helper parameters as new columns of dat
 
 dat <- dat |>
-  dplyr::mutate(age = -t / KY2D, .after = t) |>
+  ## dplyr::mutate(age = -t / KY2D, .after = t) |>
   dplyr::mutate(
     hh = ee * sin(lph / R2D),
     kk = ee * cos(lph / R2D),
