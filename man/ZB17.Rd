@@ -19,7 +19,7 @@
 
 A data frame with 62,501 rows and 3 columns:
 \describe{
-\item{age}{Age in thousands of years before present (ka).}
+\item{time}{Time in thousands of years (kyr).}
 \item{ecc}{Eccentricity \eqn{e} (unitless).}
 \item{inc}{Inclination \eqn{I} (degrees).}
 }
