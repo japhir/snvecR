@@ -53,12 +53,12 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
 "*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Ma"))
   }
 
-  if (astronomical_solution == "full-La11") {
-    cli::cli_abort(c("i" = "Astronomical solution {.q full-La11} is not supported.",
+  if (grepl("^full-La", astronomical_solution)) {
+    cli::cli_abort(c("i" = "Astronomical solution {.q {astronomical_solution}} is not supported.",
                      "!" = "The input OS for snvec must be either in the:",
                      "*" = "Heliocentric inertial reference frame (HCI)",
                      "*" = "Ecliptic reference frame (J2000).",
-                     "x" = "The La11 solution is in the invariant/inertial reference frame.",
+                     "x" = "The La10 and La11 solutions are in the invariant/inertial reference frame.",
                      "i" = "To resolve this, you need the positions/velocities and masses of all the bodies.",
                      "i" = "Or the angles between their inertial reference frame and J2000.",
                      "i" = "Pull requests welcome."))

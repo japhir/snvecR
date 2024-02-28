@@ -15,6 +15,7 @@ test_that("snvec() inputs are checked", {
   expect_error(snvec(os_ref_frame = "J2000", os_omt = 5, quiet = TRUE))
   expect_error(snvec(os_ref_frame = "J2000", os_inct = 7, quiet = TRUE))
 
+  # these are a bit annoying
   expect_warning(snvec(ed = 1.1001, tend = -1, tres = -.5, quiet = TRUE))
   expect_warning(snvec(ed = 0.8999, tend = -1, tres = -.5, quiet = TRUE))
   expect_warning(snvec(td = 1.2001, tend = -1, tres = -.5, quiet = TRUE))

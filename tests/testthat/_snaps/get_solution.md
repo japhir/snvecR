@@ -1,4 +1,19 @@
-# get_solution() works
+# get_solution() can load eccentricity solutions
+
+    Code
+      head(get_solution(astronomical_solution = "ZB20b", quiet = FALSE))
+    Output
+      # A tibble: 6 x 3
+         time    ecc   inc
+        <dbl>  <dbl> <dbl>
+      1   0   0.0167  7.15
+      2   1.6 0.0173  7.11
+      3   3.2 0.0179  7.04
+      4   4.8 0.0184  6.95
+      5   6.4 0.0188  6.84
+      6   8   0.0192  6.70
+
+# get_solution() can load full solutions
 
     Code
       head(get_solution(astronomical_solution = "full-ZB18a", quiet = TRUE))
