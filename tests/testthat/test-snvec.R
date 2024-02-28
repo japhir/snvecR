@@ -4,9 +4,9 @@ test_that("snvec() inputs are checked", {
   expect_error(snvec(tres = -Inf, quiet = TRUE))
   expect_error(snvec(tend = -1000, tres = 0.4, quiet = TRUE))
   expect_error(snvec(tend = 1000, tres = -0.4, quiet = TRUE))
-  expect_error(snvec(tend = 1000, tres = 0.4, astronomical_solution = "PT-ZB18a", quiet = TRUE))
+  expect_error(snvec(tend = 1000, tres = 0.4, astronomical_solution = "full-ZB18a", quiet = TRUE))
   expect_error(snvec(tend = -1000, tres = -0.4, quiet = TRUE,
-                     astronomical_solution = get_solution("PT-ZB18a", quiet = TRUE) |>
+                     astronomical_solution = get_solution("full-ZB18a", quiet = TRUE) |>
                        mutate(t = -t, t_kyr = -t_kyr)))
   expect_error(snvec(output = "banaan", quiet = TRUE))
   expect_error(snvec(solver = "banaan", quiet = TRUE))

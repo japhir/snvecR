@@ -10,26 +10,26 @@
 # astronomical_solution, quiet, and force are documented in get_ZB
 #' @inheritParams get_ZB
 #' @inherit get_ZB references
-#' @seealso [PT_ZB18a], [ZB17], [ZB18a], [ZB20]
+#' @seealso [full_ZB18a], [ZB17], [ZB18a], [ZB20]
 #' @returns A [tibble][tibble::tibble-package] with the astronomical solution
 #'   (and some preprocessed new columns).
 #' @examples
 #' \donttest{
-#' get_solution("PT-ZB18a")
+#' get_solution("full-ZB18a")
 #' get_solution("ZB20a")
 #' get_solution("La11")
 #' }
 #' @export
-get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, force = FALSE) {
+get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, force = FALSE) {
   if ("data.frame" %in% class(astronomical_solution)) {
     return(prepare_solution(astronomical_solution, quiet = quiet))
   }
 
   # effectively this is a wrapper that checks only for valid solutions...
-  solutions <- c("PT-ZB18a", # the default
+  solutions <- c("full-ZB18a", # the default
                  # special case to catch ambiguous naming
                  "ZB18a",
-                 "PT-La11", # just to thow an error
+                 "full-La11", # just to thow an error
                  # we rely on astrochron to get these for us
                  "La04", "La10a", "La10b", "La10c", "La10d", "La11",
                  # we get these ourselves
@@ -48,13 +48,13 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
   if (astronomical_solution == "ZB18a") {
     cli::cli_abort(c("i" = "There are multiple versions of {.q ZB18a} available.",
                      "!" = "Please select the one you want:",
-                     "*" = "{.q PT-ZB18a}: for the precession-tilt solutions",
+                     "*" = "{.q full-ZB18a}: for the precession-tilt solutions",
                      "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Ma",
 "*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Ma"))
   }
 
-  if (astronomical_solution == "PT-La11") {
-    cli::cli_abort(c("i" = "Astronomical solution {.q PT-La11} is not supported.",
+  if (astronomical_solution == "full-La11") {
+    cli::cli_abort(c("i" = "Astronomical solution {.q full-La11} is not supported.",
                      "!" = "The input OS for snvec must be either in the:",
                      "*" = "Heliocentric inertial reference frame (HCI)",
                      "*" = "Ecliptic reference frame (J2000).",
@@ -67,9 +67,13 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
   if (grepl("^La[0-9][a-z]?", astronomical_solution)) {
     dat <- astrochron::getLaskar(sol = tolower(astronomical_solution)) |>
       tibble::as_tibble()
+    cli::cli_warn(c("i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
+                    "i" = "We do not cache these results.",
+                    "i" = "Output has column names {.q {colnames(dat)}}",
+                    "!" = "{.pkg astrochron} converts time from -kyr to ka by default."))
   }
 
-  if (astronomical_solution == "PT-ZB18a" ||
+  if (astronomical_solution == "full-ZB18a" ||
         grepl("^ZB[0-9][0-9][a-z]", astronomical_solution)) {
     dat <- get_ZB(astronomical_solution, quiet = quiet, force = force)
   }
@@ -80,7 +84,7 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 # #' Get a ZB solution
 # #'
 #' @param astronomical_solution Character vector with the name of the desired
-#'   solution. Defaults to `"PT-ZB18a"`.
+#'   solution. Defaults to `"full-ZB18a"`.
 #' @param quiet Be quiet?
 #'
 #'   * If `TRUE`, hide info messages.
@@ -89,22 +93,22 @@ get_solution <- function(astronomical_solution = "PT-ZB18a", quiet = FALSE, forc
 #' @param force Force re-downloading the results, even if the solution is saved
 #'   to the cache.
 #' @returns A [tibble][tibble::tibble-package] with the astronomical solution
-#'   input and, in the case of the PT-ZB18a, some preprocessed new columns.
+#'   input and, in the case of the full-ZB18a, some preprocessed new columns.
 # #' @seealso [prepare_solution()] Processes precession-tilt astronomical
 # #'   solution input to include helper columns.
-#' @inherit PT_ZB18a references
+#' @inherit full_ZB18a references
 # #' @examples
 # #' \donttest{
 # #' get_ZB()
 # #' }
 # NOTE: I don't export this anymore.
-get_ZB <- function(astronomical_solution = "PT-ZB18a",
+get_ZB <- function(astronomical_solution = "full-ZB18a",
                    quiet = FALSE,
                    force = FALSE) {
   base_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/"
   cachedir <- tools::R_user_dir("snvecR", which = "cache")
 
-  if (astronomical_solution == "PT-ZB18a") {
+  if (astronomical_solution == "full-ZB18a") {
     url <- paste0(base_url, "PrecTilt/OS/ZB18a/ems-plan3.dat")
     # TODO: rename to PrecTilt, same as on ZB's website
     raw_col_names <- c("t", # time in days
@@ -147,16 +151,16 @@ get_ZB <- function(astronomical_solution = "PT-ZB18a",
     }
 
     if (file.exists(raw_path)) {
-      if (astronomical_solution == "PT-ZB18a") {
+      if (astronomical_solution == "full-ZB18a") {
         raw <- readr::read_table(raw_path,
                                  col_names = raw_col_names,
-                                 skip = 3, comment = "#",
-                                 show_col_types = FALSE)
+                                 col_types = "dddddddd",
+                                 skip = 3, comment = "#")
       } else {
         raw <- readr::read_table(raw_path,
                                  col_names = raw_col_names,
-                                 comment = "%",
-                                 show_col_types = FALSE)
+                                 col_types = "ddd",
+                                 comment = "%")
       }
     }
   } else {# files don't exist or force
@@ -185,7 +189,7 @@ get_ZB <- function(astronomical_solution = "PT-ZB18a",
 
     # read the file from the website
     if (!quiet) cli::cli_alert_info("Reading {.file {basename(raw_path)}} from website {.url {url}}.")
-    if (astronomical_solution == "PT-ZB18a") {
+    if (astronomical_solution == "full-ZB18a") {
       raw <- readr::read_table(url,
                                col_names = raw_col_names,
                                skip = 3, comment = "#",

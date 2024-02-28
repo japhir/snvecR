@@ -4,11 +4,15 @@
 \alias{get_solution}
 \title{Get an Astronomical Solution}
 \usage{
-get_solution(astronomical_solution = "PT-ZB18a", quiet = FALSE, force = FALSE)
+get_solution(
+  astronomical_solution = "full-ZB18a",
+  quiet = FALSE,
+  force = FALSE
+)
 }
 \arguments{
 \item{astronomical_solution}{Character vector with the name of the desired
-solution. Defaults to \code{"PT-ZB18a"}.}
+solution. Defaults to \code{"full-ZB18a"}.}
 
 \item{quiet}{Be quiet?
 \itemize{
@@ -33,7 +37,7 @@ do not cache these solutions locally, however.
 }
 \examples{
 \donttest{
-get_solution("PT-ZB18a")
+get_solution("full-ZB18a")
 get_solution("ZB20a")
 get_solution("La11")
 }
@@ -49,5 +53,5 @@ dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
 Paleoclimatology}. \doi{10.1029/2021PA004349}
 }
 \seealso{
-\link{PT_ZB18a}, \link{ZB17}, \link{ZB18a}, \link{ZB20}
+\link{full_ZB18a}, \link{ZB17}, \link{ZB18a}, \link{ZB20}
 }

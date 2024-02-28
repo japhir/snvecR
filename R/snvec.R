@@ -170,7 +170,7 @@
 snvec <- function(tend = -1e3,
                   ed = 1,
                   td = 0,
-                  astronomical_solution = "PT-ZB18a",
+                  astronomical_solution = "full-ZB18a",
                   os_ref_frame = "HCI",
                   os_omt = NULL, os_inct = NULL,
                   tres = -0.4,
@@ -218,9 +218,9 @@ snvec <- function(tend = -1e3,
   }
 
   if (!"data.frame" %in% class(astronomical_solution) &&
-        !grepl("^PT-", astronomical_solution)) {
+        !grepl("^full-", astronomical_solution)) {
     cli::cli_abort(c("Astronomical Solution must contain all orbital parameters",
-                     "i" = "Did you mean to specify {.q PT-ZB18a}?"))
+                     "i" = "Did you mean to specify {.q full-ZB18a}?"))
   }
 
   hci_refs <- c("heliocentric intertial", "HCI")

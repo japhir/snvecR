@@ -8,7 +8,7 @@ snvec(
   tend = -1000,
   ed = 1,
   td = 0,
-  astronomical_solution = "PT-ZB18a",
+  astronomical_solution = "full-ZB18a",
   os_ref_frame = "HCI",
   os_omt = NULL,
   os_inct = NULL,
@@ -31,7 +31,7 @@ Defaults to \code{1.0}.}
 to \code{0.0}.}
 
 \item{astronomical_solution}{Character vector with the name of the desired
-solution. Defaults to \code{"PT-ZB18a"}.}
+solution. Defaults to \code{"full-ZB18a"}.}
 
 \item{os_ref_frame}{Character vector with the reference frame of the astronomical
 solution. Either \code{"HCI"} for heliocentric inertial reference frame or
