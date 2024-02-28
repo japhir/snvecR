@@ -110,7 +110,6 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
 
   if (astronomical_solution == "full-ZB18a") {
     url <- paste0(base_url, "PrecTilt/OS/ZB18a/ems-plan3.dat")
-    # TODO: rename to PrecTilt, same as on ZB's website
     raw_col_names <- c("t", # time in days
                        "aa", # semimajor axis
                        "ee", # eccentricity
@@ -192,15 +191,15 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     if (astronomical_solution == "full-ZB18a") {
       raw <- readr::read_table(url,
                                col_names = raw_col_names,
-                               skip = 3, comment = "#",
-                               show_col_types = FALSE)
+                               col_types = "dddddddd",
+                               skip = 3, comment = "#")
       # calculate helper columns
       raw <- raw |> prepare_solution(quiet = quiet)
     } else {
       raw <- readr::read_table(url,
-                               comment = "%",
                                col_names = raw_col_names,
-                               show_col_types = FALSE)
+                               col_types = "ddd",
+                               comment = "%")
     }
 
     if (!save_cache) {
