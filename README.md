@@ -54,7 +54,7 @@ solution <- snvec()
 #> • `tend` = -1000 ka
 #> • `ed` = 1
 #> • `td` = 0
-#> • `astronomical_solution` = "PT-ZB18a"
+#> • `astronomical_solution` = "full-ZB18a"
 #> • `os_ref_frame` = "HCI"
 #> • `os_omt` = defaulting to 75.594
 #> • `os_inct` = defaulting to 7.155
@@ -62,15 +62,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-02-27 23:16:30.478952"
+#> ℹ started at "2024-02-28 13:05:06.259842"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-02-27 23:16:32.044096"
-#> ℹ total duration: 1.57s
+#> ℹ stopped at "2024-02-28 13:05:08.604988"
+#> ℹ total duration: 2.35s
 ```
 
 see `?snvec` for further documentation.
