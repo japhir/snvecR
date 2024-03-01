@@ -8,7 +8,7 @@ test_that("get_solution() can load eccentricity solutions", {
   withr::local_options(width = 150)
 
   expect_snapshot(get_solution(astronomical_solution = "ZB20b",
-                               quiet = FALSE) |> head())
+                               quiet = FALSE, force = TRUE) |> head())
 })
 
 test_that("get_solution() can load full solutions", {

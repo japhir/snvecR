@@ -1,7 +1,14 @@
 # get_solution() can load eccentricity solutions
 
     Code
-      head(get_solution(astronomical_solution = "ZB20b", quiet = FALSE))
+      head(get_solution(astronomical_solution = "ZB20b", quiet = FALSE, force = TRUE))
+    Message
+      i The astronomical solution ZB20b has not been downloaded.
+      i Reading 'ZB20b.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20b.dat>.
+      i The cache directory is '/home/japhir/.cache/R/snvecR'.
+      i Saved 'ZB20b.dat' to cache.
+      i Saved cleaned-up 'ZB20b.csv' to cache.
+      > Saved solution with helper columns 'ZB20b.rds' to cache.
     Output
       # A tibble: 6 x 3
          time    ecc   inc
