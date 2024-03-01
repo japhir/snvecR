@@ -2,6 +2,7 @@
 * Refactor `age` in ka to `time` in kyr throughout.
 * Rename default astronomical solution from PT-ZB18a to full-ZB18a.
 * For the OS, convert time to negative for consistency.
+* Changed some default output! Now returns time (kyr), no longer both t and t_kyr.
 
 # snvecR 3.8.0
 * Fix snapshot tests for CI (overwrite the cache dir, which is unique to each test).
