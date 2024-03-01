@@ -160,7 +160,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                                  col_types = "ddd",
                                  comment = "%") |>
           # flip time input so it's always negative kyr
-          dplyr::mutate(time = -time)
+          dplyr::mutate(time = -.data$time)
       }
     }
   } else {# files don't exist or force
@@ -202,7 +202,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                                col_types = "ddd",
                                comment = "%") |>
         # flip time input so it's always negative kyr
-        dplyr::mutate(time = -time)
+        dplyr::mutate(time = -.data$time)
     }
 
     if (!save_cache) {
