@@ -54,7 +54,7 @@ experiments, so that it is very clear from the output what the inputs were.
 biggrid <- biggrid |>
     # for now only for 1000 years at very high tolerance so it's fast
     mutate(atol = 1e-4, tend = -1e3)
-    # this would be the real deal, the full 100--0 Ma results at medium
+    # this would be the real deal, the full 100--0 Myr results at medium
     # tolerance.
     ## mutate(tol = 1e-7, tend = -1e5)
 ```
