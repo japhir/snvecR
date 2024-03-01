@@ -80,8 +80,8 @@ of ordinary differential equations.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>tend</dt>
-<dd><p>Final timestep in thousands of years before present (ka).
-Defaults to <code>-1000</code> ka.</p></dd>
+<dd><p>Final timestep in thousands of years (kyr).
+Defaults to <code>-1000</code> kyr.</p></dd>
 
 
 <dt>ed</dt>
@@ -144,7 +144,7 @@ a variable timestep.</p></dd>
 
 <dt>output</dt>
 <dd><p>Character vector with name of desired output. One of:</p><ul><li><p><code>"nice"</code> (the default) A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with the
-columns <code>time</code>, <code>t_kyr</code>, <code>eei</code>, <code>epl</code>, <code>phi</code>, <code>cp</code>.</p></li>
+columns <code>time</code>, <code>eei</code>, <code>epl</code>, <code>phi</code>, <code>cp</code>.</p></li>
 <li><p><code>"full"</code> A <a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with all the computed and
 interpolated columns.</p></li>
 <li><p><code>"ode"</code> A matrix with the output of the ODE solver.</p></li>
@@ -159,8 +159,7 @@ interpolated columns.</p></li>
 
 
 <p>If <code>output = "nice"</code> (the default), returns a
-<a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with the following columns:</p><ul><li><p><code>time</code> Time \(t\) (days).</p></li>
-<li><p><code>t_kyr</code> Time in thousands of years (kyr).</p></li>
+<a href="https://tibble.tidyverse.org/reference/tibble-package.html" class="external-link">tibble</a> with the following columns:</p><ul><li><p><code>time</code> Time in thousands of years (kyr).</p></li>
 <li><p><code>epl</code> Calculated Obliquity \(\epsilon\) (radians).</p></li>
 <li><p><code>phi</code> Calculated Precession \(\phi\) (radians) from ECLIPJ2000.</p></li>
 <li><p><code>cp</code> Calculated Climatic precession (-) as \(e\sin\bar{\omega}\).</p></li>
@@ -253,12 +252,12 @@ use.</p></li>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="co"># default call</span></span></span>
 <span class="r-in"><span><span class="fu">snvec</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> This is snvecR VERSION: 3.9.0 2024-02-27</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This is snvecR VERSION: 3.9.0 2024-02-29</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Richard E. Zeebe</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Ilja J. Kocken</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Integration parameters:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = <span style="color: #0000BB;">-1000</span> ka</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = <span style="color: #0000BB;">-1000</span> kyr</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `ed` = <span style="color: #0000BB;">1</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `td` = <span style="color: #0000BB;">0</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `astronomical_solution` = <span style="color: #0000BB;">"full-ZB18a"</span></span>
@@ -269,28 +268,28 @@ use.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `atol` = <span style="color: #0000BB;">1e-05</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `rtol` = <span style="color: #0000BB;">0</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `solver` = <span style="color: #0000BB;">"vode"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-03-01 10:09:06.814472"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-03-01 10:58:06.093578"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: <span style="color: #0000BB;">0.404184487124565</span>, <span style="color: #0000BB;">-0.0537555129057148</span>, and <span style="color: #0000BB;">0.913036138471423</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: <span style="color: #0000BB;">-5.51290422495798e-05</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: <span style="color: #0000BB;">0.413060472710089</span> rad</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: <span style="color: #0000BB;">-0.562357122261026</span> rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-03-01 10:09:08.123878"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">1.31s</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        time t_kyr   epl    phi     cp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>        0   0   0.409 0      0.016<span style="text-decoration: underline;">3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  -<span style="color: #BB0000; text-decoration: underline;">146</span><span style="color: #BB0000;">100</span>  -<span style="color: #BB0000;">0.4</span> 0.410 0.097<span style="text-decoration: underline;">5</span> 0.016<span style="text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  -<span style="color: #BB0000; text-decoration: underline;">292</span><span style="color: #BB0000;">200</span>  -<span style="color: #BB0000;">0.8</span> 0.411 0.195  0.017<span style="text-decoration: underline;">1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  -<span style="color: #BB0000; text-decoration: underline;">438</span><span style="color: #BB0000;">300</span>  -<span style="color: #BB0000;">1.2</span> 0.412 0.292  0.017<span style="text-decoration: underline;">0</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  -<span style="color: #BB0000; text-decoration: underline;">584</span><span style="color: #BB0000;">400</span>  -<span style="color: #BB0000;">1.6</span> 0.413 0.389  0.016<span style="text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  -<span style="color: #BB0000; text-decoration: underline;">730</span><span style="color: #BB0000;">500</span>  -<span style="color: #BB0000;">2</span>   0.414 0.486  0.016<span style="text-decoration: underline;">3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  -<span style="color: #BB0000; text-decoration: underline;">876</span><span style="color: #BB0000;">600</span>  -<span style="color: #BB0000;">2.4</span> 0.414 0.582  0.015<span style="text-decoration: underline;">6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">022</span><span style="color: #BB0000;">700</span>  -<span style="color: #BB0000;">2.8</span> 0.415 0.679  0.014<span style="text-decoration: underline;">6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">168</span><span style="color: #BB0000;">800</span>  -<span style="color: #BB0000;">3.2</span> 0.416 0.775  0.013<span style="text-decoration: underline;">4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -<span style="color: #BB0000;">1</span><span style="color: #BB0000; text-decoration: underline;">314</span><span style="color: #BB0000;">900</span>  -<span style="color: #BB0000;">3.6</span> 0.417 0.871  0.012<span style="text-decoration: underline;">0</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-03-01 10:58:07.364995"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">1.27s</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     time   epl    phi     cp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   0   0.409 0      0.016<span style="text-decoration: underline;">3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  -<span style="color: #BB0000;">0.4</span> 0.410 0.097<span style="text-decoration: underline;">5</span> 0.016<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  -<span style="color: #BB0000;">0.8</span> 0.411 0.195  0.017<span style="text-decoration: underline;">1</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  -<span style="color: #BB0000;">1.2</span> 0.412 0.292  0.017<span style="text-decoration: underline;">0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  -<span style="color: #BB0000;">1.6</span> 0.413 0.389  0.016<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  -<span style="color: #BB0000;">2</span>   0.414 0.486  0.016<span style="text-decoration: underline;">3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  -<span style="color: #BB0000;">2.4</span> 0.414 0.582  0.015<span style="text-decoration: underline;">6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  -<span style="color: #BB0000;">2.8</span> 0.415 0.679  0.014<span style="text-decoration: underline;">6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  -<span style="color: #BB0000;">3.2</span> 0.416 0.775  0.013<span style="text-decoration: underline;">4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  -<span style="color: #BB0000;">3.6</span> 0.417 0.871  0.012<span style="text-decoration: underline;">0</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2,491 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ignore the below, this is just to make CRAN builds happy!</span></span></span>
