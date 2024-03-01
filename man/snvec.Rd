@@ -21,8 +21,8 @@ snvec(
 )
 }
 \arguments{
-\item{tend}{Final timestep in thousands of years before present (ka).
-Defaults to \code{-1000} ka.}
+\item{tend}{Final timestep in thousands of years (kyr).
+Defaults to \code{-1000} kyr.}
 
 \item{ed}{Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
 Defaults to \code{1.0}.}
@@ -65,7 +65,7 @@ a variable timestep.}
 \item{output}{Character vector with name of desired output. One of:
 \itemize{
 \item \code{"nice"} (the default) A \link[tibble:tibble-package]{tibble} with the
-columns \code{time}, \code{t_kyr}, \code{eei}, \code{epl}, \code{phi}, \code{cp}.
+columns \code{time}, \code{eei}, \code{epl}, \code{phi}, \code{cp}.
 \item \code{"full"} A \link[tibble:tibble-package]{tibble} with all the computed and
 interpolated columns.
 \item \code{"ode"} A matrix with the output of the ODE solver.
@@ -77,8 +77,7 @@ interpolated columns.
 If \code{output = "nice"} (the default), returns a
 \link[tibble:tibble-package]{tibble} with the following columns:
 \itemize{
-\item \code{time} Time \eqn{t} (days).
-\item \code{t_kyr} Time in thousands of years (kyr).
+\item \code{time} Time in thousands of years (kyr).
 \item \code{epl} Calculated Obliquity \eqn{\epsilon} (radians).
 \item \code{phi} Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
 \item \code{cp} Calculated Climatic precession (-) as \eqn{e\sin\bar{\omega}}.

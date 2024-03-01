@@ -5,8 +5,8 @@
 #' (\eqn{E_{d}}{Ed}) and tidal dissipation (\eqn{T_{d}}{Td}). It solves a set
 #' of ordinary differential equations.
 #'
-#' @param tend Final timestep in thousands of years before present (ka).
-#'   Defaults to `-1000` ka.
+#' @param tend Final timestep in thousands of years (kyr).
+#'   Defaults to `-1000` kyr.
 #' @param ed Dynamical ellipticity \eqn{E_{d}}{Ed}, normalized to modern.
 #'   Defaults to `1.0`.
 #' @param td Tidal dissipation \eqn{T_{d}}{Td}, normalized to modern. Defaults
@@ -33,7 +33,7 @@
 #' @param output Character vector with name of desired output. One of:
 #'
 #'   * `"nice"` (the default) A [tibble][tibble::tibble-package] with the
-#'     columns `time`, `t_kyr`, `eei`, `epl`, `phi`, `cp`.
+#'     columns `time`, `eei`, `epl`, `phi`, `cp`.
 #'
 #'   * `"full"` A [tibble][tibble::tibble-package] with all the computed and
 #'     interpolated columns.
@@ -72,9 +72,9 @@
 #' If `output = "nice"` (the default), returns a
 #' [tibble][tibble::tibble-package] with the following columns:
 #'
-#'   * `time` Time \eqn{t} (days).
-#'
-#'   * `t_kyr` Time in thousands of years (kyr).
+# #'   * `t` Time \eqn{t} (days).
+# #'
+#'   * `time` Time in thousands of years (kyr).
 #'
 # I removed this earlier
 # #'   * `eei` Astronomical solution's eccentricity \eqn{e}, interpolated to output
@@ -270,9 +270,9 @@ snvec <- function(tend = -1e3,
 
   dat <- get_solution(astronomical_solution = astronomical_solution, quiet = quiet)
 
-  if ((sign(tend) != sign(dat$t_kyr[2])) || (abs(tend) > max(abs(dat$t_kyr)))) {
+  if ((sign(tend) != sign(dat$time[2])) || (abs(tend) > max(abs(dat$time)))) {
     cli::cli_abort(c("{.var tend} must fall within astronomical solution time.",
-                     "i" = "The astronomical solution {sign(dat$t_kyr[2])*max(abs(dat$t_kyr))}.",
+                     "i" = "The astronomical solution {sign(dat$time[2])*max(abs(dat$time))}.",
                      "x" = "{.var tend} = {tend}."
                      ))
   }
@@ -286,7 +286,7 @@ snvec <- function(tend = -1e3,
       "Ilja J. Kocken",
       "",
       "Integration parameters:",
-      "*" = "{.var tend} = {.val {tend}} ka",
+      "*" = "{.var tend} = {.val {tend}} kyr",
       "*" = "{.var ed} = {.val {ed}}",
       "*" = "{.var td} = {.val {td}}",
       "*" = "{.var astronomical_solution} = {.val {if ('data.frame' %in% class(astronomical_solution)) 'user provided' else astronomical_solution}}",
@@ -310,7 +310,7 @@ snvec <- function(tend = -1e3,
   ndn <- -4.6e-18 * D2S * td # 1/s => 1/d
   wdw <- 51 * ndn * NW0 # Lambeck80, see PTman
   tdg <- td # global Td
-  dts <- dat$t[2] - dat$t[1] # difference in time
+  dts <- dat$t[2] - dat$t[1] # difference in time in days
 
   ## initial values for the spin vector s
   ## [[file:snvec-3.7.5/snvec-3.7.5.c::=== finits()][finits()]]
@@ -469,8 +469,10 @@ snvec <- function(tend = -1e3,
   ## interpolate the full astronomical solution onto output timescale
   fin <- out |>
     tibble::as_tibble() |>
+    dplyr::rename(t = "time") |>
     dplyr::mutate(
-      t_kyr = .data$time / KY2D,
+      time = .data$t / KY2D, .after = "t") |>
+    dplyr::mutate(
       nnx = approxdat(dat, "nnx")(.data$time),
       nny = approxdat(dat, "nny")(.data$time),
       nnz = approxdat(dat, "nnz")(.data$time),
@@ -537,7 +539,7 @@ snvec <- function(tend = -1e3,
     # we transform the deSolve parameters into simple numeric columns
     # this is so they work better with things like bind_rows etc. via vctrs
     dplyr::mutate(dplyr::across(
-      tidyselect::all_of(c("time", "t_kyr", "sx", "sy", "sz", "epl")),
+      tidyselect::all_of(c("t", "time", "sx", "sy", "sz", "epl")),
       as.numeric))
 
   if (output == "all") {
@@ -547,8 +549,7 @@ snvec <- function(tend = -1e3,
   if (output == "nice") {
     fin |>
       dplyr::select(tidyselect::all_of(c(
-        "time", "t_kyr",
-        "epl", "phi", "cp"
+        "time", "epl", "phi", "cp"
       )))
   }
 }

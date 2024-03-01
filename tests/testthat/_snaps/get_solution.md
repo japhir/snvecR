@@ -19,7 +19,7 @@
       head(get_solution(astronomical_solution = "full-ZB18a", quiet = TRUE))
     Output
       # A tibble: 6 x 20
-              t t_kyr    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz
+              t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz
           <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl>       <dbl>  <dbl> <dbl> <dbl>       <dbl> <dbl> <dbl>
       1       0   0    1.00 0.0167  7.15  27.3  180. -153. -2.45  27.3  180. 0.00767 0.0148  0.00000164 -0.125 0.992 0.998  0.00000163 0.125 0.992
       2 -146100  -0.4  1.00 0.0169  7.15  26.1 -180. -154.  1.27  26.1  180. 0.00742 0.0151 -0.000902   -0.125 0.992 0.998 -0.000900   0.124 0.992
@@ -42,7 +42,7 @@
       > Saved solution with helper columns 'full-ZB18a.rds' to cache.
     Output
       # A tibble: 6 x 20
-              t t_kyr    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz
+              t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz
           <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl>       <dbl>  <dbl> <dbl> <dbl>       <dbl> <dbl> <dbl>
       1       0   0    1.00 0.0167  7.15  27.3  180. -153. -2.45  27.3  180. 0.00767 0.0148  0.00000164 -0.125 0.992 0.998  0.00000163 0.125 0.992
       2 -146100  -0.4  1.00 0.0169  7.15  26.1 -180. -154.  1.27  26.1  180. 0.00742 0.0151 -0.000902   -0.125 0.992 0.998 -0.000900   0.124 0.992

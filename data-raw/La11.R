@@ -31,10 +31,10 @@ library(snvecR) # for the unwrap function
 # this only downloads solution "c".
 # Richard told me he prefers b & c the most (<50 Ma?) from Zeebe & Lourens 2019 table 1
 dat <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010b_alkhqp3L.dat",
-                             col_names = c("t_kyr", "a", "l", "k","h", "q", "p"))
+                             col_names = c("time", "a", "l", "k","h", "q", "p"))
 
 ecc <- readr::read_table("http://vo.imcce.fr/insola/earth/online/earth/La2010/La2010b_ecc3L.dat",
-                             col_names = c("t_kyr", "e"))
+                             col_names = c("time", "e"))
 
 
 dplyr::glimpse(dat)
@@ -78,7 +78,7 @@ La11a <- left_join(dat, ecc) |>
     # \cos\nu = \frac{\cos(E)-e}{1-e\cos(E)}
     # \nu = E + 2*\arctan(\frac{\beta\sin(E)}{1-\beta\cos(E)})
   ) |>
-  tidylog::select(t_kyr, a, e, i, om, oom, vpi, l, mn, h, k, p, q) |>
+  tidylog::select(time, a, e, i, om, oom, vpi, l, mn, h, k, p, q) |>
   mutate(solution = "La11c")
 
 write_rds(La11a, "~/SurfDrive/Postdoc1/prj/2023-03-23_snvec-R/out/La11.rds")
