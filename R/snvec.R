@@ -473,13 +473,13 @@ snvec <- function(tend = -1e3,
     dplyr::mutate(
       time = .data$t / KY2D, .after = "t") |>
     dplyr::mutate(
-      nnx = approxdat(dat, "nnx")(.data$time),
-      nny = approxdat(dat, "nny")(.data$time),
-      nnz = approxdat(dat, "nnz")(.data$time),
-      eei = approxdat(dat, "ee")(.data$time),
-      inci = approxdat(dat, "inc")(.data$time),
-      lphi = approxdat(dat, "lphu")(.data$time),
-      lani = approxdat(dat, "lanu")(.data$time)
+      nnx = approxdat(dat, "nnx")(.data$t),
+      nny = approxdat(dat, "nny")(.data$t),
+      nnz = approxdat(dat, "nnz")(.data$t),
+      eei = approxdat(dat, "ee")(.data$t),
+      inci = approxdat(dat, "inc")(.data$t),
+      lphi = approxdat(dat, "lphu")(.data$t),
+      lani = approxdat(dat, "lanu")(.data$t)
     )
 
   ## ## calculate obliquity

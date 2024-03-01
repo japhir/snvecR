@@ -46,12 +46,12 @@ Here’s the main function that does the work in action:
 ``` r
 library(snvecR)
 solution <- snvec()
-#> This is snvecR VERSION: 3.9.0 2024-02-27
+#> This is snvecR VERSION: 3.9.0 2024-02-29
 #> Richard E. Zeebe
 #> Ilja J. Kocken
 #> 
 #> Integration parameters:
-#> • `tend` = -1000 ka
+#> • `tend` = -1000 kyr
 #> • `ed` = 1
 #> • `td` = 0
 #> • `astronomical_solution` = "full-ZB18a"
@@ -62,15 +62,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-02-28 13:05:06.259842"
+#> ℹ started at "2024-03-01 11:52:16.805709"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-02-28 13:05:08.604988"
-#> ℹ total duration: 2.35s
+#> ℹ stopped at "2024-03-01 11:52:18.356262"
+#> ℹ total duration: 1.55s
 ```
 
 see `?snvec` for further documentation.
@@ -81,13 +81,13 @@ the eccentricity envelope:
 ``` r
 library(ggplot2)
 solution |>
-  ggplot(aes(x = t_kyr, y = cp)) +
+  ggplot(aes(x = time, y = cp)) +
   labs(x = "Time (kyr)", y = "(-)", colour = "Orbital Element") +
   # plot climatic precession
   geom_line(aes(colour = "Climatic Precession")) +
   # add the eccentricity envelope
   geom_line(aes(y = ee, colour = "Eccentricity"),
-            data = get_solution() |> dplyr::filter(t_kyr > -1000)) +
+            data = get_solution() |> dplyr::filter(time > -1000)) +
   scale_color_discrete(type = c("skyblue", "black")) +
   theme(legend.position.inside = c(.9, .95))
 ```
