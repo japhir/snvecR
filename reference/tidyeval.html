@@ -77,8 +77,8 @@ and the <a href="https://ggplot2.tidyverse.org/articles/ggplot2-in-packages.html
 The <a href="https://adv-r.hadley.nz/metaprogramming.html" class="external-link">Metaprogramming section</a> of <a href="https://adv-r.hadley.nz" class="external-link">Advanced R</a> may also be useful for a deeper dive.</p><ul><li><p>The <code>.data</code> pronoun is an object that represents the current
 slice of data. If you have a variable name in a string, use the
 <code>.data</code> pronoun to subset that variable with <code>[[</code>.</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my_var <span class="ot">&lt;-</span> <span class="st">"disp"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(.data[[my_var]]))</span></code></pre><p></p></div></li>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>my_var <span class="ot">&lt;-</span> <span class="st">"disp"</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">mean =</span> <span class="fu">mean</span>(.data[[my_var]]))</span></code></pre><p></p></div></li>
 </ul></div>
 
 
