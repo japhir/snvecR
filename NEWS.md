@@ -1,6 +1,7 @@
 # snvecR (development version)
-* Refactor `age` in ka to `time` in kyr throughout, leave it negavite.
-* Rename default astronomical solution from PT-ZB18a to full-ZB18a
+* Refactor `age` in ka to `time` in kyr throughout.
+* Rename default astronomical solution from PT-ZB18a to full-ZB18a.
+* For the OS, convert time to negative for consistency.
 
 # snvecR 3.8.0
 * Fix snapshot tests for CI (overwrite the cache dir, which is unique to each test).

@@ -147,19 +147,20 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
   if (!force && (file.exists(csv_path) || file.exists(raw_path))) {
     if (file.exists(csv_path)) {
       raw <- readr::read_csv(csv_path, show_col_types = FALSE)
-    }
-
-    if (file.exists(raw_path)) {
+    } else if (file.exists(raw_path)) {
       if (astronomical_solution == "full-ZB18a") {
         raw <- readr::read_table(raw_path,
                                  col_names = raw_col_names,
                                  col_types = "dddddddd",
                                  skip = 3, comment = "#")
+        # this has already been run through prepare_solution
       } else {
         raw <- readr::read_table(raw_path,
                                  col_names = raw_col_names,
                                  col_types = "ddd",
-                                 comment = "%")
+                                 comment = "%") |>
+          # flip time input so it's always negative kyr
+          dplyr::mutate(time = -time)
       }
     }
   } else {# files don't exist or force
@@ -199,7 +200,9 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
       raw <- readr::read_table(url,
                                col_names = raw_col_names,
                                col_types = "ddd",
-                               comment = "%")
+                               comment = "%") |>
+        # flip time input so it's always negative kyr
+        dplyr::mutate(time = -time)
     }
 
     if (!save_cache) {
