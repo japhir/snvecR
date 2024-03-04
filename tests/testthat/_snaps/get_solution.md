@@ -1,14 +1,7 @@
 # get_solution() can load eccentricity solutions
 
     Code
-      head(get_solution(astronomical_solution = "ZB20b", quiet = FALSE, force = TRUE))
-    Message
-      i The astronomical solution ZB20b has not been downloaded.
-      i Reading 'ZB20b.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20b.dat>.
-      i The cache directory is '/home/runner/.cache/R/snvecR'.
-      i Saved 'ZB20b.dat' to cache.
-      i Saved cleaned-up 'ZB20b.csv' to cache.
-      > Saved solution with helper columns 'ZB20b.rds' to cache.
+      head(get_solution(astronomical_solution = "ZB20b", quiet = TRUE, force = TRUE))
     Output
       # A tibble: 6 x 3
          time    ecc   inc
@@ -23,7 +16,15 @@
 # get_solution() can load full solutions
 
     Code
-      head(get_solution(astronomical_solution = "full-ZB18a", quiet = TRUE))
+      head(get_solution(astronomical_solution = "full-ZB18a", quiet = FALSE, force = TRUE))
+    Message
+      i The astronomical solution full-ZB18a has not been downloaded.
+      i Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
+      i Calculating helper columns.
+      i The cache directory is 'transformed-for-CI'.
+      i Saved 'full-ZB18a.dat' to cache.
+      i Saved cleaned-up 'full-ZB18a.csv' to cache.
+      > Saved solution with helper columns 'full-ZB18a.rds' to cache.
     Output
       # A tibble: 6 x 20
               t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz
@@ -38,15 +39,7 @@
 ---
 
     Code
-      head(get_solution(astronomical_solution = "full-ZB18a", quiet = FALSE, force = TRUE))
-    Message
-      i The astronomical solution full-ZB18a has not been downloaded.
-      i Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
-      i Calculating helper columns.
-      i The cache directory is 'transformed-for-CI'.
-      i Saved 'full-ZB18a.dat' to cache.
-      i Saved cleaned-up 'full-ZB18a.csv' to cache.
-      > Saved solution with helper columns 'full-ZB18a.rds' to cache.
+      head(get_solution(astronomical_solution = "full-ZB18a", quiet = TRUE))
     Output
       # A tibble: 6 x 20
               t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz

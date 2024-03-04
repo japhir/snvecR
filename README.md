@@ -46,6 +46,13 @@ Here’s the main function that does the work in action:
 ``` r
 library(snvecR)
 solution <- snvec()
+#> ℹ The astronomical solution full-ZB18a has not been downloaded.
+#> ℹ Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
+#> ℹ Calculating helper columns.
+#> ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.
+#> ℹ Saved 'full-ZB18a.dat' to cache.
+#> ℹ Saved cleaned-up 'full-ZB18a.csv' to cache.
+#> → Saved solution with helper columns 'full-ZB18a.rds' to cache.
 #> This is snvecR VERSION: 3.9.0 2024-02-29
 #> Richard E. Zeebe
 #> Ilja J. Kocken
@@ -62,15 +69,15 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-03-01 11:52:16.805709"
+#> ℹ started at "2024-03-04 13:39:55.132105"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-03-01 11:52:18.356262"
-#> ℹ total duration: 1.55s
+#> ℹ stopped at "2024-03-04 13:40:00.516361"
+#> ℹ total duration: 5.38s
 ```
 
 see `?snvec` for further documentation.
