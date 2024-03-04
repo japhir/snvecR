@@ -1,4 +1,4 @@
-# snvecR (development version)
+# snvecR 3.9.1
 
 # snvecR 3.9.0
 * Refactor `age` in ka to `time` in kyr throughout.
