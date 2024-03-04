@@ -65,12 +65,12 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
   }
 
   if (grepl("^La[0-9][a-z]?", astronomical_solution)) {
-    dat <- astrochron::getLaskar(sol = tolower(astronomical_solution)) |>
-      tibble::as_tibble()
     cli::cli_warn(c("i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
                     "i" = "We do not cache these results.",
-                    "i" = "Output has column names {.q {colnames(dat)}}",
                     "!" = "{.pkg astrochron} converts time from -kyr to ka by default."))
+    rlang::check_installed("astrochron", reason = "to use `astrochron::getLaskar()`")
+    dat <- tibble::as_tibble(astrochron::getLaskar(sol = tolower(astronomical_solution)))
+    cli::cli_warn(c("i" = "Output has column names {.q {colnames(dat)}}"))
   }
 
   if (astronomical_solution == "full-ZB18a" ||
@@ -155,12 +155,14 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                                  skip = 3, comment = "#")
         # this has already been run through prepare_solution
       } else {
-        raw <- readr::read_table(raw_path,
-                                 col_names = raw_col_names,
-                                 col_types = "ddd",
-                                 comment = "%") |>
-          # flip time input so it's always negative kyr
-          dplyr::mutate(time = -.data$time)
+        raw <-
+          dplyr::mutate(
+            readr::read_table(raw_path,
+                              col_names = raw_col_names,
+                              col_types = "ddd",
+                              comment = "%"),
+            # flip time input so it's always negative kyr
+            time = -.data$time)
       }
     }
   } else {# files don't exist or force
@@ -195,14 +197,15 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                                col_types = "dddddddd",
                                skip = 3, comment = "#")
       # calculate helper columns
-      raw <- raw |> prepare_solution(quiet = quiet)
+      raw <- prepare_solution(raw, quiet = quiet)
     } else {
-      raw <- readr::read_table(url,
-                               col_names = raw_col_names,
-                               col_types = "ddd",
-                               comment = "%") |>
+      raw <- dplyr::mutate(
+        readr::read_table(url,
+                          col_names = raw_col_names,
+                          col_types = "ddd",
+                          comment = "%"),
         # flip time input so it's always negative kyr
-        dplyr::mutate(time = -.data$time)
+        time = -.data$time)
     }
 
     if (!save_cache) {
@@ -215,8 +218,15 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
 
       # also copy the raw file to disk
       # even though we've read it in using read_table directly
-      curl::curl_download(url, destfile = raw_path)
-      if (!quiet) cli::cli_alert_info("Saved {.file {basename(raw_path)}} to cache.")
+
+      if (rlang::is_installed("curl")) {
+        curl::curl_download(url, destfile = raw_path)
+        if (!quiet) cli::cli_alert_info("Saved {.file {basename(raw_path)}} to cache.")
+      } else {
+        if (!quiet) cli::cli_alert_info("i" = "Did not download {basename(raw_path)} to cache",
+                                        "!" = "Install {.pkg curl} and re-run with {force = TRUE} if you want to.")
+      }
+
 
       # write intermediate result to csv
       readr::write_csv(raw, csv_path)

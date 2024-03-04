@@ -13,14 +13,16 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Suggests:
+    astrochron,
     ggplot2,
     testthat,
     roxygen2,
     knitr,
+    withr,
+    curl,
     rmarkdown
 Imports:
     deSolve,
-    pracma,
     cli (>= 3.4.0),
     dplyr,
     tibble,
@@ -29,11 +31,8 @@ Imports:
     tidyselect,
     lubridate,
     rlang (>= 0.4.11),
-    withr,
     tidyr,
-    glue,
-    curl,
-    astrochron
+    glue
 Config/testthat/edition: 3
 Depends:
     R (>= 3.5.0)

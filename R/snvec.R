@@ -323,11 +323,9 @@ snvec <- function(tend = -1e3,
 
   # first row of nn -> needs to be a vector
   # orbit normal at t=0
-  ninit <- dat |>
-    dplyr::filter(.data$t == 0) |>
-    dplyr::select(tidyselect::all_of(c("nnx", "nny", "nnz"))) |>
-    as.matrix() |>
-    as.vector()
+  ninit <- as.vector(as.matrix(dplyr::select(
+    dplyr::filter(dat, .data$t == 0),
+    tidyselect::all_of(c("nnx", "nny", "nnz")))))
 
   if (os_ref_frame != "J2000") {
     # transform n => n'
@@ -467,20 +465,19 @@ snvec <- function(tend = -1e3,
   }
 
   ## interpolate the full astronomical solution onto output timescale
-  fin <- out |>
-    tibble::as_tibble() |>
-    dplyr::rename(t = "time") |>
-    dplyr::mutate(
-      time = .data$t / KY2D, .after = "t") |>
-    dplyr::mutate(
-      nnx = approxdat(dat, "nnx")(.data$t),
-      nny = approxdat(dat, "nny")(.data$t),
-      nnz = approxdat(dat, "nnz")(.data$t),
-      eei = approxdat(dat, "ee")(.data$t),
-      inci = approxdat(dat, "inc")(.data$t),
-      lphi = approxdat(dat, "lphu")(.data$t),
-      lani = approxdat(dat, "lanu")(.data$t)
-    )
+  fin <- dplyr::mutate(
+    dplyr::rename(t = "time",
+                  tibble::as_tibble(out)),
+    time = .data$t / KY2D, .after = "t")
+  fin <- dplyr::mutate(fin,
+                       nnx = approxdat(dat, "nnx")(.data$t),
+                       nny = approxdat(dat, "nny")(.data$t),
+                       nnz = approxdat(dat, "nnz")(.data$t),
+                       eei = approxdat(dat, "ee")(.data$t),
+                       inci = approxdat(dat, "inc")(.data$t),
+                       lphi = approxdat(dat, "lphu")(.data$t),
+                       lani = approxdat(dat, "lanu")(.data$t)
+                       )
 
   ## ## calculate obliquity
   ## fin <- fin |>
@@ -490,18 +487,16 @@ snvec <- function(tend = -1e3,
   ##     epl = acos(.data$tmp)
   ##   )
 
-  fin <- fin |>
+  fin <- dplyr::mutate(dplyr::rowwise(fin),
     # for each row, NOTE this makes it very slow!!
-    dplyr::rowwise() |>
     # extract sx, sy, sz, and nnx, nny, nnz
-    dplyr::mutate(
       # create list columns of vectors
       u = list(matrix(c(.data$sx, .data$sy, .data$sz), ncol = 1, nrow = 3)),
       nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
 
       # calculate obliquity
-      tmp = pracma::dot(.data$u, .data$nv),
-      ## tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
+      ## tmp = pracma::dot(.data$u, .data$nv), # get rid of dependency
+      tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
       # calculate obliquity
       epl = acos(.data$tmp),
 
@@ -513,9 +508,9 @@ snvec <- function(tend = -1e3,
 
       ## calculate axial precession
       phi = map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
-    ) |>
-    dplyr::ungroup() |> # end rowwise
-    dplyr::mutate(
+      )
+
+  fin <- dplyr::mutate(dplyr::ungroup(fin), # end rowwise
       # normalize to first value of phi
       phi = .data$phi - first(.data$phi),
       # calculate climatic precession
@@ -535,21 +530,19 @@ snvec <- function(tend = -1e3,
   }
 
   # final cleanup
-  fin <- fin |>
-    # we transform the deSolve parameters into simple numeric columns
-    # this is so they work better with things like bind_rows etc. via vctrs
-    dplyr::mutate(dplyr::across(
-      tidyselect::all_of(c("t", "time", "sx", "sy", "sz", "epl")),
-      as.numeric))
+  # we transform the deSolve parameters into simple numeric columns
+  # this is so they work better with things like bind_rows etc. via vctrs
+  fin <- dplyr::mutate(fin,
+                       dplyr::across(
+                         tidyselect::all_of(c("t", "time", "sx", "sy", "sz", "epl")),
+                         as.numeric))
 
   if (output == "all") {
     return(fin)
   }
 
   if (output == "nice") {
-    fin |>
-      dplyr::select(tidyselect::all_of(c(
-        "time", "epl", "phi", "cp"
-      )))
+    return(dplyr::select(fin,
+                         tidyselect::all_of(c("time", "epl", "phi", "cp"))))
   }
 }
