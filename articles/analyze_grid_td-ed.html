@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">snvecR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.9.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.9.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -177,13 +177,13 @@ save it in the new list-column <code>sol</code>.</p>
 <span>                      tres <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>,</span>
 <span>                      <span class="co"># interactively this makes a nice progress bar</span></span>
 <span>                      .progress <span class="op">=</span> <span class="st">"snvec on a grid"</span><span class="op">)</span><span class="op">)</span> <span class="co">#|&gt;</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■                              </span>   3% |  ETA:  6m</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■                          </span>  16% |  ETA:  1m</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■                      </span>  31% |  ETA: 35s</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA: 20s</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■           </span>  66% |  ETA: 12s</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% |  ETA:  6s</span></span>
-<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■  </span>  97% |  ETA:  1s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■                              </span>   3% |  ETA:  5m</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■                            </span>   9% |  ETA:  2m</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■                       </span>  25% |  ETA: 40s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA: 21s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA: 13s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■        </span>  78% |  ETA:  6s</span></span>
+<span><span class="co">#&gt; snvec on a grid <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■■   </span>  94% |  ETA:  2s</span></span>
 <span></span>
 <span>    <span class="co"># normally we would save the results to file, because these take quite a</span></span>
 <span>    <span class="co"># long time to calculate and we don't want to accidentally delete them.</span></span>
@@ -269,16 +269,16 @@ stead of <code><a href="https://purrr.tidyverse.org/reference/pmap.html" class="
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 32 × 5</span></span></span>
 <span><span class="co">#&gt;       Td    Ed   atol  tend file                                                </span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;glue&gt;</span>                                              </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0_1_1e-04_-1000.…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.5 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0.5_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.7 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0.7_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.8 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0.8_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.9 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0.9_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   1   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_1_1_1e-04_-1000.…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   1.1 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_1.1_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   1.2 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_1.2_1_1e-04_-100…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0   0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0_0.998_1e-04_-1…</span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.5 0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpCtwZgl/2023-04-13_biggrid_0.5_0.998_1e-04_…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span>   0   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0_1_1e-04_-1000.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span>   0.5 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0.5_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span>   0.7 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0.7_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span>   0.8 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0.8_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span>   0.9 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0.9_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span>   1   1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_1_1_1e-04_-1000.…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span>   1.1 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_1.1_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span>   1.2 1     0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_1.2_1_1e-04_-100…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span>   0   0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0_0.998_1e-04_-1…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span>   0.5 0.998 0.000<span style="text-decoration: underline;">1</span> -<span style="color: #BB0000; text-decoration: underline;">1</span><span style="color: #BB0000;">000</span> /tmp/RtmpQsH2vK/2023-04-13_biggrid_0.5_0.998_1e-04_…</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 22 more rows</span></span></span></code></pre></div>
 <p>We write a new wrapper function that includes a file argument to save
 the outputs.</p>
@@ -301,50 +301,50 @@ file.</p>
 <span>               quiet <span class="op">=</span> <span class="cn">TRUE</span>, output <span class="op">=</span> <span class="st">"nice"</span>, tres <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>,</span>
 <span>               <span class="co"># show progress bar</span></span>
 <span>               .progress <span class="op">=</span> <span class="st">"snvec to file"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.5_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.7_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.8_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■                           </span>  12% |  ETA: 18s</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.5_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.7_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.8_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■                           </span>  12% |  ETA: 17s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.9_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.1_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.2_1_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.9_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.1_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.2_1_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0_0.998_1e-04_-1000.rds</span>.</span></span>
 <span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% |  ETA: 14s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.5_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.7_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.8_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.9_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.5_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.7_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.8_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.9_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1_0.998_1e-04_-1000.rds</span>.</span></span>
 <span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■                  </span>  44% |  ETA: 11s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.1_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.2_0.998_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.5_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.7_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.1_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.2_0.998_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.5_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.7_1.005_1e-04_-1000.rds</span>.</span></span>
 <span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■             </span>  59% |  ETA:  8s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.8_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.9_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.1_1.005_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.2_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.8_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.9_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.1_1.005_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.2_1.005_1e-04_-1000.rds</span>.</span></span>
 <span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■         </span>  75% |  ETA:  5s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.5_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.7_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.8_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_0.9_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.5_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.7_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.8_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_0.9_1.012_1e-04_-1000.rds</span>.</span></span>
 <span><span class="co">#&gt; snvec to file <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■■■    </span>  91% |  ETA:  2s</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.1_1.012_1e-04_-1000.rds</span>.</span></span>
-<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpCtwZgl/2023-04-13_biggrid_1.2_1.012_1e-04_-1000.rds</span>.</span></span></code></pre></div>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.1_1.012_1e-04_-1000.rds</span>.</span></span>
+<span><span class="co">#&gt; Wrote file <span style="color: #0000BB;">/tmp/RtmpQsH2vK/2023-04-13_biggrid_1.2_1.012_1e-04_-1000.rds</span>.</span></span></code></pre></div>
 <p>This would lead to the creation of one file per row, which you can
 read in individually or for a certain subset using
 <code><a href="https://readr.tidyverse.org/reference/read_rds.html" class="external-link">readr::read_rds()</a></code>.</p>
