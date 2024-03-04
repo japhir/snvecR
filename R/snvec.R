@@ -479,14 +479,6 @@ snvec <- function(tend = -1e3,
                        lani = approxdat(dat, "lanu")(.data$t)
                        )
 
-  ## ## calculate obliquity
-  ## fin <- fin |>
-  ##   # calculate the dotproduct, Richard's vvdot
-  ##   dplyr::mutate(
-  ##     tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
-  ##     epl = acos(.data$tmp)
-  ##   )
-
   fin <- dplyr::mutate(dplyr::rowwise(fin),
     # for each row, NOTE this makes it very slow!!
     # extract sx, sy, sz, and nnx, nny, nnz
