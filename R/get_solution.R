@@ -81,6 +81,7 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
   return(dat)
 }
 
+# I've commented out the title so it doesn't build the function documentation for this, since it's not exported
 # #' Get a ZB solution
 # #'
 #' @param astronomical_solution Character vector with the name of the desired

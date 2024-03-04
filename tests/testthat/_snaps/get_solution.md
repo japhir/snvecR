@@ -5,7 +5,7 @@
     Message
       i The astronomical solution ZB20b has not been downloaded.
       i Reading 'ZB20b.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20b.dat>.
-      i The cache directory is '/home/japhir/.cache/R/snvecR'.
+      i The cache directory is '/home/runner/.cache/R/snvecR'.
       i Saved 'ZB20b.dat' to cache.
       i Saved cleaned-up 'ZB20b.csv' to cache.
       > Saved solution with helper columns 'ZB20b.rds' to cache.
@@ -57,4 +57,3 @@
       4 -438300  -1.2  1.00 0.0172  7.12  23.7 -179. -158.  8.75  23.7  181. 0.00690 0.0157 -0.00270    -0.124 0.992 0.998 -0.00270    0.124 0.992
       5 -584400  -1.6  1.00 0.0173  7.11  22.1 -178. -160. 12.8   22.1  182. 0.00653 0.0161 -0.00359    -0.124 0.992 0.998 -0.00359    0.124 0.992
       6 -730500  -2    1.00 0.0175  7.10  21.0 -178. -161. 16.4   21.0  182. 0.00627 0.0163 -0.00449    -0.124 0.992 0.998 -0.00448    0.123 0.992
-
