@@ -44,8 +44,8 @@ keywords:
   - earth sciences
   - marine sciences
 license: GPL-3.0-or-later
-version: 3.9.0
-date-released: '2024-02-29'
+version: 3.9.1
+date-released: '2024-03-04'
 references:
 - authors:
   - family-names: Zeebe
