@@ -82,6 +82,13 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://japhir.github.io/snvecR/">snvecR</a></span><span class="op">)</span></span>
 <span><span class="va">solution</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/snvec.html">snvec</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ The astronomical solution full-ZB18a has not been downloaded.</span></span>
+<span><span class="co">#&gt; ℹ Reading 'full-ZB18a.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;.</span></span>
+<span><span class="co">#&gt; ℹ Calculating helper columns.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.</span></span>
+<span><span class="co">#&gt; ℹ Saved 'full-ZB18a.dat' to cache.</span></span>
+<span><span class="co">#&gt; ℹ Saved cleaned-up 'full-ZB18a.csv' to cache.</span></span>
+<span><span class="co">#&gt; → Saved solution with helper columns 'full-ZB18a.rds' to cache.</span></span>
 <span><span class="co">#&gt; This is snvecR VERSION: 3.9.0 2024-02-29</span></span>
 <span><span class="co">#&gt; Richard E. Zeebe</span></span>
 <span><span class="co">#&gt; Ilja J. Kocken</span></span>
@@ -98,15 +105,15 @@
 <span><span class="co">#&gt; • `atol` = 1e-05</span></span>
 <span><span class="co">#&gt; • `rtol` = 0</span></span>
 <span><span class="co">#&gt; • `solver` = "vode"</span></span>
-<span><span class="co">#&gt; ℹ started at "2024-03-01 11:52:16.805709"</span></span>
+<span><span class="co">#&gt; ℹ started at "2024-03-04 13:39:55.132105"</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423</span></span>
 <span><span class="co">#&gt; • s-error = |s|-1: -5.51290422495798e-05</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • obliquity: 0.413060472710089 rad</span></span>
 <span><span class="co">#&gt; • precession: -0.562357122261026 rad</span></span>
-<span><span class="co">#&gt; ℹ stopped at "2024-03-01 11:52:18.356262"</span></span>
-<span><span class="co">#&gt; ℹ total duration: 1.55s</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ stopped at "2024-03-04 13:40:00.516361"</span></span>
+<span><span class="co">#&gt; ℹ total duration: 5.38s</span></span></code></pre></div>
 <p>see <code><a href="reference/snvec.html">?snvec</a></code> for further documentation.</p>
 <p>Here we create a quick plot of the calculated climatic precession with the eccentricity envelope:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
