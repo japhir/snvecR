@@ -12,8 +12,9 @@
 #' @noRd
 approxdat <- function(dat, col) {
   # I'm not putting any input checks because it's an internal function
-  dat[, c("t", col)] |>
-    approxfun(rule = 1)
+  approxfun(
+    dat[, c("t", col)],
+    rule = 1)
 }
 
 # implement qinterp similar to the C-routine
