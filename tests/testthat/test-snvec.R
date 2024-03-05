@@ -6,8 +6,9 @@ test_that("snvec() inputs are checked", {
   expect_error(snvec(tend = 1000, tres = -0.4, quiet = TRUE))
   expect_error(snvec(tend = 1000, tres = 0.4, astronomical_solution = "full-ZB18a", quiet = TRUE))
   expect_error(snvec(tend = -1000, tres = -0.4, quiet = TRUE,
-                     astronomical_solution = get_solution("full-ZB18a", quiet = TRUE) |>
-                       mutate(t = -t, time = -time)))
+                     astronomical_solution = dplyr::mutate(get_solution("full-ZB18a", quiet = TRUE),
+                                                           t = -t, time = -time)
+                       ))
   expect_error(snvec(output = "banaan", quiet = TRUE))
   expect_error(snvec(solver = "banaan", quiet = TRUE))
   expect_error(snvec(astronomical_solution = "hoi", quiet = TRUE)) # same as get_solution
@@ -28,31 +29,33 @@ test_that("snvec() inputs are checked", {
 test_that("snvec() works", {
   withr::local_options(width = 57)
   # I test a snapshot of the output
-  expect_snapshot(snvec(tend = -49, # limit output to 50 ka so it takes <5 s (CRAN check)
-                        # specify default values explicitly in case they change in the future
-                        ed = 1,
-                        td = 0,
-                        # return results at a very low resolution for speed
-                        tres = -1,
-                        # do not show info messages because some have timestamps
-                        quiet = TRUE,
-                        # provide output = all so that we can see if the vectors are doing well
-                        output = "all") |>
-                    # report only the columns of interest (the ones returned by the C-routine)
-                    # this means that if I change my mind about which columns to report it doesn't matter,
-                    # as long as the output of these columns remains the same.
-                    dplyr::select(tidyselect::all_of(c("time", "sx", "sy", "sz", "epl", "phi", "cp"))) |>
-                    # print the full 100 rows to monitor changes
-                    print(n = 50))
+  expect_snapshot(
+    # print the full 100 rows to monitor changes
+    print(
+      dplyr::select(
+        snvec(tend = -49, # limit output to 50 ka so it takes <5 s (CRAN check)
+              # specify default values explicitly in case they change in the future
+              ed = 1,
+              td = 0,
+              # return results at a very low resolution for speed
+              tres = -1,
+              # do not show info messages because some have timestamps
+              quiet = TRUE,
+              # provide output = all so that we can see if the vectors are doing well
+              output = "all"),
+        # report only the columns of interest (the ones returned by the C-routine)
+        # this means that if I change my mind about which columns to report it doesn't matter,
+        # as long as the output of these columns remains the same.
+        tidyselect::all_of(c("time", "sx", "sy", "sz", "epl", "phi", "cp"))),
+      n = 50))
 })
 
 test_that("snvec() output columns are correct", {
   # we have the desired columns
-  expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice") |>
-                 colnames(),
-               c("time", "epl", "phi", "cp"))
+  expect_equal(colnames(
+    snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice")),
+    c("time", "epl", "phi", "cp"))
   # we have a deSolve matrix
-  expect_equal(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "ode") |>
-                 class(),
+  expect_equal(class(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "ode")),
                c("deSolve", "matrix"))
 })
