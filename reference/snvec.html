@@ -274,15 +274,15 @@ use.</p></li>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `atol` = <span style="color: #0000BB;">1e-05</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `rtol` = <span style="color: #0000BB;">0</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `solver` = <span style="color: #0000BB;">"vode"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-03-05 09:56:48.137903"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-03-05 10:13:09.930746"</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: <span style="color: #0000BB;">0.404184487124565</span>, <span style="color: #0000BB;">-0.0537555129057148</span>, and <span style="color: #0000BB;">0.913036138471423</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: <span style="color: #0000BB;">-5.51290422495798e-05</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: <span style="color: #0000BB;">0.413060472710089</span> rad</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: <span style="color: #0000BB;">-0.562357122261026</span> rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-03-05 09:56:52.410955"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">4.27s</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-03-05 10:13:14.048709"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">4.12s</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     time   epl    phi     cp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -300,8 +300,10 @@ use.</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ignore the below, this is just to make CRAN builds happy!</span></span></span>
 <span class="r-in"><span><span class="co"># remove the directory with the cached astronomical solution to clean up</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu">R_user_dir</span><span class="op">(</span><span class="st">"snvecR"</span>, which <span class="op">=</span> <span class="st">"cache"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in R_user_dir("snvecR", which = "cache"):</span> could not find function "R_user_dir"</span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">getRversion</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;</span> <span class="st">"4.0.0"</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu">backports</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/backports/man/import.html" class="external-link">import</a></span><span class="op">(</span><span class="st">"tools"</span>, <span class="st">"R_user_dir"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu">tools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/tools/userdir.html" class="external-link">R_user_dir</a></span><span class="op">(</span><span class="st">"snvecR"</span>, which <span class="op">=</span> <span class="st">"cache"</span><span class="op">)</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
