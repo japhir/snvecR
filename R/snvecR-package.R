@@ -13,5 +13,6 @@
 #' @importFrom tibble tibble
 #' @importFrom tidyselect all_of
 #' @importFrom utils menu
+#' @importFrom tools R_user_dir
 ## usethis namespace: end
 NULL
