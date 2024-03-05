@@ -224,9 +224,9 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
         curl::curl_download(url, destfile = raw_path)
         if (!quiet) cli::cli_alert_info("Saved {.file {basename(raw_path)}} to cache.")
       } else {
-        cli::cli_warn(c("i" = "Did not download {.file {
+        cli::cli_warn(c("i" = "Did not download the raw data file {.file {
 basename(raw_path)}} to cache.",
-        "!" = "Install {.pkg curl} and re-run with {force = TRUE} if you want to."))
+"!" = "If you want to do so, install the {.pkg curl} package and re-run with `force = TRUE`"))
       }
 
       # write intermediate result to csv
