@@ -164,7 +164,7 @@
 #'
 #' # ignore the below, this is just to make CRAN builds happy!
 #' # remove the directory with the cached astronomical solution to clean up
-#' unlink(tools::R_user_dir("snvecR", which = "cache"), recursive = TRUE)
+#' unlink(R_user_dir("snvecR", which = "cache"), recursive = TRUE)
 #' }
 #' @export
 snvec <- function(tend = -1e3,
@@ -499,12 +499,12 @@ snvec <- function(tend = -1e3,
       # get 2nd and 1st column of up
 
       ## calculate axial precession
-      phi = map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
+      phi = purrr::map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
       )
 
   fin <- dplyr::mutate(dplyr::ungroup(fin), # end rowwise
       # normalize to first value of phi
-      phi = .data$phi - first(.data$phi),
+      phi = .data$phi - dplyr::first(.data$phi),
       # calculate climatic precession
       cp = .data$eei * sin((.data$lphi + OMT) / R2D - .data$phi)
     )

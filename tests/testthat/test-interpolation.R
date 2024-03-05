@@ -1,7 +1,7 @@
 test_that("approxdat() works", {
   # create very simple test dataframe
-  dat <- tibble(t = seq(0, -10, -.2),
-                y = sin(seq(-2 * pi, 2 * pi, length.out = length(t))))
+  dat <- tibble::tibble(t = seq(0, -10, -.2),
+                        y = sin(seq(-2 * pi, 2 * pi, length.out = length(t))))
   # test the vectorized method
   # that does interpolation for the whole dataset at once
   # with the target time exactly half-way between rows 5 and 6
@@ -14,8 +14,8 @@ test_that("approxdat() works", {
   ##            x = dat$t + .1,
   ##            y = approxdat(dat, "y")(dat$t + .1),
   ##            size = 5, colour = "red")
-  fut <- tibble(t = seq(0, 10, .2),
-                y = seq(0, 1, length.out = length(t)))
+  fut <- tibble::tibble(t = seq(0, 10, .2),
+                        y = seq(0, 1, length.out = length(t)))
   expect_equal(approxdat(fut, "y")((fut$t[6] + fut$t[5]) / 2),
                (fut$y[6] + fut$y[5]) / 2)
 })
@@ -23,8 +23,8 @@ test_that("approxdat() works", {
 test_that("qinterp() works", {
 
   # "normal" example where we go from 0 to -t
-  dat <- tibble(t = seq(0, -10, -2),
-                y = sin(seq(.3 * pi, pi, length.out = length(t))))
+  dat <- tibble::tibble(t = seq(0, -10, -2),
+                        y = sin(seq(.3 * pi, pi, length.out = length(t))))
   # do the same interpolation but using qinterp
   dts <- dat$t[2] - dat$t[1] # diff between timesteps, -0.2
   # target timestep half-way between rows 5 and 6
@@ -47,8 +47,8 @@ test_that("qinterp() works", {
                (dat$y[6] + dat$y[5]) / 2)
 
   # "future" example where we go from 0 to +t
-  fut <- tibble(t = seq(0, 10, 2),
-                y = sin(seq(.3 * pi, pi, length.out = length(t))))
+  fut <- tibble::tibble(t = seq(0, 10, 2),
+                        y = sin(seq(.3 * pi, pi, length.out = length(t))))
   dts <- fut$t[2] - fut$t[1] # diff between timesteps
   tmv <- (fut$t[6] + fut$t[5]) / 2
   m <- min(round(abs(tmv / dts)) + 1, nrow(fut))
@@ -101,8 +101,8 @@ test_that("qinterp() works", {
 })
 
 test_that("qinterp and approxdat give the same results", {
-  dat <- tibble(t = seq(0, -10, -.2),
-                y = sin(seq(-2 * pi, 2 * pi, length.out = length(t))))
+  dat <- tibble::tibble(t = seq(0, -10, -.2),
+                        y = sin(seq(-2 * pi, 2 * pi, length.out = length(t))))
   expect_equal(approxdat(dat, "y")((dat$t[6] + dat$t[5]) / 2),
                qinterp(y = dat$y, ds = dat$t[2] - dat$t[1],
                        dx = ((dat$t[6] + dat$t[5]) / 2) - dat$t[5],
