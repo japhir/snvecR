@@ -32,7 +32,8 @@ Imports:
     lubridate,
     rlang (>= 0.4.11),
     tidyr,
-    glue
+    glue,
+    backports (>= 1.1.6)
 Config/testthat/edition: 3
 Depends:
     R (>= 3.6.0)
