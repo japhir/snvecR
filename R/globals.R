@@ -3,11 +3,7 @@
 ## VER <- "snvecR VERSION: 3.9.0 2024-02-29"
 VER <- "snvecR VERSION: 3.9.1 2024-03-04"
 
-if (getRversion() >= "4.0.0") {
-  cachedir <- R_user_dir("snvecR", which = "cache")
-} else {
-  cachedir <- tools::R_user_dir("snvecR", which = "cache")
-}
+cachedir <- R_user_dir("snvecR", which = "cache")
 
 AU <- 1.49597870700e11 # m
 GM <- 1.32712440041e20 # m3/s2
