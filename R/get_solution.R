@@ -107,7 +107,8 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                    quiet = FALSE,
                    force = FALSE) {
   base_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/"
-  cachedir <- R_user_dir("snvecR", which = "cache")
+  # get cachedir from globals.R
+  ## cachedir <- R_user_dir("snvecR", which = "cache")
   if (astronomical_solution == "full-ZB18a") {
     url <- paste0(base_url, "PrecTilt/OS/ZB18a/ems-plan3.dat")
     raw_col_names <- c("t", # time in days
