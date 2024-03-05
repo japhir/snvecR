@@ -242,7 +242,3 @@ basename(raw_path)}} to cache.",
     return(raw)
   }
 }
-
-.onLoad <- function(libname, pkgname) {
-  backports::import(pkgname, "R_user_dir")
-}

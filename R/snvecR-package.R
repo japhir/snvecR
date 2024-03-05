@@ -13,5 +13,6 @@
 # ' @importFrom tibble tibble
 # ' @importFrom tidyselect all_of
 # ' @importFrom utils menu
+#' @rawNamespace if (getRversion() >= "4.0.0") {importFrom(tools,R_user_dir)} else {importFrom(backports,tools)}
 ## usethis namespace: end
 NULL

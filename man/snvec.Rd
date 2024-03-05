@@ -145,7 +145,7 @@ snvec()
 
 # ignore the below, this is just to make CRAN builds happy!
 # remove the directory with the cached astronomical solution to clean up
-unlink(tools::R_user_dir("snvecR", which = "cache"), recursive = TRUE)
+unlink(R_user_dir("snvecR", which = "cache"), recursive = TRUE)
 }
 }
 \references{
