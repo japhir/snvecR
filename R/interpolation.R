@@ -12,7 +12,7 @@
 #' @noRd
 approxdat <- function(dat, col) {
   # I'm not putting any input checks because it's an internal function
-  approxfun(
+  stats::approxfun(
     dat[, c("t", col)],
     rule = 1)
 }

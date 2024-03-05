@@ -25,6 +25,7 @@ Suggests:
 Imports:
     deSolve,
     cli (>= 3.4.0),
+    stats,
     dplyr,
     tibble,
     purrr,
