@@ -31,7 +31,6 @@ Imports:
     tidyselect,
     lubridate,
     rlang (>= 0.4.11),
-    tidyr,
     glue,
     backports (>= 1.1.6)
 Config/testthat/edition: 3

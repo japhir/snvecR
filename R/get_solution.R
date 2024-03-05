@@ -107,12 +107,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                    quiet = FALSE,
                    force = FALSE) {
   base_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/"
-  if (getRversion() > "4.0.0") {
-    cachedir <- tools::R_user_dir("snvecR", which = "cache")
-  } else {
-    cachedir <- backports::R_user_dir("snvecR", which = "cache")
-  }
-
+  cachedir <- R_user_dir("snvecR", which = "cache")
   if (astronomical_solution == "full-ZB18a") {
     url <- paste0(base_url, "PrecTilt/OS/ZB18a/ems-plan3.dat")
     raw_col_names <- c("t", # time in days
@@ -246,4 +241,8 @@ basename(raw_path)}} to cache.",
     }
     return(raw)
   }
+}
+
+.onLoad <- function(libname, pkgname) {
+  backports::import(pkgname, "R_user_dir")
 }
