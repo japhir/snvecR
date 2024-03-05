@@ -39,3 +39,4 @@ Depends:
     R (>= 3.6.0)
 VignetteBuilder: knitr
 URL: https://japhir.github.io/snvecR/
+BugReports: https://github.com/japhir/snvecR/
