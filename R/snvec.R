@@ -164,7 +164,7 @@
 #'
 #' # ignore the below, this is just to make CRAN builds happy!
 #' # remove the directory with the cached astronomical solution to clean up
-#' unlink(cachedir, recursive = TRUE)
+#' unlink(snvecR:::cachedir, recursive = TRUE)
 #' }
 #' @export
 snvec <- function(tend = -1e3,
