@@ -45,15 +45,10 @@ Here’s the main function that does the work in action:
 
 ``` r
 library(snvecR)
-solution <- snvec()
-#> ℹ The astronomical solution full-ZB18a has not been downloaded.
-#> ℹ Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
-#> ℹ Calculating helper columns.
-#> ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.
-#> ℹ Saved 'full-ZB18a.dat' to cache.
-#> ℹ Saved cleaned-up 'full-ZB18a.csv' to cache.
-#> → Saved solution with helper columns 'full-ZB18a.rds' to cache.
-#> This is snvecR VERSION: 3.9.0 2024-02-29
+solution <- snvec(tend = -1000, ed = 1, td = 0,
+                  astronomical_solution = "full-ZB18a",
+                  tres = -0.4)
+#> This is snvecR VERSION: 3.9.1 2024-03-04
 #> Richard E. Zeebe
 #> Ilja J. Kocken
 #> 
@@ -69,21 +64,35 @@ solution <- snvec()
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-03-04 13:39:55.132105"
+#> ℹ started at "2024-03-05 20:58:24.795302"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-03-04 13:40:00.516361"
-#> ℹ total duration: 5.38s
+#> ℹ stopped at "2024-03-05 20:58:29.453921"
+#> ℹ total duration: 4.66s
+```
+
+To quickly save out the results for further study to CSV[^1]:
+
+``` r
+write.csv(solution, "ZB18a_ed-1.0_td-0.0.csv")
 ```
 
 see `?snvec` for further documentation.
 
-Here we create a quick plot of the calculated climatic precession with
-the eccentricity envelope:
+Here we create a quick plot of the obliquity:
+
+``` r
+plot(epl ~ time, data = solution, type = 'l')
+```
+
+<img src="man/figures/README-simpleplot-1.png" width="100%" />
+
+Or if you want to make a slightly fancier plot of the calculated
+climatic precession with the eccentricity envelope:
 
 ``` r
 library(ggplot2)
@@ -96,7 +105,7 @@ solution |>
   geom_line(aes(y = ee, colour = "Eccentricity"),
             data = get_solution() |> dplyr::filter(time > -1000)) +
   scale_color_discrete(type = c("skyblue", "black")) +
-  theme(legend.position.inside = c(.9, .95))
+  theme(legend.position = "inside", legend.position.inside = c(.9, .95))
 ```
 
 <img src="man/figures/README-plot-1.png" width="100%" />
@@ -121,3 +130,7 @@ System Chaos. *The Astronomical Journal*, 164(3),
 
 Wikipedia page on Orbital Elements:
 <https://en.wikipedia.org/wiki/Orbital_elements>
+
+[^1]: Actually I would recommend the [`readr`
+    package](https://readr.tidyverse.org/) with `readr::write_csv()`
+    instead.

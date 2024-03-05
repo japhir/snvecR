@@ -54,15 +54,30 @@ Here's the main function that does the work in action:
 
 ```{r example}
 library(snvecR)
-solution <- snvec()
+solution <- snvec(tend = -1000, ed = 1, td = 0,
+                  astronomical_solution = "full-ZB18a",
+                  tres = -0.4)
+```
+
+To quickly save out the results for further study to CSV[^1]:
+
+[^1]: Actually I would recommend the [`readr` package](https://readr.tidyverse.org/) with `readr::write_csv()` instead.
+
+```{r saveresults, eval = FALSE}
+write.csv(solution, "ZB18a_ed-1.0_td-0.0.csv")
 ```
 
 see `?snvec` for further documentation.
 
-Here we create a quick plot of the calculated climatic precession with the
-eccentricity envelope:
+Here we create a quick plot of the obliquity:
 
-```{r plot, fig.width = 9, fig.height = 7}
+```{r simpleplot, fig.width = 9, fig.height = 6}
+plot(epl ~ time, data = solution, type = 'l')
+```
+
+Or if you want to make a slightly fancier plot of the calculated climatic precession with the eccentricity envelope:
+
+```{r plot, fig.width = 9, fig.height = 6}
 library(ggplot2)
 solution |>
   ggplot(aes(x = time, y = cp)) +
@@ -73,7 +88,7 @@ solution |>
   geom_line(aes(y = ee, colour = "Eccentricity"),
             data = get_solution() |> dplyr::filter(time > -1000)) +
   scale_color_discrete(type = c("skyblue", "black")) +
-  theme(legend.position.inside = c(.9, .95))
+  theme(legend.position = "inside", legend.position.inside = c(.9, .95))
 ```
 
 # References
