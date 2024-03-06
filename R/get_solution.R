@@ -178,11 +178,15 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
       save_cache <- TRUE
     } else {
       # a logical, TRUE if Yes, no if otherwise
-      download <- utils::menu(c("Yes", "No"),
-                              title = "Would you like to download and process it now?") == 1L
+      download <- utils::askYesNo("Would you like to download and process it now?")
+      if (is.na(download)) {
+        cli::cli_abort("Cancelled by user.", call = NULL)
+      }
       if (download) {
-        save_cache <- utils::menu(c("Yes", "No"),
-                                  title = "Would you like to save the results to .csv and .rds?") == 1L
+        save_cache <- utils::askYesNo("Would you like to save the astronomical solution to .csv and .rds?")
+        if (is.na(save_cache)) {
+          cli::cli_abort("Cancelled by user.", call = NULL)
+        }
       } else {
         save_cache <- FALSE
       }
