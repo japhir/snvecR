@@ -124,13 +124,17 @@ Paleoclimatology</em>. <a href="https://doi.org/10.1029/2021PA004349" class="ext
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
 <span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"full-ZB18a"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution full-ZB18a has not been downloaded.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "full-ZB18a" has not been downloaded.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Would you like to download and process it now? (Yes/no/cancel) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Would you like to save the astronomical solution to .csv and .rds? (Yes/no/cancel) </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">full-ZB18a.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating helper columns.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The cache directory is <span style="color: #0000BB;">/home/runner/.cache/R/snvecR</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved <span style="color: #0000BB;">full-ZB18a.dat</span> to cache.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved cleaned-up <span style="color: #0000BB;">full-ZB18a.csv</span> to cache.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Saved solution with helper columns <span style="color: #0000BB;">full-ZB18a.rds</span> to cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved astronomical solution with helper columns <span style="color: #0000BB;">full-ZB18a.rds</span> to cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Future calls to `get_solution("full-ZB18a")` will read from the cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> If you don't want this, specify `force = TRUE`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 250,001 × 20</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
@@ -148,12 +152,16 @@ Paleoclimatology</em>. <a href="https://doi.org/10.1029/2021PA004349" class="ext
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: kk &lt;dbl&gt;, pp &lt;dbl&gt;, qq &lt;dbl&gt;, cc &lt;dbl&gt;, dd &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   nnx &lt;dbl&gt;, nny &lt;dbl&gt;, nnz &lt;dbl&gt;</span></span>
 <span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"ZB20a"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution ZB20a has not been downloaded.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "ZB20a" has not been downloaded.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Would you like to download and process it now? (Yes/no/cancel) </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Would you like to save the astronomical solution to .csv and .rds? (Yes/no/cancel) </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">ZB20a.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20a.dat&gt;</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The cache directory is <span style="color: #0000BB;">/home/runner/.cache/R/snvecR</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved <span style="color: #0000BB;">ZB20a.dat</span> to cache.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved cleaned-up <span style="color: #0000BB;">ZB20a.csv</span> to cache.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> → Saved solution with helper columns <span style="color: #0000BB;">ZB20a.rds</span> to cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved astronomical solution with helper columns <span style="color: #0000BB;">ZB20a.rds</span> to cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Future calls to `get_solution("ZB20a")` will read from the cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> If you don't want this, specify `force = TRUE`.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 187,501 × 3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     time    ecc   inc</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
