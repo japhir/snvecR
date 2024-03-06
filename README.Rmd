@@ -54,9 +54,12 @@ Here's the main function that does the work in action:
 
 ```{r example}
 library(snvecR)
-solution <- snvec(tend = -1000, ed = 1, td = 0,
-                  astronomical_solution = "full-ZB18a",
-                  tres = -0.4)
+solution <- snvec(tend = -1000, # final timestep in kyr
+                  ed = 1, # dynamical ellipticity, normalized to modern
+                  td = 0, # tidal dissipation, normalized to modern
+                  astronomical_solution = "full-ZB18a", # see ?full_ZB18a for details
+                  tres = -0.4 # timestep resolution in kyr (so this is 400 years)
+                  )
 ```
 
 To quickly save out the results for further study to CSV[^1]:
