@@ -66,8 +66,9 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
                      "i" = "Pull requests welcome."))
   }
 
-  if (grepl("^La[0-9][a-z]?", astronomical_solution)) {
-    cli::cli_warn(c("i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
+  if (grepl("^La[0-9][0-9][a-z]?", astronomical_solution)) {
+    cli::cli_warn(c(
+      "i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
                     "i" = "We do not cache these results.",
                     "!" = "{.pkg astrochron} converts time from -kyr to ka by default."))
     rlang::check_installed("astrochron", reason = "to use `astrochron::getLaskar()`")
