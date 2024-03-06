@@ -29,6 +29,8 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
   solutions <- c("full-ZB18a", # the default
                  # special case to catch ambiguous naming
                  "ZB18a",
+                 "full-La10",
+                 "full-La10a", "full-La10b", "full-La10c", "full-La10d",
                  "full-La11", # just to thow an error
                  # we rely on astrochron to get these for us
                  "La04", "La10a", "La10b", "La10c", "La10d", "La11",
