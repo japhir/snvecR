@@ -53,19 +53,19 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
     cli::cli_abort(c(
       "There are multiple versions of {.q ZB18a} available.",
       "!" = "Please select the one you want:",
-      "*" = "{.q full-ZB18a}: for the precession-tilt solutions",
-      "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Ma",
-      "*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Ma"
+      "*" = "{.q full-ZB18a}: for the full astronomical solution.",
+      "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Myr.",
+      "*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Myr."
     ))
   }
 
   if (grepl("^full-La", astronomical_solution)) {
     cli::cli_abort(c(
       "Astronomical solution {.q {astronomical_solution}} is not supported.",
-      "!" = "The input OS for snvec must be either in the:",
+      "!" = "The input astronomical solution for {.fun snvec} must be either in the:",
       "*" = "Heliocentric inertial reference frame (HCI)",
       "*" = "Ecliptic reference frame (J2000).",
-      "x" = "The La10 and La11 solutions are in the invariant/inertial reference frame.",
+      "x" = "The La10x and La11 solutions are in the invariant/inertial reference frame.",
       "i" = "To resolve this, you need the positions/velocities and masses of all the bodies.",
       "i" = "Or the angles between their inertial reference frame and J2000.",
       "i" = "Pull requests welcome."
@@ -80,7 +80,8 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
     rlang::check_installed("astrochron",
                            reason = "to use `astrochron::getLaskar()`")
     dat <- tibble::as_tibble(
-      astrochron::getLaskar(sol = tolower(astronomical_solution))
+      astrochron::getLaskar(sol = tolower(astronomical_solution),
+                            verbose = !quiet)
     )
     cli::cli_warn(c(
       "i" = "Output has column names {.q {colnames(dat)}}"
@@ -182,12 +183,12 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     }
   } else {# files don't exist or force
     if (!quiet) {
-      cli::cli_alert_info(
-        "The astronomical solution {astronomical_solution} has not been downloaded."
-      )
+      cli::cli_alert_info(c(
+        "!" = "The astronomical solution {.q {astronomical_solution}} has not been downloaded."
+      ))
     }
     # default to downloading/caching if not interactive (i.e. GitHub actions)
-    if (force || !interactive()) {
+    if (force) {
       download <- TRUE
       save_cache <- TRUE
     } else {
@@ -275,9 +276,10 @@ basename(raw_path)}} to cache.",
       # write final result to rds cache
       readr::write_rds(raw, rds_path)
       if (!quiet) {
-        cli::cli_alert_info(c(
-          "Saved astronomical solution with helper columns {.file {basename(rds_path)}} to cache.",
-          "i" = "Future calls to `get_solution({astronomical_solution})` will read from the cache, unless you specify `force = TRUE`."
+        cli::cli_inform(c(
+          "i" = "Saved astronomical solution with helper columns {.file {basename(rds_path)}} to cache.",
+          "i" = "Future calls to `get_solution({.q {astronomical_solution}})` will read from the cache.",
+          "!" = "If you don't want this, specify `force = TRUE`."
         ))
       }
     }
