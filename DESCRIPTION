@@ -39,5 +39,5 @@ Config/testthat/edition: 3
 Depends:
     R (>= 3.6.0)
 VignetteBuilder: knitr
-URL: https://japhir.github.io/snvecR/
-BugReports: https://github.com/japhir/snvecR/
+URL: https://japhir.github.io/snvecR/, https://github.com/japhir/snvecR
+BugReports: https://github.com/japhir/snvecR/issues

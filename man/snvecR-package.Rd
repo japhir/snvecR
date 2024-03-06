@@ -12,7 +12,8 @@ Easily calculate precession and obliquity from an orbital solution (defaults to 
 Useful links:
 \itemize{
   \item \url{https://japhir.github.io/snvecR/}
-  \item Report bugs at \url{https://github.com/japhir/snvecR/}
+  \item \url{https://github.com/japhir/snvecR}
+  \item Report bugs at \url{https://github.com/japhir/snvecR/issues}
 }
 
 }
