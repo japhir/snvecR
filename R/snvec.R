@@ -294,7 +294,7 @@ snvec <- function(tend = -1e3,
 
   # message user about inputs
   if (!quiet) {
-    startdate <- lubridate::now()
+    startdate <- Sys.time()
     cli::cli_inform(c(
       "This is {VER}",
       "Richard E. Zeebe",
@@ -526,12 +526,13 @@ snvec <- function(tend = -1e3,
 
   ## message user about final values
   if (!quiet) {
+    stopdate <- Sys.time()
     cli::cli_inform(
       c("Final values:",
         "*" = "obliquity: {.val {fin[nrow(fin), 'epl']}} rad",
         "*" = "precession: {.val {fin[nrow(fin), 'phi']}} rad",
-        "i" = "stopped at {.q {lubridate::now()}}",
-        "i" = "total duration: {.val {lubridate::as.duration(round(lubridate::now() - startdate, 2))}}"
+        "i" = "stopped at {.q {stopdate}}",
+        "i" = "total duration: {.val {round(stopdate - startdate, 2)}}"
         )
     )
   }

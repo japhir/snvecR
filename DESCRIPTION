@@ -31,7 +31,6 @@ Imports:
     purrr,
     readr,
     tidyselect,
-    lubridate,
     rlang (>= 0.4.11),
     glue,
     tools,
