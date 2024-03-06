@@ -52,7 +52,9 @@ prepare_solution <- function(data, quiet = FALSE) {
   if (!all(mandatory_cols %in% colnames(data))) {
     if (all(c("t", "a", "e", "i", "om", "oom", "vpi", "mn") %in% colnames(data))) {
       # we're dealing with orbitN output
-      cli::cli_alert_info("Renaming astronomical solution columns from orbitN syntax to snvec syntax.")
+      cli::cli_alert_info(
+        "Renaming astronomical solution columns from orbitN syntax to snvec syntax."
+      )
       data <- dplyr::rename(data, ee = .data$e,
                             inc = .data$i,
                             lph = .data$vpi,
@@ -65,7 +67,11 @@ prepare_solution <- function(data, quiet = FALSE) {
     }
   }
 
-  if (!quiet) cli::cli_alert_info("Calculating helper columns.")
+  if (!quiet) {
+    cli::cli_alert_info(
+      "Calculating helper columns."
+    )
+  }
   data <- dplyr::mutate(data, time = .data$t / KY2D, .after = "t")
   data <- dplyr::mutate(data,
       lphu = unwrap(.data$lph),

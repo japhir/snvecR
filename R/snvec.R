@@ -182,45 +182,55 @@ snvec <- function(tend = -1e3,
 
   outputs <- c("nice", "all", "ode")
   if (!output %in% outputs) {
-    cli::cli_abort(c("{.var output} must be one of {.or {.q {outputs}}}.",
-                     "x" = "You've supplied {.q {output}}."))
+    cli::cli_abort(c(
+      "{.var output} must be one of {.or {.q {outputs}}}.",
+      "x" = "You've supplied {.q {output}}."
+    ))
   }
 
   ## tres
   if (sign(tres) != sign(tend)) {
-    cli::cli_abort(c("{.var tres} must be given in the same sign as {.var tend}.",
-                     "i" = "{.var tres} = {tres}",
-                     "i" = "{.var tend} = {tend}"
-                     ))
+    cli::cli_abort(c(
+      "{.var tres} must be given in the same sign as {.var tend}.",
+      "i" = "{.var tres} = {tres}",
+      "i" = "{.var tend} = {tend}"
+    ))
   }
 
 
   ## a quick dumb input test for now
   if (abs(tres) > abs(tend)) {
-    cli::cli_abort(c("abs({.var tres}) must be < abs({.var tend}).",
-                     "i" = "{.var tres} = {tres}",
-                     "i" = "{.var tend} = {tend}"
-                     ))
+    cli::cli_abort(c(
+      "abs({.var tres}) must be < abs({.var tend}).",
+      "i" = "{.var tres} = {tres}",
+      "i" = "{.var tend} = {tend}"
+    ))
   }
 
   # this warning is too strict and kind of annoying
   ## if (ed < .998 | ed > 1.0005) {
   if (ed < .9 | ed > 1.1) {
-    cli::cli_warn(c("!" = "Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past 45 Ma!",
-                    "i" = "{.var ed} = {ed}",
-                    "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."))
+    cli::cli_warn(c(
+      "Dynamic ellipticity likely varied between 0.9980 and 1.0005 during the past 45 Ma!",
+      "i" = "{.var ed} = {ed}",
+      "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."
+    ))
   }
 
   if (td < 0 | td > 1.2) {
-    cli::cli_warn(c("Tidal dissipation likely varied between 0 and 1!",
-                    "i" = "{.var td} = {td}",
-                    "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."))
+    cli::cli_warn(c(
+      "Tidal dissipation likely varied between 0 and 1!",
+      "i" = "{.var td} = {td}",
+      "*" = "See Zeebe & Lourens 2022 Pal&Pal <https://doi.org/10.1029/2021PA004349>."
+    ))
   }
 
   if (!"data.frame" %in% class(astronomical_solution) &&
         !grepl("^full-", astronomical_solution)) {
-    cli::cli_abort(c("Astronomical Solution must contain all orbital parameters",
-                     "i" = "Did you mean to specify {.q full-ZB18a}?"))
+    cli::cli_abort(c(
+      "Astronomical Solution must contain all orbital parameters",
+      "i" = "Did you mean to specify {.q full-ZB18a}?"
+    ))
   }
 
   hci_refs <- c("heliocentric intertial", "HCI")
@@ -240,10 +250,14 @@ snvec <- function(tend = -1e3,
   # specify a non-default os_ref_frame
   if (os_ref_frame != "HCI") {
     if (!is.null(os_omt)) {
-      cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_omt}.")
+      cli::cli_abort(
+        "Specified both {.var os_ref_frame} and {.var os_omt}."
+      )
     }
     if (!is.null(os_inct)) {
-      cli::cli_abort("Specified both {.var os_ref_frame} and {.var os_inct}.")
+      cli::cli_abort(
+        "Specified both {.var os_ref_frame} and {.var os_inct}."
+      )
     }
   }
 
@@ -271,10 +285,11 @@ snvec <- function(tend = -1e3,
   dat <- get_solution(astronomical_solution = astronomical_solution, quiet = quiet)
 
   if ((sign(tend) != sign(dat$time[2])) || (abs(tend) > max(abs(dat$time)))) {
-    cli::cli_abort(c("{.var tend} must fall within astronomical solution time.",
-                     "i" = "The astronomical solution {sign(dat$time[2])*max(abs(dat$time))}.",
-                     "x" = "{.var tend} = {tend}."
-                     ))
+    cli::cli_abort(c(
+      "{.var tend} must fall within astronomical solution time.",
+      "i" = "The astronomical solution {sign(dat$time[2])*max(abs(dat$time))}.",
+      "x" = "{.var tend} = {tend}."
+    ))
   }
 
   # message user about inputs

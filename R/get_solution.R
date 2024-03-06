@@ -43,27 +43,33 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
                  "ZB20a", "ZB20b", "ZB20c", "ZB20d")
 
   if (!astronomical_solution %in% solutions) {
-    cli::cli_abort(c("{.var astronomical_solution} must be one of: {.or {.q {solutions}}}",
-                     "x" = "You've supplied {.q {astronomical_solution}}"))
+    cli::cli_abort(c(
+      "{.var astronomical_solution} must be one of: {.or {.q {solutions}}}",
+      "x" = "You've supplied {.q {astronomical_solution}}"
+    ))
   }
 
   if (astronomical_solution == "ZB18a") {
-    cli::cli_abort(c("i" = "There are multiple versions of {.q ZB18a} available.",
-                     "!" = "Please select the one you want:",
-                     "*" = "{.q full-ZB18a}: for the precession-tilt solutions",
-                     "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Ma",
-"*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Ma"))
+    cli::cli_abort(c(
+      "There are multiple versions of {.q ZB18a} available.",
+      "!" = "Please select the one you want:",
+      "*" = "{.q full-ZB18a}: for the precession-tilt solutions",
+      "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Ma",
+      "*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Ma"
+    ))
   }
 
   if (grepl("^full-La", astronomical_solution)) {
-    cli::cli_abort(c("i" = "Astronomical solution {.q {astronomical_solution}} is not supported.",
-                     "!" = "The input OS for snvec must be either in the:",
-                     "*" = "Heliocentric inertial reference frame (HCI)",
-                     "*" = "Ecliptic reference frame (J2000).",
-                     "x" = "The La10 and La11 solutions are in the invariant/inertial reference frame.",
-                     "i" = "To resolve this, you need the positions/velocities and masses of all the bodies.",
-                     "i" = "Or the angles between their inertial reference frame and J2000.",
-                     "i" = "Pull requests welcome."))
+    cli::cli_abort(c(
+      "Astronomical solution {.q {astronomical_solution}} is not supported.",
+      "!" = "The input OS for snvec must be either in the:",
+      "*" = "Heliocentric inertial reference frame (HCI)",
+      "*" = "Ecliptic reference frame (J2000).",
+      "x" = "The La10 and La11 solutions are in the invariant/inertial reference frame.",
+      "i" = "To resolve this, you need the positions/velocities and masses of all the bodies.",
+      "i" = "Or the angles between their inertial reference frame and J2000.",
+      "i" = "Pull requests welcome."
+    ))
   }
 
   if (grepl("^La[0-9][0-9][a-z]?", astronomical_solution)) {
@@ -71,9 +77,14 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
       "i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
                     "i" = "We do not cache these results.",
                     "!" = "{.pkg astrochron} converts time from -kyr to ka by default."))
-    rlang::check_installed("astrochron", reason = "to use `astrochron::getLaskar()`")
-    dat <- tibble::as_tibble(astrochron::getLaskar(sol = tolower(astronomical_solution)))
-    cli::cli_warn(c("i" = "Output has column names {.q {colnames(dat)}}"))
+    rlang::check_installed("astrochron",
+                           reason = "to use `astrochron::getLaskar()`")
+    dat <- tibble::as_tibble(
+      astrochron::getLaskar(sol = tolower(astronomical_solution))
+    )
+    cli::cli_warn(c(
+      "i" = "Output has column names {.q {colnames(dat)}}"
+    ))
   }
 
   if (astronomical_solution == "full-ZB18a" ||
@@ -170,8 +181,11 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
       }
     }
   } else {# files don't exist or force
-    if (!quiet) cli::cli_alert_info("The astronomical solution {astronomical_solution} has not been downloaded.")
-
+    if (!quiet) {
+      cli::cli_alert_info(
+        "The astronomical solution {astronomical_solution} has not been downloaded."
+      )
+    }
     # default to downloading/caching if not interactive (i.e. GitHub actions)
     if (force || !interactive()) {
       download <- TRUE
@@ -198,7 +212,11 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     }
 
     # read the file from the website
-    if (!quiet) cli::cli_alert_info("Reading {.file {basename(raw_path)}} from website {.url {url}}.")
+    if (!quiet) {
+      cli::cli_alert_info(
+        "Reading {.file {basename(raw_path)}} from website {.url {url}}."
+      )
+    }
     if (astronomical_solution == "full-ZB18a") {
       raw <- readr::read_table(url,
                                col_names = raw_col_names,
@@ -222,29 +240,45 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
       if (!dir.exists(cachedir)) {
         dir.create(cachedir, recursive = TRUE, showWarnings = TRUE)
       }
-      if (!quiet) cli::cli_alert_info("The cache directory is {.file {cachedir}}.")
+      if (!quiet) {
+        cli::cli_alert_info(
+          "The cache directory is {.file {cachedir}}."
+        )
+      }
 
       # also copy the raw file to disk
       # even though we've read it in using read_table directly
 
       if (rlang::is_installed("curl")) {
         curl::curl_download(url, destfile = raw_path)
-        if (!quiet) cli::cli_alert_info("Saved {.file {basename(raw_path)}} to cache.")
+        if (!quiet) {
+          cli::cli_alert_info(
+            "Saved {.file {basename(raw_path)}} to cache."
+          )
+        }
       } else {
-        cli::cli_warn(c("i" = "Did not download the raw data file {.file {
+        cli::cli_warn(c(
+          "i" = "Did not download the raw data file {.file {
 basename(raw_path)}} to cache.",
-"!" = "If you want to do so, install the {.pkg curl} package and re-run with `force = TRUE`"))
+          "!" = "If you want to do so, install the {.pkg curl} package and re-run with `force = TRUE`"
+        ))
       }
 
       # write intermediate result to csv
       readr::write_csv(raw, csv_path)
-      if (!quiet) cli::cli_alert_info("Saved cleaned-up {.file {basename(csv_path)}} to cache.")
+      if (!quiet) {
+        cli::cli_alert_info(
+        "Saved cleaned-up {.file {basename(csv_path)}} to cache."
+        )
+      }
 
       # write final result to rds cache
       readr::write_rds(raw, rds_path)
       if (!quiet) {
-        cli::cli_alert("Saved solution with helper columns {.file {basename(rds_path)}} to cache.",
-                       "i" = "Future runs will read from the cache, unless you specify `force = TRUE`.")
+        cli::cli_alert_info(c(
+          "Saved astronomical solution with helper columns {.file {basename(rds_path)}} to cache.",
+          "i" = "Future calls to `get_solution({astronomical_solution})` will read from the cache, unless you specify `force = TRUE`."
+        ))
       }
     }
     return(raw)

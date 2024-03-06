@@ -188,7 +188,9 @@ outputs.
 snvec_save <- function(..., file) {
   snvec(...) |>
     readr::write_rds(file)
-  cli::cli_inform("Wrote file {.file {file}}.")
+  cli::cli_inform(
+    "Wrote file {.file {file}}."
+  )
 }
 ```
 
