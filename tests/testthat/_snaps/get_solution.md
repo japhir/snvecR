@@ -18,13 +18,15 @@
     Code
       head(get_solution(astronomical_solution = "full-ZB18a", quiet = FALSE, force = TRUE))
     Message
-      i The astronomical solution full-ZB18a has not been downloaded.
+      i The astronomical solution "full-ZB18a" has not been downloaded.
       i Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
       i Calculating helper columns.
       i The cache directory is 'transformed-for-CI'.
       i Saved 'full-ZB18a.dat' to cache.
       i Saved cleaned-up 'full-ZB18a.csv' to cache.
-      > Saved solution with helper columns 'full-ZB18a.rds' to cache.
+      i Saved astronomical solution with helper columns 'full-ZB18a.rds' to cache.
+      i Future calls to `get_solution("full-ZB18a")` will read from the cache.
+      ! If you don't want this, specify `force = TRUE`.
     Output
       # A tibble: 6 x 20
               t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh     kk          pp     qq    cc    dd         nnx   nny   nnz
