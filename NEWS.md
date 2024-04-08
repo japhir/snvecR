@@ -1,4 +1,4 @@
-# snvecR (development version)
+# snvecR 3.9.2
 * Made the package work for R >= 3.6.x
   * added backports for tools::R_user_dir
   * added GitHub CI that tests the installation on windows and mac with R 3.6.3
