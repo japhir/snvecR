@@ -40,6 +40,10 @@ do not cache these solutions locally, however.
 get_solution("full-ZB18a")
 get_solution("ZB20a")
 get_solution("La11")
+
+# ignore the below, this is just to make CRAN builds happy!
+# remove the directory with the cached astronomical solution to clean up
+unlink(snvecR:::cachedir, recursive = TRUE)
 }
 }
 \references{

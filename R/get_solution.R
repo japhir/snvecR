@@ -18,6 +18,10 @@
 #' get_solution("full-ZB18a")
 #' get_solution("ZB20a")
 #' get_solution("La11")
+#'
+#' # ignore the below, this is just to make CRAN builds happy!
+#' # remove the directory with the cached astronomical solution to clean up
+#' unlink(snvecR:::cachedir, recursive = TRUE)
 #' }
 #' @export
 get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, force = FALSE) {

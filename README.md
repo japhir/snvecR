@@ -51,7 +51,7 @@ solution <- snvec(tend = -1000, # final timestep in kyr
                   astronomical_solution = "full-ZB18a", # see ?full_ZB18a for details
                   tres = -0.4 # timestep resolution in kyr (so this is 400 years)
                   )
-#> This is snvecR VERSION: 3.9.1.9000 2024-03-06
+#> This is snvecR VERSION: 3.9.1.9000 2024-04-08
 #> Richard E. Zeebe
 #> Ilja J. Kocken
 #> 
@@ -67,15 +67,15 @@ solution <- snvec(tend = -1000, # final timestep in kyr
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-03-06 12:29:11.01195"
+#> ℹ started at "2024-04-08 10:33:40.651034"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-03-06 12:29:15.594616"
-#> ℹ total duration: 4.58
+#> ℹ stopped at "2024-04-08 10:33:45.388357"
+#> ℹ total duration: 4.74
 ```
 
 To quickly save out the results for further study to CSV[^1]:

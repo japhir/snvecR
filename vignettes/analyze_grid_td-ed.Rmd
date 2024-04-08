@@ -258,3 +258,9 @@ Wikipedia page on Orbital Elements:
 Wickham, H., Çetinkaya-Rundel, M., & Grolemund, G. (2023). R for Data Science:
   Import, Tidy, Transform, Visualize, and Model Data (2nd edition). O’Reilly
   Media. <https://r4ds.hadley.nz>
+
+```{r teardown, include = FALSE}
+# ignore the below, this is just to make CRAN builds happy!
+# remove the directory with the cached astronomical solution to clean up
+unlink(snvecR:::cachedir, recursive = TRUE)
+```
