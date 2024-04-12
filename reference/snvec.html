@@ -12,11 +12,11 @@ of ordinary differential equations."><!-- mathjax --><script src="https://cdnjs.
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">snvecR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.9.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.9.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -263,55 +263,12 @@ use.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Would you like to save the astronomical solution to .csv and .rds? (Yes/no/cancel) </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">full-ZB18a.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating helper columns.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The cache directory is <span style="color: #0000BB;">/home/runner/.cache/R/snvecR</span>.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved <span style="color: #0000BB;">full-ZB18a.dat</span> to cache.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved cleaned-up <span style="color: #0000BB;">full-ZB18a.csv</span> to cache.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved astronomical solution with helper columns <span style="color: #0000BB;">full-ZB18a.rds</span> to cache.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Future calls to `get_solution("full-ZB18a")` will read from the cache.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> If you don't want this, specify `force = TRUE`.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> This is snvecR VERSION: 3.9.1.9000 2024-04-08</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Richard E. Zeebe</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Ilja J. Kocken</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Integration parameters:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tend` = <span style="color: #0000BB;">-1000</span> kyr</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `ed` = <span style="color: #0000BB;">1</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `td` = <span style="color: #0000BB;">0</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `astronomical_solution` = <span style="color: #0000BB;">"full-ZB18a"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `os_ref_frame` = <span style="color: #0000BB;">"HCI"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `os_omt` = defaulting to <span style="color: #0000BB;">75.594</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `os_inct` = defaulting to <span style="color: #0000BB;">7.155</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `tres` = <span style="color: #0000BB;">-0.4</span> kyr</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `atol` = <span style="color: #0000BB;">1e-05</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `rtol` = <span style="color: #0000BB;">0</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> `solver` = <span style="color: #0000BB;">"vode"</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> started at "2024-04-08 21:44:53.592428"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s[1][2][3]: <span style="color: #0000BB;">0.404184487124565</span>, <span style="color: #0000BB;">-0.0537555129057148</span>, and <span style="color: #0000BB;">0.913036138471423</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> s-error = |s|-1: <span style="color: #0000BB;">-5.51290422495798e-05</span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Final values:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> obliquity: <span style="color: #0000BB;">0.413060472710089</span> rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> precession: <span style="color: #0000BB;">-0.562357122261026</span> rad</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> stopped at "2024-04-08 21:44:57.783243"</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> total duration: <span style="color: #0000BB;">4.19</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2,501 × 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     time   epl    phi     cp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   0   0.409 0      0.016<span style="text-decoration: underline;">3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  -<span style="color: #BB0000;">0.4</span> 0.410 0.097<span style="text-decoration: underline;">5</span> 0.016<span style="text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  -<span style="color: #BB0000;">0.8</span> 0.411 0.195  0.017<span style="text-decoration: underline;">1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  -<span style="color: #BB0000;">1.2</span> 0.412 0.292  0.017<span style="text-decoration: underline;">0</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  -<span style="color: #BB0000;">1.6</span> 0.413 0.389  0.016<span style="text-decoration: underline;">8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  -<span style="color: #BB0000;">2</span>   0.414 0.486  0.016<span style="text-decoration: underline;">3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  -<span style="color: #BB0000;">2.4</span> 0.414 0.582  0.015<span style="text-decoration: underline;">6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  -<span style="color: #BB0000;">2.8</span> 0.415 0.679  0.014<span style="text-decoration: underline;">6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  -<span style="color: #BB0000;">3.2</span> 0.416 0.775  0.013<span style="text-decoration: underline;">4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  -<span style="color: #BB0000;">3.6</span> 0.417 0.871  0.012<span style="text-decoration: underline;">0</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2,491 more rows</span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.character(x):</span> cannot coerce type 'closure' to vector of type 'character'</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># ignore the below, this is just to make CRAN builds happy!</span></span></span>
 <span class="r-in"><span><span class="co"># remove the directory with the cached astronomical solution to clean up</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="fu">snvecR</span><span class="fu">:::</span><span class="va">cachedir</span>, recursive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in as.character(x):</span> cannot coerce type 'closure' to vector of type 'character'</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
@@ -324,7 +281,7 @@ use.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>
