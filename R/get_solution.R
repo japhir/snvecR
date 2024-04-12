@@ -21,7 +21,7 @@
 #'
 #' # ignore the below, this is just to make CRAN builds happy!
 #' # remove the directory with the cached astronomical solution to clean up
-#' unlink(snvecR:::cachedir, recursive = TRUE)
+#' unlink(snvecR:::cachedir(), recursive = TRUE)
 #' }
 #' @export
 get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, force = FALSE) {
@@ -153,9 +153,9 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
   }
 
   # where will we save our cached results?
-  raw_path <- paste0(cachedir, "/", astronomical_solution, ".dat")
-  csv_path <- paste0(cachedir, "/", astronomical_solution, ".csv")
-  rds_path <- paste0(cachedir, "/", astronomical_solution, ".rds")
+  raw_path <- paste0(cachedir(), "/", astronomical_solution, ".dat")
+  csv_path <- paste0(cachedir(), "/", astronomical_solution, ".csv")
+  rds_path <- paste0(cachedir(), "/", astronomical_solution, ".rds")
 
   # read final processed file from cache if available
   if (!force && file.exists(rds_path)) {
@@ -242,12 +242,12 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     if (!save_cache) {
       return(raw)
     } else {
-      if (!dir.exists(cachedir)) {
-        dir.create(cachedir, recursive = TRUE, showWarnings = TRUE)
+      if (!dir.exists(cachedir())) {
+        dir.create(cachedir(), recursive = TRUE, showWarnings = TRUE)
       }
       if (!quiet) {
         cli::cli_alert_info(
-          "The cache directory is {.file {cachedir}}."
+          "The cache directory is {.file {cachedir()}}."
         )
       }
 

@@ -262,5 +262,5 @@ Wickham, H., Çetinkaya-Rundel, M., & Grolemund, G. (2023). R for Data Science:
 ```{r teardown, include = FALSE}
 # ignore the below, this is just to make CRAN builds happy!
 # remove the directory with the cached astronomical solution to clean up
-unlink(snvecR:::cachedir, recursive = TRUE)
+unlink(snvecR:::cachedir(), recursive = TRUE)
 ```

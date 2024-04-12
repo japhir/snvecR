@@ -145,7 +145,7 @@ snvec(tend = -1e3, ed = 1, td = 0, tres = -0.4)
 
 # ignore the below, this is just to make CRAN builds happy!
 # remove the directory with the cached astronomical solution to clean up
-unlink(snvecR:::cachedir, recursive = TRUE)
+unlink(snvecR:::cachedir(), recursive = TRUE)
 }
 }
 \references{
