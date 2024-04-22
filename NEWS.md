@@ -1,3 +1,9 @@
+# snvecR (development version)
+* Added a package option for the cache directory.
+  * Set it with options(snvecR.cachedir = "/you/path").
+  * It still defaults to the user's cache directory.
+* Made all tests, vignettes, and examples use temporary directories rather than the user's cache dir.
+
 # snvecR 3.9.2
 * Made the package work for R >= 3.6.x
   * added backports for tools::R_user_dir

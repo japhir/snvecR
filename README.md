@@ -51,7 +51,16 @@ solution <- snvec(tend = -1000, # final timestep in kyr
                   astronomical_solution = "full-ZB18a", # see ?full_ZB18a for details
                   tres = -0.4 # timestep resolution in kyr (so this is 400 years)
                   )
-#> This is snvecR VERSION: 3.9.1.9000 2024-04-08
+#> ℹ The astronomical solution "full-ZB18a" has not been downloaded.
+#> ℹ Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
+#> ℹ Calculating helper columns.
+#> ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.
+#> ℹ Saved 'full-ZB18a.dat' to cache.
+#> ℹ Saved cleaned-up 'full-ZB18a.csv' to cache.
+#> ℹ Saved astronomical solution with helper columns 'full-ZB18a.rds' to cache.
+#> ℹ Future calls to `get_solution("full-ZB18a")` will read from the cache.
+#> ! If you don't want this, specify `force = TRUE`.
+#> This is snvecR VERSION: 3.9.2.9000 2024-04-22
 #> Richard E. Zeebe
 #> Ilja J. Kocken
 #> 
@@ -67,15 +76,15 @@ solution <- snvec(tend = -1000, # final timestep in kyr
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2024-04-08 10:33:40.651034"
+#> ℹ started at "2024-04-22 08:47:29.732434"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2024-04-08 10:33:45.388357"
-#> ℹ total duration: 4.74
+#> ℹ stopped at "2024-04-22 08:47:34.762126"
+#> ℹ total duration: 5.03
 ```
 
 To quickly save out the results for further study to CSV[^1]:
