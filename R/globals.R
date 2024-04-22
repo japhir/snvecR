@@ -1,7 +1,8 @@
 VER <- glue::glue("snvecR VERSION: {packageVersion('snvecR')} {if(!is.na(packageDate('snvecR'))) packageDate('snvecR') else Sys.Date()}")
 
 cachedir <- function() {
-  R_user_dir("snvecR", which = "cache")
+  def <- R_user_dir("snvecR", which = "cache")
+  getOption("snvecR.cachedir", default = def)
 }
 
 AU <- 1.49597870700e11 # m

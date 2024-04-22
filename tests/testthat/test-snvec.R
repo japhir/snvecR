@@ -27,7 +27,9 @@ test_that("snvec() inputs are checked", {
 })
 
 test_that("snvec() works", {
-  withr::local_options(width = 57)
+  pth <- withr::local_tempdir(pattern = "snvecR")
+  withr::local_options(list(snvecR.cachedir = pth, width = 57))
+
   # I test a snapshot of the output
   expect_snapshot(
     # print the full 100 rows to monitor changes
@@ -51,6 +53,9 @@ test_that("snvec() works", {
 })
 
 test_that("snvec() output columns are correct", {
+  pth <- withr::local_tempdir(pattern = "snvecR")
+  withr::local_options(list(snvecR.cachedir = pth))
+
   # we have the desired columns
   expect_equal(colnames(
     snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice")),

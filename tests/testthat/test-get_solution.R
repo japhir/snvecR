@@ -5,14 +5,17 @@ test_that("get_solution() inputs are checked", {
 })
 
 test_that("get_solution() can load eccentricity solutions", {
-  withr::local_options(width = 150)
+  pth <- withr::local_tempdir(pattern = "snvecR")
+  withr::local_options(list(snvecR.cachedir = pth, width = 150))
 
   expect_snapshot(head(get_solution(astronomical_solution = "ZB20b",
                                     quiet = TRUE, force = TRUE)))
+
 })
 
 test_that("get_solution() can load full solutions", {
-  withr::local_options(width = 150)
+  pth <- withr::local_tempdir(pattern = "snvecR")
+  withr::local_options(list(snvecR.cachedir = pth, width = 150))
 
   expect_snapshot(head(get_solution(astronomical_solution = "full-ZB18a", quiet = FALSE, force = TRUE)),
                   # get rid of the cache directory printing in this snapshot because it differs between CIs and machines

@@ -37,13 +37,14 @@ do not cache these solutions locally, however.
 }
 \examples{
 \donttest{
+\dontshow{
+# set the cachedir to a temporary directory
+pth <- withr::local_tempdir(pattern = "snvecR")
+withr::local_options(snvecR.cachedir = pth)
+}
 get_solution("full-ZB18a")
 get_solution("ZB20a")
 get_solution("La11")
-
-# ignore the below, this is just to make CRAN builds happy!
-# remove the directory with the cached astronomical solution to clean up
-unlink(snvecR:::cachedir(), recursive = TRUE)
 }
 }
 \references{
