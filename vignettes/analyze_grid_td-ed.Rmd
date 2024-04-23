@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.width = 12, fig.height = 8
 )
-modern_r <- getRversion() >= "4.1.0"
+## modern_r <- getRversion() >= "4.1.0"
 pth <- withr::local_tempdir(pattern = "snvecR")
 withr::local_options(list(snvecR.cachedir = pth))
 ```
@@ -58,7 +58,7 @@ biggrid
 We now add columns for important parameter values that do not vary between
 experiments, so that it is very clear from the output what the inputs were.
 
-```{r update-grid, eval = modern_r}
+```{r update-grid}
 biggrid <- biggrid |>
     # for now only for 1000 years at very high tolerance so it's fast
     mutate(atol = 1e-4, tend = -1e3)
@@ -84,7 +84,7 @@ would quickly make R run out of memory, because it would be storing all the
 timesteps for those 32 experiments. Instead, we write a wrapper function that
 only stores the latest N timesteps.
 
-```{r snvec-tail, eval = modern_r}
+```{r snvec-tail}
 snvec_tail <- function(..., n = 100) {
   # do the fit with the parameters in ...
   snvec(...) |>
@@ -96,7 +96,7 @@ snvec_tail <- function(..., n = 100) {
 Compute obliquity and precession for each parameter combination, and save it in
 the new list-column `sol`.
 
-```{r massive-compute, eval = modern_r}
+```{r massive-compute}
 biggrid <- biggrid |>
     # apply our new function!
     mutate(sol = pmap(list(td = Td, ed = Ed, tend = tend, atol = atol),
@@ -126,14 +126,14 @@ biggrid <- readr::read_rds("out/2023-04-05_biggrid.rds")
 # Inspect results
 
 Let's look at the structure of the output:
-```{r check, eval = modern_r}
+```{r check}
 glimpse(biggrid)
 ```
 
 We can see the list column `sol` in this result! But we'd like to access the
 raw output, so we use `unnest()`.
 
-```{r unnest, eval = modern_r}
+```{r unnest}
 expanded <- biggrid |>
   unnest(sol)
 expanded
@@ -141,7 +141,7 @@ expanded
 
 Let's make a figure of these final values.
 
-```{r plot, eval = modern_r}
+```{r plot}
 expanded |>
   ggplot(aes(x = time, y = cp,
              colour = factor(Td),
@@ -173,7 +173,7 @@ variables and then use `purrr::pwalk()` in stead of `pmap()`.
 
 This could look like this:
 
-```{r add-filenames, eval = modern_r}
+```{r add-filenames}
 biggrid <- biggrid |>
   # get rid of sol column
   select(-sol) |>
@@ -186,7 +186,7 @@ biggrid
 We write a new wrapper function that includes a file argument to save the
 outputs.
 
-```{r snvec-save, eval = modern_r}
+```{r snvec-save}
 snvec_save <- function(..., file) {
   snvec(...) |>
     readr::write_rds(file)
@@ -198,7 +198,7 @@ snvec_save <- function(..., file) {
 
 Calculate each time series' obliquity and precession and save to file.
 
-```{r run-pwalk, eval = modern_r}
+```{r run-pwalk}
 biggrid |>
   # in this case we make sure that column names are identical to argument names
   # so that the list (in this case tibble/data.frame) is matched to the correct
@@ -216,7 +216,7 @@ individually or for a certain subset using `readr::read_rds()`.
 
 Below we do it for all the files and make a plot!
 
-```{r read-files, eval = modern_r}
+```{r read-files}
 biggrid |> # limit to a few experiments
   ## slice(c(1, 15, 32)) |>
   # in this case that's not necessary because we limited it to a very
