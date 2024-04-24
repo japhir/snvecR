@@ -1,3 +1,5 @@
+# snvecR (development version)
+
 # snvecR 3.9.3
 * Added a package option for the cache directory.
   * Set it with options(snvecR.cachedir = "/you/path").
