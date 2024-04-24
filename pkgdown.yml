@@ -3,7 +3,7 @@ pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   analyze_grid_td-ed: analyze_grid_td-ed.html
-last_built: 2024-04-24T21:01Z
+last_built: 2024-04-24T21:04Z
 urls:
   reference: https://japhir.github.io/snvecR/reference
   article: https://japhir.github.io/snvecR/articles
