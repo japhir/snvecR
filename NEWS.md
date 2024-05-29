@@ -1,4 +1,4 @@
-# snvecR (development version)
+# snvecR 3.9.4
 
 # snvecR 3.9.3
 * Added a package option for the cache directory.

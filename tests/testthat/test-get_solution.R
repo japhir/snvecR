@@ -1,6 +1,6 @@
 test_that("get_solution() inputs are checked", {
   pth <- withr::local_tempdir(pattern = "snvecR")
-  withr::local_options(list(snvecR.cachedir = pth, width = 150))
+  withr::local_options(list(snvecR.cachedir = pth))
   expect_error(get_solution(astronomical_solution = "hoi"))
   expect_error(get_solution(astronomical_solution = "full-La11"))
   expect_error(get_solution(astronomical_solution = data.frame(x = 1, y = 5))) # this runs via prepare_solution
