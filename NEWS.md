@@ -1,4 +1,7 @@
+# snvecR (development version)
+
 # snvecR 3.9.4
+* Made error tests of get_solution() use temporary directory.
 
 # snvecR 3.9.3
 * Added a package option for the cache directory.
