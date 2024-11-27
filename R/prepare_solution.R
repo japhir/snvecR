@@ -87,4 +87,5 @@ prepare_solution <- function(data, quiet = FALSE) {
       nny = -sin(.data$inc / R2D) * cos(.data$lan / R2D),
       nnz = cos(.data$inc / R2D)
     )
+  return(data)
 }

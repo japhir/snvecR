@@ -26,7 +26,7 @@
 #' }
 #' @export
 get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, force = FALSE) {
-  if ("data.frame" %in% class(astronomical_solution)) {
+  if (any("data.frame" == class(astronomical_solution))) {
     return(prepare_solution(astronomical_solution, quiet = quiet))
   }
 
@@ -47,7 +47,7 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
                  "ZB18a-300",
                  "ZB20a", "ZB20b", "ZB20c", "ZB20d")
 
-  if (!astronomical_solution %in% solutions) {
+  if (!any(astronomical_solution == c(solutions, cached_solutions))) {
     cli::cli_abort(c(
       "{.var astronomical_solution} must be one of: {.or {.q {solutions}}}",
       "x" = "You've supplied {.q {astronomical_solution}}"
@@ -91,10 +91,10 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
     cli::cli_warn(c(
       "i" = "Output has column names {.q {colnames(dat)}}"
     ))
-  }
-
-  if (astronomical_solution == "full-ZB18a" ||
-        grepl("^ZB[0-9][0-9][a-z]", astronomical_solution)) {
+  } else {
+  ## if (astronomical_solution == "full-ZB18a" ||
+        ## grepl("^ZB[0-9][0-9][a-z]", astronomical_solution) ||
+        ## astronomical_solution %in% cached_solutions) {
     dat <- get_ZB(astronomical_solution, quiet = quiet, force = force)
   }
 

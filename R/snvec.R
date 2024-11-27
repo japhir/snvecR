@@ -182,7 +182,7 @@ snvec <- function(tend = -1e3,
                   output = "nice") {
 
   outputs <- c("nice", "all", "ode")
-  if (!output %in% outputs) {
+  if (!any(output == outputs)) {
     cli::cli_abort(c(
       "{.var output} must be one of {.or {.q {outputs}}}.",
       "x" = "You've supplied {.q {output}}."
@@ -226,7 +226,7 @@ snvec <- function(tend = -1e3,
     ))
   }
 
-  if (!"data.frame" %in% class(astronomical_solution) &&
+  if (!any("data.frame" == class(astronomical_solution)) &&
         !grepl("^full-", astronomical_solution)) {
     cli::cli_abort(c(
       "Astronomical Solution must contain all orbital parameters",
@@ -236,15 +236,15 @@ snvec <- function(tend = -1e3,
 
   hci_refs <- c("heliocentric intertial", "HCI")
   j2000_refs <- c("ecliptic", "ECLIPJ2000", "J2000")
-  if (!os_ref_frame %in% c(hci_refs, j2000_refs)) {
+  if (!any(os_ref_frame == c(hci_refs, j2000_refs))) {
     cli::cli_abort(c(
       "i" = "{.var os_ref_frame} must be one of {.or {.q {reference_frames}}}",
       "x" = "{.var os_ref_frame} = {.q {os_ref_frame}}"
     ))
   } else {
     # get rid of aliases
-    if (os_ref_frame %in% hci_refs) os_ref_frame <- "HCI"
-    if (os_ref_frame %in% j2000_refs) os_ref_frame <- "J2000"
+    if (any(os_ref_frame == hci_refs)) os_ref_frame <- "HCI"
+    if (any(os_ref_frame == j2000_refs)) os_ref_frame <- "J2000"
   }
 
   # if the user specifies a value for os_omt and/or os_inct, they cannot
@@ -305,7 +305,7 @@ snvec <- function(tend = -1e3,
       "*" = "{.var tend} = {.val {tend}} kyr",
       "*" = "{.var ed} = {.val {ed}}",
       "*" = "{.var td} = {.val {td}}",
-      "*" = "{.var astronomical_solution} = {.val {if ('data.frame' %in% class(astronomical_solution)) 'user provided' else astronomical_solution}}",
+      "*" = "{.var astronomical_solution} = {.val {if (any('data.frame' == class(astronomical_solution))) 'user provided' else astronomical_solution}}",
       "*" = "{.var os_ref_frame} = {.val {os_ref_frame}}",
       "*" = "{.var os_omt} = {if (is.null(os_omt)) 'defaulting to' else ''} {.val {OMT}}",
       "*" = "{.var os_inct} = {if (is.null(os_inct)) 'defaulting to' else ''} {.val {INCT}}",
