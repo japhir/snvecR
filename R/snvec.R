@@ -495,30 +495,34 @@ snvec <- function(tend = -1e3,
                        lani = approxdat(dat, "lanu")(.data$t)
                        )
 
-  fin <- dplyr::mutate(dplyr::rowwise(fin),
-    # for each row, NOTE this makes it very slow!!
-    # extract sx, sy, sz, and nnx, nny, nnz
-      # create list columns of vectors
-      u = list(matrix(c(.data$sx, .data$sy, .data$sz), ncol = 1, nrow = 3)),
-      nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
-
+  fin <- dplyr::mutate(fin,
       # calculate obliquity
       ## tmp = pracma::dot(.data$u, .data$nv), # get rid of dependency
       tmp = .data$sx * .data$nnx + .data$sy * .data$nny + .data$sz * .data$nnz,
       # calculate obliquity
-      epl = acos(.data$tmp),
+      epl = acos(.data$tmp))
 
-      # coords: fixed => moving orbit plane
-      up = list(euler(.data$u, .data$inci / R2D, .data$lani / R2D, FALSE)),
-      # coords: relative to phi(t=0)=0 at J2000
-      up = list(euler(.data$up, 0, -(.data$lani + OMT) / R2D + pi / 2, FALSE)),
-      # get 2nd and 1st column of up
+  ## fin <- dplyr::mutate(dplyr::rowwise(fin),
+    # for each row, NOTE this makes it very slow!!
+  ## fin <- dplyr::mutate(fin,
+    # extract sx, sy, sz, and nnx, nny, nnz
+      # create list columns of vectors
+      ## u = list(matrix(c(.data$sx, .data$sy, .data$sz), ncol = 1, nrow = 3)),
+      ## nv = list(matrix(c(.data$nnx, .data$nny, .data$nnz), ncol = 1, nrow = 3)),
+                       ## u = purrr::pmap(list(.data$sx, .data$sy, .data$sz), c))
+                       ## u = list(c(.data$sx, .data$sy, .data$sz)))
+  ## fin <- dplyr::mutate(dplyr::ungroup(fin), # end rowwise
 
+  fin$u <- Map(c, fin$sx, fin$sy, fin$sz)
+  # Map is slightly (but not a lot) faster than purrr::map
+  fin$up <- Map(euler, s = fin$u, inc = fin$inci / R2D, lan = fin$lani / R2D)
+  # coords: relative to phi(t=0)=0 at J2000
+  fin$up <- Map(euler, s = fin$up, inc = 0, lan = -(fin$lani + OMT) / R2D + pi / 2)
+
+  fin <- dplyr::mutate(fin,
       ## calculate axial precession
-      phi = purrr::map2_dbl(.data$up[2, ], .data$up[1, ], atan2)
-      )
-
-  fin <- dplyr::mutate(dplyr::ungroup(fin), # end rowwise
+      # get 2nd and 1st value of up
+      phi = purrr::map_dbl(.data$up, .f = \(x) atan2(x[2], x[1])),
       # normalize to first value of phi
       phi = .data$phi - dplyr::first(.data$phi),
       # calculate climatic precession
