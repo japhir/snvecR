@@ -30,8 +30,16 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
     return(prepare_solution(astronomical_solution, quiet = quiet))
   }
 
+  # prep some variables for valid names
+  eds <- seq(0.9950, 1.0050, 0.0010)
+  tds <- seq(0, 1.2, 0.1)
+  edtd <- expand.grid(ed = eds, td = tds)
+  edtd$ed <- sprintf("%.4f", edtd$ed)
+  edtd$td <- sprintf("%.4f", edtd$td)
+
   # effectively this is a wrapper that checks only for valid solutions...
   solutions <- c("full-ZB18a", # the default
+                 ## "full-ZB20a", # second real option, but currently not hosted on REZ's website
                  # special case to catch ambiguous naming
                  "ZB18a",
                  "full-La10",
@@ -45,7 +53,19 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
                  "ZB17j", "ZB17k", "ZB17p",
                  "ZB18a-100",
                  "ZB18a-300",
-                 "ZB20a", "ZB20b", "ZB20c", "ZB20d")
+                 "ZB20a", "ZB20b", "ZB20c", "ZB20d",
+                 # TODO: fix ZB23.R01--ZB23.R64 solutions
+                 # they are very slow to load b/c they're 3.5 Gyr
+                 paste0("ZB23.R", sprintf("%02d", 1:64)),
+                 # TODO: add pre-computed PT solutions, i.e. ZB18a-PT(1,1) etc.?
+                 #"PT-ZB18a", but then must also specify desired ed/td somehow
+                 #"PT-ZB18a(1,1)"
+                 paste0("PT-ZB18a(", edtd$ed, ",", edtd$td, ")")
+                 )
+
+  # allow manual additions to the cached solutions if you like
+  cached_solutions <- gsub(".rds", "",
+                           list.files(cachedir(), ".rds"))
 
   if (!any(astronomical_solution == c(solutions, cached_solutions))) {
     cli::cli_abort(c(
@@ -59,6 +79,7 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
       "There are multiple versions of {.q ZB18a} available.",
       "!" = "Please select the one you want:",
       "*" = "{.q full-ZB18a}: for the full astronomical solution.",
+      "*" = "{.q PT-ZB18a(Ed,Td)}: for the pre-calculated oblquity and climatic precession for the past 100 Myr.",
       "*" = "{.q ZB18a-100}: for the eccentricity and inclination for the past 100 Myr.",
       "*" = "{.q ZB18a-300}: for the eccentricity and inclination for the past 300 Myr."
     ))
@@ -106,6 +127,7 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
 # #'
 #' @param astronomical_solution Character vector with the name of the desired
 #'   solution. Defaults to `"full-ZB18a"`.
+# TODO: add something like "for list of valid solutions, mistype it on purpose."
 #' @param quiet Be quiet?
 #'
 #'   * If `TRUE`, hide info messages.
@@ -126,34 +148,9 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
 get_ZB <- function(astronomical_solution = "full-ZB18a",
                    quiet = FALSE,
                    force = FALSE) {
-  base_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/"
-  # get cachedir from globals.R
-  ## cachedir <- R_user_dir("snvecR", which = "cache")
-  if (astronomical_solution == "full-ZB18a") {
-    url <- paste0(base_url, "PrecTilt/OS/ZB18a/ems-plan3.dat")
-    raw_col_names <- c("t", # time in days
-                       "aa", # semimajor axis
-                       "ee", # eccentricity
-                       "inc", # inclination
-                       "lph", # long periapse
-                       "lan", # long ascending node
-                       "arp", # argument of periapse
-                       "mna") # mean anomaly
-  } else {
-    raw_col_names <- c("time", # time in kyr, negative
-                       "ecc", # eccentricity
-                       "inc") # inclination
-  }
-  # different URLs for different solutions
-  if (grepl("^ZB1[78][a-z](-100)?$", astronomical_solution)) {
-    # 17 and 18 are stored in the root directory
-    url <- glue::glue("{base_url}{gsub('-100', '', astronomical_solution)}.dat")
-  } else if (grepl("^ZB[0-9][0-9][a-z](-300)?$", astronomical_solution)){
-    # ZB20 is stored in 300Myr subdirectory
-    url <- glue::glue("{base_url}300Myr/{gsub('-300', '', astronomical_solution)}.dat")
-  }
-
   # where will we save our cached results?
+  # cachedir() is a wrapper around R_user_dir("snvecR", which = "cache")
+  # that you can overwrite with options("snvecR.cachedir")
   raw_path <- paste0(cachedir(), "/", astronomical_solution, ".dat")
   csv_path <- paste0(cachedir(), "/", astronomical_solution, ".csv")
   rds_path <- paste0(cachedir(), "/", astronomical_solution, ".rds")
@@ -164,130 +161,184 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     return(rds)
   }
 
-  # read raw intermediate steps from disk
-  if (!force && (file.exists(csv_path) || file.exists(raw_path))) {
-    if (file.exists(csv_path)) {
-      raw <- readr::read_csv(csv_path, show_col_types = FALSE)
-    } else if (file.exists(raw_path)) {
-      if (astronomical_solution == "full-ZB18a") {
-        raw <- readr::read_table(raw_path,
-                                 col_names = raw_col_names,
-                                 col_types = "dddddddd",
-                                 skip = 3, comment = "#")
-        # this has already been run through prepare_solution
-      } else {
-        raw <-
-          dplyr::mutate(
-            readr::read_table(raw_path,
-                              col_names = raw_col_names,
-                              col_types = "ddd",
-                              comment = "%"),
-            # flip time input so it's always negative kyr
-            time = -.data$time)
-      }
+  if (!quiet) {
+    cli::cli_alert_info(c(
+      "!" = "The astronomical solution {.q {astronomical_solution}} has not been cached."
+    ))
+  }
+
+  # default to downloading/caching if not interactive (i.e. GitHub actions)
+  # ask otherwise
+  if (force || !interactive()) {
+    download <- TRUE
+    save_cache <- TRUE
+  } else {
+    # a logical, TRUE if Yes, no if otherwise
+    download <- utils::askYesNo("Would you like to download and process it now?")
+    if (is.na(download)) {
+      cli::cli_abort("Cancelled by user.", call = NULL)
     }
-  } else {# files don't exist or force
-    if (!quiet) {
-      cli::cli_alert_info(c(
-        "!" = "The astronomical solution {.q {astronomical_solution}} has not been downloaded."
-      ))
-    }
-    # default to downloading/caching if not interactive (i.e. GitHub actions)
-    if (force || !interactive()) {
-      download <- TRUE
-      save_cache <- TRUE
-    } else {
-      # a logical, TRUE if Yes, no if otherwise
-      download <- utils::askYesNo("Would you like to download and process it now?")
-      if (is.na(download)) {
+    if (download) {
+      save_cache <- utils::askYesNo("Would you like to save the astronomical solution to .csv and .rds?")
+      if (is.na(save_cache)) {
         cli::cli_abort("Cancelled by user.", call = NULL)
       }
-      if (download) {
-        save_cache <- utils::askYesNo("Would you like to save the astronomical solution to .csv and .rds?")
-        if (is.na(save_cache)) {
-          cli::cli_abort("Cancelled by user.", call = NULL)
-        }
-      } else {
-        save_cache <- FALSE
-      }
-    }
-
-    # the user would NOT like to download and process the astronomical solution
-    if (!download) {
-      cli::cli_abort("Cannot `get_ZB()` without downloading the file.")
-    }
-
-    # read the file from the website
-    if (!quiet) {
-      cli::cli_alert_info(
-        "Reading {.file {basename(raw_path)}} from website {.url {url}}."
-      )
-    }
-    if (astronomical_solution == "full-ZB18a") {
-      raw <- readr::read_table(url,
-                               col_names = raw_col_names,
-                               col_types = "dddddddd",
-                               skip = 3, comment = "#")
-      # calculate helper columns
-      raw <- prepare_solution(raw, quiet = quiet)
     } else {
-      raw <- dplyr::mutate(
-        readr::read_table(url,
-                          col_names = raw_col_names,
-                          col_types = "ddd",
-                          comment = "%"),
-        # flip time input so it's always negative kyr
-        time = -.data$time)
+      save_cache <- FALSE
     }
+  }
 
-    if (!save_cache) {
-      return(raw)
-    } else {
-      if (!dir.exists(cachedir())) {
-        dir.create(cachedir(), recursive = TRUE, showWarnings = TRUE)
+  # the user would NOT like to download and process the astronomical solution
+  if (!download) {
+    cli::cli_abort("Cannot `get_ZB()` without downloading the file.")
+  }
+
+  base_url <- "http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/"
+
+  # different URLs for different solutions
+  if ("full-ZB18a" == astronomical_solution) {
+    url <- paste0(base_url, "PrecTilt/OS/ZB18a/ems-plan3.dat")
+  } else if (grepl("^ZB1[78][a-z](-100)?$", astronomical_solution)) {
+    # 17 and 18 are stored in the root directory
+    url <- glue::glue("{base_url}{gsub('-100', '', astronomical_solution)}.dat")
+  } else if (grepl("^ZB[0-9][0-9][a-z](-300)?$", astronomical_solution)){
+    # ZB20 and ZB18a 300 Myr are stored in 300Myr subdirectory
+    url <- glue::glue("{base_url}300Myr/{gsub('-300', '', astronomical_solution)}.dat")
+  } else if (grepl("^ZB23\\.R[0-9][0-9]", astronomical_solution)) {
+    # ZB23.R 01 to 64 are stored in 3.5Gyr subdirectory
+    url <- glue::glue("{base_url}3.5Gyr/ZB23-N64-eiop/{astronomical_solution}.eiop.dat.zip")
+  } else if (grepl("^PT-ZB18a\\(", astronomical_solution)) {
+    ed <- stringr::str_extract(astronomical_solution, "\\(([0-9]\\.[0-9]{4})", group = 1)
+    td <- stringr::str_extract(astronomical_solution, ",([0-9]\\.[0-9]{4})\\)", group = 1)
+    url <- glue::glue("{base_url}PrecTilt/ZB18a/asc/PT.De{ed}Td{td}.dat")
+  }
+
+  # set the column names and types
+  if (grepl("^full-", astronomical_solution)) {
+    raw_col_names <- c("t", # time in days
+                       "aa", # semimajor axis
+                       "ee", # eccentricity
+                       "inc", # inclination
+                       "lph", # long periapse
+                       "lan", # long ascending node
+                       "arp", # argument of periapse
+                       "mna") # mean anomaly
+    # TODO: unify column names between different solutions?
+    raw_col_types <- "dddddddd"
+  } else if (grepl("^ZB23\\.R[0-9][0-9]", astronomical_solution)) {
+    raw_col_names <- c("time", # time in kyr, negative
+                       "ecc", # eccentricity
+                       "inc", # inclination
+                       "epl", # obliquity
+                       "cp") # climatic precession
+    raw_col_types <- "ddddd"
+  } else if (grepl("^PT-ZB", astronomical_solution)) {
+    raw_col_names <- c("time", # time in kyr, negative
+                       "epl", # obliquity
+                       "phi", # precession
+                       "cp") # climatic precession
+    raw_col_types <- "dddd"
+  } else {
+    raw_col_names <- c("time", # time in kyr, negative
+                       "ecc", # eccentricity
+                       "inc") # inclination
+    raw_col_types <- "ddd"
+  }
+
+  # read the file from the website
+  if (!quiet) {
+    cli::cli_alert_info(
+      "Reading {.file {basename(raw_path)}} from website {.url {url}}."
+    )
+  }
+
+  if (grepl("full-", astronomical_solution)) {
+    raw <- readr::read_table(url,
+                             col_names = raw_col_names,
+                             col_types = raw_col_types,
+                             skip = 3, comment = "#")
+    # calculate helper columns
+    raw <- prepare_solution(raw, quiet = quiet)
+  } else {
+    if (grepl("^ZB23\\.R", astronomical_solution)) {
+      cli::cli_inform(c("Downloading any of the ZB23.RXX solutions will take some time.",
+                        "Zip files are about 154 MB."))
+      sure <- utils::askYesNo("Continue downloading and caching these solutions?")
+      if (is.na(sure)) {
+        cli::cli_abort("Cancelled by user.", call = NULL)
       }
-      if (!quiet) {
-        cli::cli_alert_info(
-          "The cache directory is {.file {cachedir()}}."
-        )
-      }
-
-      # also copy the raw file to disk
-      # even though we've read it in using read_table directly
-
-      if (rlang::is_installed("curl")) {
-        curl::curl_download(url, destfile = raw_path)
-        if (!quiet) {
-          cli::cli_alert_info(
-            "Saved {.file {basename(raw_path)}} to cache."
-          )
-        }
-      } else {
-        cli::cli_warn(c(
-          "i" = "Did not download the raw data file {.file {
-basename(raw_path)}} to cache.",
-          "!" = "If you want to do so, install the {.pkg curl} package and re-run with `force = TRUE`"
-        ))
-      }
-
-      # write intermediate result to csv
-      readr::write_csv(raw, csv_path)
-      if (!quiet) {
-        cli::cli_alert_info(
-        "Saved cleaned-up {.file {basename(csv_path)}} to cache."
-        )
-      }
-
-      # write final result to rds cache
-      readr::write_rds(raw, rds_path)
-      if (!quiet) {
-        cli::cli_inform(c(
-          "i" = "Saved astronomical solution with helper columns {.file {basename(rds_path)}} to cache.",
-          "i" = "Future calls to `get_solution({.q {astronomical_solution}})` will read from the cache.",
-          "!" = "If you don't want this, specify `force = TRUE`."
-        ))
+      if (!sure) {
+        cli::cli_abort("Ok. Cancelled.", call = NULL)
       }
     }
+    raw <- readr::read_table(url,
+                             col_names = raw_col_names,
+                             col_types = raw_col_types,
+                             comment = "%")
+  }
+
+  if (grepl("^ZB17|^ZB18|^ZB20", astronomical_solution)) {
+    # flip time input so it's always negative kyr
+    raw <- dplyr::mutate(raw, time = -.data$time)
+  }
+
+  if (!save_cache) {
     return(raw)
   }
+
+  if (!dir.exists(cachedir())) {
+    dir.create(cachedir(), recursive = TRUE, showWarnings = TRUE)
+  }
+
+  if (!quiet) {
+    cli::cli_alert_info(
+      "The cache directory is {.file {cachedir()}}."
+    )
+  }
+
+  # also copy the raw file to disk
+  # even though we've read it in using read_table directly
+##   if (rlang::is_installed("curl")) {
+##     curl::curl_download(url, destfile = raw_path)
+##     if (!quiet) {
+##       cli::cli_alert_info(
+##         "Saved {.file {basename(raw_path)}} to cache."
+##       )
+##     }
+##   } else {
+##     cli::cli_warn(c(
+##       "i" = "Did not download the raw data file {.file {
+## basename(raw_path)}} to cache.",
+##       "!" = "If you want to do so, install the {.pkg curl} package and re-run with `force = TRUE`"
+##     ))
+##   }
+
+  ## # write intermediate result to csv
+  ## readr::write_csv(raw, csv_path)
+  ## if (!quiet) {
+  ##   cli::cli_alert_info(
+  ##     "Saved cleaned-up {.file {basename(csv_path)}} to cache."
+  ##   )
+  ## }
+
+  # write final result to rds cache
+  readr::write_rds(raw, rds_path)
+
+  if (!quiet) {
+    cli::cli_inform(c(
+      "i" = "Saved astronomical solution with helper columns {.file {basename(rds_path)}} to cache.",
+      "i" = "Future calls to `get_solution({.q {astronomical_solution}})` will read from the cache.",
+      "!" = "If you want to read from scratch, specify `force = TRUE`."
+    ))
+  }
+
+  return(raw)
+}
+
+
+#' Read snvec C-output
+read_snvec <- function(file) {
+  fmt <- fwf_empty(file,
+                   col_names = c("time", "obliquity", "precession", "climatic_precession"))
+  read_fwf(file, col_positions = fmt)
 }
