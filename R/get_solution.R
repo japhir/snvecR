@@ -31,11 +31,16 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
   }
 
   # prep some variables for valid names
-  eds <- seq(0.9950, 1.0050, 0.0010)
-  tds <- seq(0, 1.2, 0.1)
-  edtd <- expand.grid(ed = eds, td = tds)
-  edtd$ed <- sprintf("%.4f", edtd$ed)
-  edtd$td <- sprintf("%.4f", edtd$td)
+  if (grepl("^PT-ZB", astronomical_solution)) {
+    # these are all the valid ones
+    eds <- seq(0.9950, 1.0050, 0.0010)
+    tds <- seq(0, 1.2, 0.1)
+    edtd <- expand.grid(ed = eds, td = tds)
+    edtd$edstring <- sprintf("%.4f", edtd$ed)
+    edtd$tdstring <- sprintf("%.4f", edtd$td)
+  } else {
+    edtd <- data.frame(ed = "x", td = "y", edstring = "x.xxxx", tdstring = "y.yyyy")
+  }
 
   # effectively this is a wrapper that checks only for valid solutions...
   solutions <- c("full-ZB18a", # the default
@@ -60,7 +65,8 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
                  # TODO: add pre-computed PT solutions, i.e. ZB18a-PT(1,1) etc.?
                  #"PT-ZB18a", but then must also specify desired ed/td somehow
                  #"PT-ZB18a(1,1)"
-                 paste0("PT-ZB18a(", edtd$ed, ",", edtd$td, ")")
+                 paste0("PT-ZB18a(", edtd$ed, ",", edtd$td, ")"),
+                 paste0("PT-ZB18a(", edtd$edstring, ",", edtd$tdstring, ")")
                  )
 
   # allow manual additions to the cached solutions if you like
@@ -98,7 +104,7 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
     ))
   }
 
-  if (grepl("^La[0-9][0-9][a-z]?", astronomical_solution)) {
+  if (grepl("^La\\d{2}[a-z]?", astronomical_solution)) {
     cli::cli_warn(c(
       "i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
                     "i" = "We do not cache these results.",
@@ -112,12 +118,32 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
     cli::cli_warn(c(
       "i" = "Output has column names {.q {colnames(dat)}}"
     ))
-  } else {
-  ## if (astronomical_solution == "full-ZB18a" ||
-        ## grepl("^ZB[0-9][0-9][a-z]", astronomical_solution) ||
-        ## astronomical_solution %in% cached_solutions) {
-    dat <- get_ZB(astronomical_solution, quiet = quiet, force = force)
+    return(dat)
   }
+
+  if (grepl("^PT-ZB", astronomical_solution)) {
+    # if we specify PT-ZB18a(1,1) convert it to PT-ZB18a(1.0000,1.0000) instead
+    # cannot figure out how to use common regex pattern \d{,4} in R...
+    ed <- stringr::str_extract(astronomical_solution,
+                               "\\((\\d\\.?\\d?\\d?\\d?\\d?),", group = 1)
+    if (stringr::str_length(ed) != 6L) {
+      ed <- readr::parse_double(ed)
+      ed <- sprintf("%.4f", ed)
+    }
+    td <- stringr::str_extract(astronomical_solution,
+                               ",(\\d\\.?\\d?\\d?\\d?\\d?)\\)", group = 1)
+    if (stringr::str_length(td) != 6L) {
+      td <- readr::parse_double(td)
+      td <- sprintf("%.4f", td)
+    }
+    solbase <- stringr::str_extract(astronomical_solution, "^PT-ZB\\d{2}[a-d]")
+    astronomical_solution <- paste0(solbase, "(", ed, ",", td, ")")
+  }
+  ## if (astronomical_solution == "full-ZB18a" ||
+        ## grepl("^ZB\\d\\d[a-z]", astronomical_solution) ||
+        ## astronomical_solution %in% cached_solutions) {
+
+  dat <- get_ZB(astronomical_solution, quiet = quiet, force = force)
 
   return(dat)
 }
@@ -201,15 +227,16 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
   } else if (grepl("^ZB1[78][a-z](-100)?$", astronomical_solution)) {
     # 17 and 18 are stored in the root directory
     url <- glue::glue("{base_url}{gsub('-100', '', astronomical_solution)}.dat")
-  } else if (grepl("^ZB[0-9][0-9][a-z](-300)?$", astronomical_solution)){
+  } else if (grepl("^ZB\\d\\d[a-z](-300)?$", astronomical_solution)){
     # ZB20 and ZB18a 300 Myr are stored in 300Myr subdirectory
     url <- glue::glue("{base_url}300Myr/{gsub('-300', '', astronomical_solution)}.dat")
-  } else if (grepl("^ZB23\\.R[0-9][0-9]", astronomical_solution)) {
+  } else if (grepl("^ZB23\\.R\\d\\d", astronomical_solution)) {
     # ZB23.R 01 to 64 are stored in 3.5Gyr subdirectory
     url <- glue::glue("{base_url}3.5Gyr/ZB23-N64-eiop/{astronomical_solution}.eiop.dat.zip")
   } else if (grepl("^PT-ZB18a\\(", astronomical_solution)) {
-    ed <- stringr::str_extract(astronomical_solution, "\\(([0-9]\\.[0-9]{4})", group = 1)
-    td <- stringr::str_extract(astronomical_solution, ",([0-9]\\.[0-9]{4})\\)", group = 1)
+    # we have forced the get_solution function to convert this to x.xxxx and y.yyyy always
+    ed <- stringr::str_extract(astronomical_solution, "\\((\\d\\.\\d{4}),", group = 1)
+    td <- stringr::str_extract(astronomical_solution, ",(\\d\\.\\d{4})\\)", group = 1)
     url <- glue::glue("{base_url}PrecTilt/ZB18a/asc/PT.De{ed}Td{td}.dat")
   }
 
@@ -225,7 +252,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
                        "mna") # mean anomaly
     # TODO: unify column names between different solutions?
     raw_col_types <- "dddddddd"
-  } else if (grepl("^ZB23\\.R[0-9][0-9]", astronomical_solution)) {
+  } else if (grepl("^ZB23\\.R\\d{2}", astronomical_solution)) {
     raw_col_names <- c("time", # time in kyr, negative
                        "ecc", # eccentricity
                        "inc", # inclination
@@ -252,7 +279,17 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     )
   }
 
-  if (grepl("full-", astronomical_solution)) {
+  if (grepl("^PT-", astronomical_solution)) {
+    if (!rlang::is_installed("curl")) {
+      cli::cli_abort(c(
+        "i" = "Did not download the raw data file {.file {basename(raw_path)}} to cache.",
+        "!" = "Install the {.pkg curl} package and re-run."
+      ))
+    }
+    curl::curl_download(url, destfile = raw_path)
+    fmt <- readr::fwf_empty(raw_path, col_names = raw_col_names)
+    raw <- readr::read_fwf(raw_path, col_positions = fmt, col_types = raw_col_types)
+  } else if (grepl("full-", astronomical_solution)) {
     raw <- readr::read_table(url,
                              col_names = raw_col_names,
                              col_types = raw_col_types,
@@ -333,12 +370,4 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
   }
 
   return(raw)
-}
-
-
-#' Read snvec C-output
-read_snvec <- function(file) {
-  fmt <- fwf_empty(file,
-                   col_names = c("time", "obliquity", "precession", "climatic_precession"))
-  read_fwf(file, col_positions = fmt)
 }

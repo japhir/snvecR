@@ -27,3 +27,15 @@ test_that("get_solution() can load full solutions", {
 
   expect_snapshot(head(get_solution(astronomical_solution = "full-ZB18a", quiet = TRUE)))
 })
+
+test_that("get_solution() can load PT solutions", {
+  pth <- withr::local_tempdir(pattern = "snvecR")
+  withr::local_options(list(snvecR.cachedir = pth, width = 150))
+
+  expect_snapshot(head(get_solution(astronomical_solution = "PT-ZB18a(1,1)", quiet = FALSE, force = TRUE)),
+                  # get rid of the cache directory printing in this snapshot because it differs between CIs and machines
+                  transform = ~ gsub("^i The cache directory is '.*'.$",
+                                     "i The cache directory is 'transformed-for-CI'.",
+                                     .x))
+  expect_snapshot(head(get_solution(astronomical_solution = "PT-ZB18a(1,1)", quiet = TRUE)))
+})

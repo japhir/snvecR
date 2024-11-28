@@ -51,3 +51,40 @@
       5 -584400  -1.6  1.00 0.0173  7.11  22.1 -178. -160. 12.8   22.1  182. 0.00653 0.0161 -0.00359    -0.124 0.992 0.998 -0.00359    0.124 0.992
       6 -730500  -2    1.00 0.0175  7.10  21.0 -178. -161. 16.4   21.0  182. 0.00627 0.0163 -0.00449    -0.124 0.992 0.998 -0.00448    0.123 0.992
 
+# get_solution() can load PT solutions
+
+    Code
+      head(get_solution(astronomical_solution = "PT-ZB18a(1,1)", quiet = FALSE, force = TRUE))
+    Message
+      i The astronomical solution "PT-ZB18a(1.0000,1.0000)" has not been cached.
+      i Reading 'PT-ZB18a(1.0000,1.0000).dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/ZB18a/asc/PT.De1.0000Td1.0000.dat>.
+      i The cache directory is 'transformed-for-CI'.
+      i Saved astronomical solution with helper columns 'PT-ZB18a(1.0000,1.0000).rds' to cache.
+      i Future calls to `get_solution("PT-ZB18a(1.0000,1.0000)")` will read from the cache.
+      ! If you want to read from scratch, specify `force = TRUE`.
+    Output
+      # A tibble: 6 x 4
+          time   epl    phi     cp
+         <dbl> <dbl>  <dbl>  <dbl>
+      1  0     0.409 0      0.0163
+      2 -0.379 0.410 0.0924 0.0167
+      3 -0.760 0.411 0.185  0.0170
+      4 -1.14  0.412 0.277  0.0171
+      5 -1.52  0.413 0.369  0.0169
+      6 -1.90  0.413 0.461  0.0165
+
+---
+
+    Code
+      head(get_solution(astronomical_solution = "PT-ZB18a(1,1)", quiet = TRUE))
+    Output
+      # A tibble: 6 x 4
+          time   epl    phi     cp
+         <dbl> <dbl>  <dbl>  <dbl>
+      1  0     0.409 0      0.0163
+      2 -0.379 0.410 0.0924 0.0167
+      3 -0.760 0.411 0.185  0.0170
+      4 -1.14  0.412 0.277  0.0171
+      5 -1.52  0.413 0.369  0.0169
+      6 -1.90  0.413 0.461  0.0165
+
