@@ -1,4 +1,4 @@
-test_that("snvec() inputs are checked", {
+test_that("snvec() invalid inputs throw errors", {
   # we test the astronomical_solution inputs for the get_solution helper in stead
   expect_error(snvec(tend = -Inf, quiet = TRUE))
   expect_error(snvec(tres = -Inf, quiet = TRUE))
@@ -16,17 +16,70 @@ test_that("snvec() inputs are checked", {
   expect_error(snvec(os_ref_frame = "J2000", os_omt = 5, quiet = TRUE))
   expect_error(snvec(os_ref_frame = "J2000", os_inct = 7, quiet = TRUE))
 
+})
+
+test_that("snvec() inputs outside of likely range throw warnings", {
+  ZB18a_head <- structure(list(t = c(0, -146100),
+                               aa = c(0.999999570867702, 1.00000267419287),
+                               ee = c(0.0167054504495442, 0.016854305837952),
+                               inc = c(7.15495578299901, 7.14593294487681),
+                               lph = c(27.323464691619, 26.1208300138006),
+                               lan = c(179.999248773572, -179.58527791053),
+                               arp = c(-152.675784081952, -154.293892075669),
+                               mna = c(-2.45433424316846, 1.26740886389077)),
+                          row.names = c(NA, -2L),
+                          class = c("tbl_df", "tbl", "data.frame"))
+
   # these are a bit annoying
-  expect_warning(snvec(ed = 1.1001, tend = -1, tres = -.5, quiet = TRUE))
-  expect_warning(snvec(ed = 0.8999, tend = -1, tres = -.5, quiet = TRUE))
-  expect_warning(snvec(td = 1.2001, tend = -1, tres = -.5, quiet = TRUE))
-  expect_warning(snvec(td = -0.0001, tend = -1, tres = -.5, quiet = TRUE))
-  expect_warning(snvec(atol = 0.9e-12, tend = -1, tres = -.5, quiet = TRUE))
-  expect_warning(snvec(atol = 1.1e-3, tend = -1, tres = -.5, quiet = TRUE))
-  expect_warning(snvec(rtol = 1.1e-3, tend = -1, tres = -.5, quiet = TRUE))
+  expect_warning(snvec(ed = 1.1001,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+  expect_warning(snvec(ed = 0.8999,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+  expect_warning(snvec(td = 1.2001,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+  expect_warning(snvec(td = -0.0001,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+  expect_warning(snvec(atol = 0.9e-12,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+  expect_warning(snvec(atol = 1.1e-3,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+  expect_warning(snvec(rtol = 1.1e-3,
+                       tend = -.4, tres = -.4, quiet = TRUE,
+                       astronomical_solution = ZB18a_head))
+})
+
+test_that("snvec() output columns are correct", {
+  ZB18a_head <- structure(list(t = c(0, -146100),
+                               aa = c(0.999999570867702, 1.00000267419287),
+                               ee = c(0.0167054504495442, 0.016854305837952),
+                               inc = c(7.15495578299901, 7.14593294487681),
+                               lph = c(27.323464691619, 26.1208300138006),
+                               lan = c(179.999248773572, -179.58527791053),
+                               arp = c(-152.675784081952, -154.293892075669),
+                               mna = c(-2.45433424316846, 1.26740886389077)),
+                          row.names = c(NA, -2L),
+                          class = c("tbl_df", "tbl", "data.frame"))
+
+  # we have the desired columns
+  expect_equal(colnames(
+    snvec(tend = -.4, tres = -.4, quiet = TRUE, output = "nice", astronomical_solution = ZB18a_head)),
+    c("time", "epl", "phi", "cp"))
+
+  # we have a deSolve matrix
+  expect_equal(
+    class(snvec(tend = -.4, tres = -.4, quiet = TRUE, output = "ode", astronomical_solution = ZB18a_head)),
+    c("deSolve", "matrix"))
 })
 
 test_that("snvec() works", {
+  skip_on_cran()
+
   pth <- withr::local_tempdir(pattern = "snvecR")
   withr::local_options(list(snvecR.cachedir = pth, width = 57))
 
@@ -50,17 +103,4 @@ test_that("snvec() works", {
         # as long as the output of these columns remains the same.
         tidyselect::all_of(c("time", "sx", "sy", "sz", "epl", "phi", "cp"))),
       n = 50))
-})
-
-test_that("snvec() output columns are correct", {
-  pth <- withr::local_tempdir(pattern = "snvecR")
-  withr::local_options(list(snvecR.cachedir = pth))
-
-  # we have the desired columns
-  expect_equal(colnames(
-    snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "nice")),
-    c("time", "epl", "phi", "cp"))
-  # we have a deSolve matrix
-  expect_equal(class(snvec(tend = -1, tres = -0.5, quiet = TRUE, output = "ode")),
-               c("deSolve", "matrix"))
 })

@@ -1,3 +1,16 @@
+# get_solution() can return a dataframe
+
+    Code
+      get_solution(astronomical_solution = ZB18a_head, quiet = TRUE)
+    Output
+      # A tibble: 2 x 20
+              t  time    aa     ee   inc   lph   lan   arp   mna  lphu  lanu      hh
+          <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>   <dbl>
+      1       0   0    1.00 0.0167  7.15  27.3  180. -153. -2.45  27.3  180. 0.00767
+      2 -146100  -0.4  1.00 0.0169  7.15  26.1 -180. -154.  1.27  26.1  180. 0.00742
+      # i 8 more variables: kk <dbl>, pp <dbl>, qq <dbl>, cc <dbl>, dd <dbl>,
+      #   nnx <dbl>, nny <dbl>, nnz <dbl>
+
 # get_solution() can load eccentricity solutions
 
     Code

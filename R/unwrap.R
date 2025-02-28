@@ -6,7 +6,6 @@
 #' @returns Unwrapped vector in degrees.
 #' @noRd
 unwrap <- function(y) {
-  ## y <- ZB18a$lan[1:6]
   cx <- 0.0 # single number, c in C but reserved namespace
   dy <- 0.0 # single number
   # vector
