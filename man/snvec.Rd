@@ -80,6 +80,7 @@ If \code{output = "nice"} (the default), returns a
 \item \code{time} Time in thousands of years (kyr).
 \item \code{epl} Calculated Obliquity \eqn{\epsilon} (radians).
 \item \code{phi} Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
+\item \code{lpx} Calculated Longitude of Perihelion with respect to the moving node \eqn{\bar{\omega}}.
 \item \code{cp} Calculated Climatic precession (-) as \eqn{e\sin\bar{\omega}}.
 }
 

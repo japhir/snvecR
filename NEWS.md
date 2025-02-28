@@ -1,5 +1,6 @@
 # snvecR (development version)
 * Added support for reading ZB23.Rxx and pre-computed PT-ZB18a solutions.
+* snvec() now also returns lpx by default
 
 # snvecR 3.9.4
 * Made error tests of get_solution() use temporary directory.

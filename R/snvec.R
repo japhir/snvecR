@@ -84,6 +84,8 @@
 #'
 #'   * `phi` Calculated Precession \eqn{\phi} (radians) from ECLIPJ2000.
 #'
+#'   * `lpx` Calculated Longitude of Perihelion with respect to the moving node \eqn{\bar{\omega}}.
+#'
 #'   * `cp` Calculated Climatic precession (-) as \eqn{e\sin\bar{\omega}}.
 #'
 #' where \eqn{\bar{\omega}} is the longitude of perihelion relative to the moving equinox.
@@ -491,7 +493,8 @@ snvec <- function(tend = -1e3,
                        nnz = approxdat(dat, "nnz")(.data$t),
                        eei = approxdat(dat, "ee")(.data$t),
                        inci = approxdat(dat, "inc")(.data$t),
-                       lphi = approxdat(dat, "lphu")(.data$t),
+                       lphi = approxdat(dat, "lph")(.data$t),
+                       lphui = approxdat(dat, "lphu")(.data$t),
                        lani = approxdat(dat, "lanu")(.data$t)
                        )
 
@@ -525,8 +528,10 @@ snvec <- function(tend = -1e3,
       phi = purrr::map_dbl(.data$up, .f = \(x) atan2(x[2], x[1])),
       # normalize to first value of phi
       phi = .data$phi - dplyr::first(.data$phi),
+      # calculate longitude of perihelion with respect to moving equinox
+      lpx = (.data$lphui + OMT) / R2D - .data$phi,
       # calculate climatic precession
-      cp = .data$eei * sin((.data$lphi + OMT) / R2D - .data$phi)
+      cp = .data$eei * sin(.data$lpx)
     )
 
   ## message user about final values
@@ -547,7 +552,7 @@ snvec <- function(tend = -1e3,
   # this is so they work better with things like bind_rows etc. via vctrs
   fin <- dplyr::mutate(fin,
                        dplyr::across(
-                         tidyselect::all_of(c("t", "time", "sx", "sy", "sz", "epl")),
+                         tidyselect::all_of(c("t", "time", "sx", "sy", "sz", "epl", "tmp")),
                          as.numeric))
 
   if (output == "all") {
@@ -556,6 +561,6 @@ snvec <- function(tend = -1e3,
 
   if (output == "nice") {
     return(dplyr::select(fin,
-                         tidyselect::all_of(c("time", "epl", "phi", "cp"))))
+                         tidyselect::all_of(c("time", "epl", "phi", "lpx", "cp"))))
   }
 }
