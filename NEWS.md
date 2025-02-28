@@ -1,4 +1,5 @@
 # snvecR (development version)
+* Added support for reading ZB23.Rxx and pre-computed PT-ZB18a solutions.
 
 # snvecR 3.9.4
 * Made error tests of get_solution() use temporary directory.

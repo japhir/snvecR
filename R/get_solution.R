@@ -23,6 +23,7 @@
 #' get_solution("full-ZB18a")
 #' get_solution("ZB20a")
 #' get_solution("La11")
+#' get_solution("PT-ZB18a(1,1)")
 #' }
 #' @export
 get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, force = FALSE) {
@@ -62,10 +63,8 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
                  # TODO: fix ZB23.R01--ZB23.R64 solutions
                  # they are very slow to load b/c they're 3.5 Gyr
                  paste0("ZB23.R", sprintf("%02d", 1:64)),
-                 # TODO: add pre-computed PT solutions, i.e. ZB18a-PT(1,1) etc.?
-                 #"PT-ZB18a", but then must also specify desired ed/td somehow
-                 #"PT-ZB18a(1,1)"
                  paste0("PT-ZB18a(", edtd$ed, ",", edtd$td, ")"),
+                 # we allow for both the rounded and 4-digit specs of ed and td
                  paste0("PT-ZB18a(", edtd$edstring, ",", edtd$tdstring, ")")
                  )
 
@@ -300,23 +299,36 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     if (grepl("^ZB23\\.R", astronomical_solution)) {
       cli::cli_inform(c("Downloading any of the ZB23.RXX solutions will take some time.",
                         "Zip files are about 154 MB."))
-      sure <- utils::askYesNo("Continue downloading and caching these solutions?")
+      sure <- utils::askYesNo("Continue downloading and caching {.q {astronomical_solution}}?")
       if (is.na(sure)) {
         cli::cli_abort("Cancelled by user.", call = NULL)
       }
       if (!sure) {
         cli::cli_abort("Ok. Cancelled.", call = NULL)
       }
+      raw_path <- paste0(raw_path, ".zip")
     }
-    raw <- readr::read_table(url,
+    # letting readr download this is too slow, curl first
+    if (!rlang::is_installed("curl")) {
+      cli::cli_abort(c(
+        "i" = "Did not download the raw data file {.file {basename(raw_path)}} to cache.",
+        "!" = "Install the {.pkg curl} package and re-run."
+      ))
+    }
+    curl::curl_download(url, destfile = raw_path)
+    raw <- readr::read_table(raw_path,
                              col_names = raw_col_names,
                              col_types = raw_col_types,
                              comment = "%")
   }
 
   if (grepl("^ZB17|^ZB18|^ZB20", astronomical_solution)) {
-    # flip time input so it's always negative kyr
     raw <- dplyr::mutate(raw, time = -.data$time)
+    if (!quiet) {
+      cli::cli_alert_warning(
+        "Flipped time for {.q {astronomical_solution}} so that it is in negative kyr."
+      )
+    }
   }
 
   if (!save_cache) {
@@ -328,38 +340,13 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
   }
 
   if (!quiet) {
-    cli::cli_alert_info(
-      "The cache directory is {.file {cachedir()}}."
-    )
+    cli::cli_alert_info("The cache directory is {.file {cachedir()}}.")
   }
-
-  # also copy the raw file to disk
-  # even though we've read it in using read_table directly
-##   if (rlang::is_installed("curl")) {
-##     curl::curl_download(url, destfile = raw_path)
-##     if (!quiet) {
-##       cli::cli_alert_info(
-##         "Saved {.file {basename(raw_path)}} to cache."
-##       )
-##     }
-##   } else {
-##     cli::cli_warn(c(
-##       "i" = "Did not download the raw data file {.file {
-## basename(raw_path)}} to cache.",
-##       "!" = "If you want to do so, install the {.pkg curl} package and re-run with `force = TRUE`"
-##     ))
-##   }
-
-  ## # write intermediate result to csv
-  ## readr::write_csv(raw, csv_path)
-  ## if (!quiet) {
-  ##   cli::cli_alert_info(
-  ##     "Saved cleaned-up {.file {basename(csv_path)}} to cache."
-  ##   )
-  ## }
 
   # write final result to rds cache
   readr::write_rds(raw, rds_path)
+  # I've tested gz and xz compression to make the files less big for ZB23.Rxx
+  # solutions. Without compression, reading is instantly, however.
 
   if (!quiet) {
     cli::cli_inform(c(

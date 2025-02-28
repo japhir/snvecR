@@ -45,6 +45,7 @@ withr::local_options(snvecR.cachedir = pth)
 get_solution("full-ZB18a")
 get_solution("ZB20a")
 get_solution("La11")
+get_solution("PT-ZB18a(1,1)")
 }
 }
 \references{

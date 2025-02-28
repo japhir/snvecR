@@ -1,5 +1,5 @@
 # document the astronomical solutions
-# we now cache them locally, so I document them with @name and return type NULL.
+# we cache them locally, so I document them with @name and return type NULL.
 
 #' Full Astronomical Solution ZB18a for the past 100 Myr
 #'
@@ -150,4 +150,50 @@ NULL
 #'   Letters_. \doi{10.1016/j.epsl.2022.117595}
 #' @name ZB20
 #' @aliases ZB20a ZB20b ZB20c ZB20d
+NULL
+
+#' Astronomical Solutions PT-ZB18a(x.xxxx,y.yyyy) for the past 100 Myr
+#'
+#' @format ## `get_solution("PT-ZB18a(1,1)")`
+#' A data frame with 249,480 rows and 4 columns:
+#' \describe{
+#'   \item{time}{Time in thousands of years (kyr).}
+#'   \item{epl}{Obliqity \eqn{\epsilon} (radians).}
+#'   \item{phi}{Axial Precession \eqn{phi} (radians).}
+#'   \item{cp}{Climatic Precession \eqn{e sin(\bar{\omega})} (unitless).}
+#' }
+#' @inherit full_ZB18a source
+#' @references
+#' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
+#'   astronomical solutions for the Cenozoic era. _Earth and Planetary Science
+#'   Letters_. \doi{10.1016/j.epsl.2022.117595}
+#' @name PT-ZB18a
+#' @aliases PT-ZB18a(1,1) PT-ZB18a(1,0)
+NULL
+
+#' Astronomical Solutions ZB23.RXX for the past 3.6 Gyr
+#'
+#' @format ## `get_solution("ZB23.Rxx")`
+#' A data frame with 8,750,001 rows and 5 columns:
+#' \describe{
+#'   \item{time}{Time in thousands of years (kyr).}
+#'   \item{ecc}{Eccentricity \eqn{e} (unitless).}
+#'   \item{inc}{Inclination \eqn{I} (radians).}
+#'   \item{obliquity}{Obliqity \eqn{\epsilon} (radians).}
+#'   \item{cp}{Climatic Precession \eqn{e sin(\bar{\omega})} (unitless).}
+#' }
+#' @inherit full_ZB18a source
+#' @references
+#' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
+#'   astronomical solutions for the Cenozoic era. _Earth and Planetary Science
+#'   Letters_. \doi{10.1016/j.epsl.2022.117595}
+#' @name ZB23.Rxx
+#' @aliases ZB23.R01 ZB23.R02 ZB23.R03 ZB23.R04 ZB23.R05 ZB23.R06 ZB23.R07 ZB23.R08 ZB23.R09 ZB23.R10
+#' @aliases ZB23.R11 ZB23.R12 ZB23.R13 ZB23.R14 ZB23.R15 ZB23.R16 ZB23.R17 ZB23.R18 ZB23.R19 ZB23.R20
+#' @aliases ZB23.R21 ZB23.R22 ZB23.R23 ZB23.R24 ZB23.R25 ZB23.R26 ZB23.R27 ZB23.R28 ZB23.R29 ZB23.R30
+#' @aliases ZB23.R31 ZB23.R32 ZB23.R33 ZB23.R34 ZB23.R35 ZB23.R36 ZB23.R37 ZB23.R38 ZB23.R39 ZB23.R40
+#' @aliases ZB23.R41 ZB23.R42 ZB23.R43 ZB23.R44 ZB23.R45 ZB23.R46 ZB23.R47 ZB23.R48 ZB23.R49 ZB23.R50
+#' @aliases ZB23.R51 ZB23.R52 ZB23.R53 ZB23.R54 ZB23.R55 ZB23.R56 ZB23.R57 ZB23.R58 ZB23.R59 ZB23.R60
+#' @aliases ZB23.R62 ZB23.R63 ZB23.R64
+# note that 61 is missing!
 NULL
