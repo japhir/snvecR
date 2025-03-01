@@ -45,7 +45,7 @@ install.packages("snvecR")
 
 To use the development version of the package, use:
 
-```r
+``` r
 remotes::install_github("japhir/snvecR")
 ```
 
