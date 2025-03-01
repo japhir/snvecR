@@ -42,10 +42,12 @@ do not cache these solutions locally, however.
 pth <- withr::local_tempdir(pattern = "snvecR")
 withr::local_options(snvecR.cachedir = pth)
 }
-get_solution("full-ZB18a")
+get_solution("full-ZB18a")    # input for snvec
+get_solution("ZB18a-300")     # eccentricity
 get_solution("ZB20a")
 get_solution("La11")
-get_solution("PT-ZB18a(1,1)")
+get_solution("PT-ZB18a(1,1)") # pre-computed precession-tilt
+get_solution("ZB23.R01")      # one of the 3.6 Gyr solutions
 }
 }
 \references{
@@ -59,5 +61,5 @@ dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
 Paleoclimatology}. \doi{10.1029/2021PA004349}
 }
 \seealso{
-\link{full_ZB18a}, \link{ZB17}, \link{ZB18a}, \link{ZB20}
+\link{full_ZB18a}, \link{ZB17}, \link{ZB18a_100}, \link{ZB18a_300} \link{ZB20}, \link{PT_ZB18a}, \link{ZB23}
 }

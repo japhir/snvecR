@@ -1,3 +1,5 @@
+# snvecR (development version)
+
 # snvecR 3.10.0
 * Added support for reading ZB23.Rxx and pre-computed PT-ZB18a solutions.
 * snvec() now also returns lpx by default.

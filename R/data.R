@@ -167,8 +167,8 @@ NULL
 #' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
 #'   astronomical solutions for the Cenozoic era. _Earth and Planetary Science
 #'   Letters_. \doi{10.1016/j.epsl.2022.117595}
-#' @name PT-ZB18a
-#' @aliases PT-ZB18a(1,1) PT-ZB18a(1,0)
+#' @name PT_ZB18a
+#' @aliases PT-ZB18a "PT-ZB18a(1,1)" "PT-ZB18a(1,0)"
 NULL
 
 #' Astronomical Solutions ZB23.RXX for the past 3.6 Gyr
@@ -187,7 +187,8 @@ NULL
 #' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
 #'   astronomical solutions for the Cenozoic era. _Earth and Planetary Science
 #'   Letters_. \doi{10.1016/j.epsl.2022.117595}
-#' @name ZB23.Rxx
+#' @name ZB23
+#' @aliases ZB23.Rxx
 #' @aliases ZB23.R01 ZB23.R02 ZB23.R03 ZB23.R04 ZB23.R05 ZB23.R06 ZB23.R07 ZB23.R08 ZB23.R09 ZB23.R10
 #' @aliases ZB23.R11 ZB23.R12 ZB23.R13 ZB23.R14 ZB23.R15 ZB23.R16 ZB23.R17 ZB23.R18 ZB23.R19 ZB23.R20
 #' @aliases ZB23.R21 ZB23.R22 ZB23.R23 ZB23.R24 ZB23.R25 ZB23.R26 ZB23.R27 ZB23.R28 ZB23.R29 ZB23.R30
