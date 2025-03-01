@@ -522,10 +522,13 @@ snvec <- function(tend = -1e3,
   # coords: relative to phi(t=0)=0 at J2000
   fin$up <- Map(euler, s = fin$up, inc = 0, lan = -(fin$lani + OMT) / R2D + pi / 2)
 
+  atan_self <- function(x) {
+    atan2(x[2], x[1])
+  }
   fin <- dplyr::mutate(fin,
       ## calculate axial precession
       # get 2nd and 1st value of up
-      phi = purrr::map_dbl(.data$up, .f = \(x) atan2(x[2], x[1])),
+      phi = purrr::map_dbl(.data$up, .f = atan_self),
       # normalize to first value of phi
       phi = .data$phi - dplyr::first(.data$phi),
       # calculate longitude of perihelion with respect to moving equinox
