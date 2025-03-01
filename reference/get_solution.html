@@ -17,7 +17,7 @@ do not cache these solutions locally, however."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">snvecR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.10.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.10.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,7 +43,7 @@ do not cache these solutions locally, however."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Get an Astronomical Solution</h1>
-      <small class="dont-index">Source: <a href="https://github.com/japhir/snvecR/blob/v3.10.0/R/get_solution.R" class="external-link"><code>R/get_solution.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/japhir/snvecR/blob/main/R/get_solution.R" class="external-link"><code>R/get_solution.R</code></a></small>
       <div class="d-none name"><code>get_solution.Rd</code></div>
     </div>
 
@@ -103,13 +103,13 @@ Paleoclimatology</em>. <a href="https://doi.org/10.1029/2021PA004349" class="ext
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><a href="full_ZB18a.html">full_ZB18a</a>, <a href="ZB17.html">ZB17</a>, <a href="ZB18a_300.html">ZB18a</a>, <a href="ZB20.html">ZB20</a></p></div>
+    <div class="dont-index"><p><a href="full_ZB18a.html">full_ZB18a</a>, <a href="ZB17.html">ZB17</a>, <a href="ZB18a_100.html">ZB18a_100</a>, <a href="ZB18a_300.html">ZB18a_300</a> <a href="ZB20.html">ZB20</a>, <a href="PT_ZB18a.html">PT_ZB18a</a>, <a href="ZB23.html">ZB23</a></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"full-ZB18a"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"full-ZB18a"</span><span class="op">)</span>    <span class="co"># input for snvec</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "full-ZB18a" has not been cached.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">full-ZB18a.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Calculating helper columns.</span>
@@ -133,6 +133,28 @@ Paleoclimatology</em>. <a href="https://doi.org/10.1029/2021PA004349" class="ext
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 249,991 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8 more variables: kk &lt;dbl&gt;, pp &lt;dbl&gt;, qq &lt;dbl&gt;, cc &lt;dbl&gt;, dd &lt;dbl&gt;,</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#   nnx &lt;dbl&gt;, nny &lt;dbl&gt;, nnz &lt;dbl&gt;</span></span>
+<span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"ZB18a-300"</span><span class="op">)</span>     <span class="co"># eccentricity</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "ZB18a-300" has not been cached.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">ZB18a-300.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB18a.dat&gt;</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Flipped time for "ZB18a-300" so that it is in negative kyr.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The cache directory is <span style="color: #0000BB;">/home/runner/.cache/R/snvecR</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved astronomical solution with helper columns <span style="color: #0000BB;">ZB18a-300.rds</span> to cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Future calls to `get_solution("ZB18a-300")` will read from the cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> If you want to read from scratch, specify `force = TRUE`.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 187,501 × 3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     time    ecc   inc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   0   0.016<span style="text-decoration: underline;">7</span>  7.15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  -<span style="color: #BB0000;">1.6</span> 0.017<span style="text-decoration: underline;">3</span>  7.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  -<span style="color: #BB0000;">3.2</span> 0.017<span style="text-decoration: underline;">9</span>  7.04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  -<span style="color: #BB0000;">4.8</span> 0.018<span style="text-decoration: underline;">4</span>  6.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  -<span style="color: #BB0000;">6.4</span> 0.018<span style="text-decoration: underline;">8</span>  6.84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  -<span style="color: #BB0000;">8</span>   0.019<span style="text-decoration: underline;">2</span>  6.70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  -<span style="color: #BB0000;">9.6</span> 0.019<span style="text-decoration: underline;">5</span>  6.54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> -<span style="color: #BB0000;">11.2</span> 0.019<span style="text-decoration: underline;">6</span>  6.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> -<span style="color: #BB0000;">12.8</span> 0.019<span style="text-decoration: underline;">6</span>  6.16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -<span style="color: #BB0000;">14.4</span> 0.019<span style="text-decoration: underline;">6</span>  5.94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 187,491 more rows</span></span>
 <span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"ZB20a"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "ZB20a" has not been cached.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">ZB20a.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20a.dat&gt;</span>.</span>
@@ -184,7 +206,7 @@ Paleoclimatology</em>. <a href="https://doi.org/10.1029/2021PA004349" class="ext
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>       8   0.019<span style="text-decoration: underline;">2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>       9   0.019<span style="text-decoration: underline;">3</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 99,990 more rows</span></span>
-<span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"PT-ZB18a(1,1)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"PT-ZB18a(1,1)"</span><span class="op">)</span> <span class="co"># pre-computed precession-tilt</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "PT-ZB18a(1.0000,1.0000)" has not been cached.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">PT-ZB18a(1.0000,1.0000).dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/ZB18a/asc/PT.De1.0000Td1.0000.dat&gt;</span>.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The cache directory is <span style="color: #0000BB;">/home/runner/.cache/R/snvecR</span>.</span>
@@ -207,6 +229,30 @@ Paleoclimatology</em>. <a href="https://doi.org/10.1029/2021PA004349" class="ext
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> -<span style="color: #BB0000;">3.07</span>  0.416 0.743  0.013<span style="text-decoration: underline;">8</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> -<span style="color: #BB0000;">3.48</span>  0.417 0.842  0.012<span style="text-decoration: underline;">4</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 249,470 more rows</span></span>
+<span class="r-in"><span><span class="fu">get_solution</span><span class="op">(</span><span class="st">"ZB23.R01"</span><span class="op">)</span>      <span class="co"># one of the 3.6 Gyr solutions</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The astronomical solution "ZB23.R01" has not been cached.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Reading <span style="color: #0000BB;">ZB23.R01.dat</span> from website <span style="color: #0000BB; font-style: italic;">&lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/3.5Gyr/ZB23-N64-eiop/ZB23.R01.eiop.dat.zip&gt;</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading any of the ZB23.RXX solutions will take some time.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Zip files are about 154 MB.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Continue downloading and caching {.q {astronomical_solution}}? (Yes/no/cancel) </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The cache directory is <span style="color: #0000BB;">/home/runner/.cache/R/snvecR</span>.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Saved astronomical solution with helper columns <span style="color: #0000BB;">ZB23.R01.rds</span> to cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Future calls to `get_solution("ZB23.R01")` will read from the cache.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> If you want to read from scratch, specify `force = TRUE`.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 8,750,001 × 5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     time    ecc   inc   epl     cp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>   0   0.016<span style="text-decoration: underline;">7</span> 0.125 0.409 0.016<span style="text-decoration: underline;">3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>  -<span style="color: #BB0000;">0.4</span> 0.016<span style="text-decoration: underline;">9</span> 0.125 0.410 0.016<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>  -<span style="color: #BB0000;">0.8</span> 0.017<span style="text-decoration: underline;">0</span> 0.124 0.411 0.017<span style="text-decoration: underline;">0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>  -<span style="color: #BB0000;">1.2</span> 0.017<span style="text-decoration: underline;">2</span> 0.124 0.412 0.017<span style="text-decoration: underline;">0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>  -<span style="color: #BB0000;">1.6</span> 0.017<span style="text-decoration: underline;">3</span> 0.124 0.413 0.016<span style="text-decoration: underline;">8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>  -<span style="color: #BB0000;">2</span>   0.017<span style="text-decoration: underline;">5</span> 0.124 0.414 0.016<span style="text-decoration: underline;">3</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>  -<span style="color: #BB0000;">2.4</span> 0.017<span style="text-decoration: underline;">6</span> 0.123 0.414 0.015<span style="text-decoration: underline;">5</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>  -<span style="color: #BB0000;">2.8</span> 0.017<span style="text-decoration: underline;">8</span> 0.123 0.415 0.014<span style="text-decoration: underline;">6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>  -<span style="color: #BB0000;">3.2</span> 0.017<span style="text-decoration: underline;">9</span> 0.123 0.416 0.013<span style="text-decoration: underline;">4</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>  -<span style="color: #BB0000;">3.6</span> 0.018<span style="text-decoration: underline;">0</span> 0.123 0.417 0.012<span style="text-decoration: underline;">0</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 8,749,991 more rows</span></span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
