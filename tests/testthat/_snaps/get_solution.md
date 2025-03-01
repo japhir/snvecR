@@ -101,3 +101,45 @@
       5 -1.52  0.413 0.369  0.0169
       6 -1.90  0.413 0.461  0.0165
 
+# get_solution() can load ZB23.Rxx solutions
+
+    Code
+      head(get_solution(astronomical_solution = "ZB23.R01", quiet = FALSE, force = TRUE))
+    Message
+      i The astronomical solution "ZB23.R01" has not been cached.
+      i Reading 'ZB23.R01.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/3.5Gyr/ZB23-N64-eiop/ZB23.R01.eiop.dat.zip>.
+      Downloading any of the ZB23.RXX solutions will take some time.
+      Zip files are about 154 MB.
+    Output
+      Continue downloading and caching {.q {astronomical_solution}}? (Yes/no/cancel) 
+    Message
+      i The cache directory is 'transformed-for-CI'.
+      i Saved astronomical solution with helper columns 'ZB23.R01.rds' to cache.
+      i Future calls to `get_solution("ZB23.R01")` will read from the cache.
+      ! If you want to read from scratch, specify `force = TRUE`.
+    Output
+      # A tibble: 6 x 5
+         time    ecc   inc   epl     cp
+        <dbl>  <dbl> <dbl> <dbl>  <dbl>
+      1   0   0.0167 0.125 0.409 0.0163
+      2  -0.4 0.0169 0.125 0.410 0.0168
+      3  -0.8 0.0170 0.124 0.411 0.0170
+      4  -1.2 0.0172 0.124 0.412 0.0170
+      5  -1.6 0.0173 0.124 0.413 0.0168
+      6  -2   0.0175 0.124 0.414 0.0163
+
+---
+
+    Code
+      head(get_solution(astronomical_solution = "ZB23.R01", quiet = TRUE))
+    Output
+      # A tibble: 6 x 5
+         time    ecc   inc   epl     cp
+        <dbl>  <dbl> <dbl> <dbl>  <dbl>
+      1   0   0.0167 0.125 0.409 0.0163
+      2  -0.4 0.0169 0.125 0.410 0.0168
+      3  -0.8 0.0170 0.124 0.411 0.0170
+      4  -1.2 0.0172 0.124 0.412 0.0170
+      5  -1.6 0.0173 0.124 0.413 0.0168
+      6  -2   0.0175 0.124 0.414 0.0163
+

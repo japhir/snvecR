@@ -290,7 +290,7 @@ snvec <- function(tend = -1e3,
   if ((sign(tend) != sign(dat$time[2])) || (abs(tend) > max(abs(dat$time)))) {
     cli::cli_abort(c(
       "{.var tend} must fall within astronomical solution time.",
-      "i" = "The astronomical solution {sign(dat$time[2])*max(abs(dat$time))}.",
+      "i" = "The astronomical solution max time is {sign(dat$time[2])*max(abs(dat$time))}.",
       "x" = "{.var tend} = {tend}."
     ))
   }
