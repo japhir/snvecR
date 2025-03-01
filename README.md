@@ -74,15 +74,15 @@ solution <- snvec(tend = -1000, # final timestep in kyr
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2025-02-28 15:58:13.367735"
+#> ℹ started at "2025-02-28 16:21:27.065048"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2025-02-28 15:58:14.025575"
-#> ℹ total duration: 0.66
+#> ℹ stopped at "2025-02-28 16:21:27.861153"
+#> ℹ total duration: 0.8
 ```
 
 To quickly save out the results for further study to CSV[^1]:

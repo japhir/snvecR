@@ -34,7 +34,8 @@ Imports:
     rlang (>= 0.4.11),
     glue,
     tools,
-    backports (>= 1.1.6)
+    backports (>= 1.1.6),
+    stringr
 Config/testthat/edition: 3
 Depends:
     R (>= 3.6.0)
