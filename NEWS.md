@@ -1,4 +1,4 @@
-# snvecR (development version)
+# snvecR 3.10.1
 * `get_solution()` has some examples in the README.
 * Created simple vignette comparing the C- and R implementation.
 * Improvements to the documentation.
