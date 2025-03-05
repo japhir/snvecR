@@ -1,27 +1,29 @@
 # snvecR (development version)
-* Added examples of `get_solution()` to the README.
+* `get_solution()` has some examples in the README.
 * Created simple vignette comparing the C- and R implementation.
 * Improvements to the documentation.
+* Checked test coverage to see which lines of code aren't executed during
+  tests.
 
 # snvecR 3.10.0
 * Added support for reading `ZB23.Rxx` and pre-computed precession-tilt
   solutions, e.g.: `PT-ZB18a(1,1)`.
-* snvec() now also returns lpx by default.
+* `snvec()` now also returns column `lpx` by default.
 * CRAN tests no longer rely on downloading the solutions.
 
 # snvecR 3.9.4
-* Made error tests of get_solution() use temporary directory.
+* `get_solution()` tests use temporary directory.
 
 # snvecR 3.9.3
 * Added a package option for the cache directory.
-  * Set it with options(snvecR.cachedir = "/you/path").
+  * Set it with `options(snvecR.cachedir = "/your/path")`.
   * It still defaults to the user's cache directory.
 * Made all tests, vignettes, and examples use temporary directories rather than
   the user's cache dir.
 
 # snvecR 3.9.2
 * Made the package work for R >= 3.6.x
-  * added backports for tools::R_user_dir
+  * added backports for `tools::R_user_dir`
   * added GitHub CI that tests the installation on windows and mac with R 3.6.3
 * Improved info messages and README
 
@@ -34,8 +36,8 @@
 * Refactor `age` in ka to `time` in kyr throughout.
 * Rename default astronomical solution from PT-ZB18a to full-ZB18a.
 * For the OS, convert time to negative for consistency.
-* Changed some default output! Now returns time (kyr), no longer both t and
-  t_kyr.
+* Changed some default output! Now returns `time` (kyr), no longer both `t` and
+  `t_kyr`.
 
 # snvecR 3.8.0
 * Fix snapshot tests for CI (overwrite the cache dir, which is unique to each
