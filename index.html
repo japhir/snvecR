@@ -82,7 +82,7 @@
 <span><span class="co">#&gt; ℹ The astronomical solution "full-ZB18a" has not been cached.</span></span>
 <span><span class="co">#&gt; ℹ Reading 'full-ZB18a.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;.</span></span>
 <span><span class="co">#&gt; ℹ Calculating helper columns.</span></span>
-<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.</span></span>
 <span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'full-ZB18a.rds' to cache.</span></span>
 <span><span class="co">#&gt; ℹ Future calls to `get_solution("full-ZB18a")` will read from the cache.</span></span>
 <span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
@@ -91,7 +91,7 @@
 <span><span class="co">#&gt; ℹ The astronomical solution "ZB18a-300" has not been cached.</span></span>
 <span><span class="co">#&gt; ℹ Reading 'ZB18a-300.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB18a.dat&gt;.</span></span>
 <span><span class="co">#&gt; ! Flipped time for "ZB18a-300" so that it is in negative kyr.</span></span>
-<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.</span></span>
 <span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'ZB18a-300.rds' to cache.</span></span>
 <span><span class="co">#&gt; ℹ Future calls to `get_solution("ZB18a-300")` will read from the cache.</span></span>
 <span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
@@ -99,7 +99,7 @@
 <span><span class="co">#&gt; ℹ The astronomical solution "ZB20a" has not been cached.</span></span>
 <span><span class="co">#&gt; ℹ Reading 'ZB20a.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20a.dat&gt;.</span></span>
 <span><span class="co">#&gt; ! Flipped time for "ZB20a" so that it is in negative kyr.</span></span>
-<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.</span></span>
 <span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'ZB20a.rds' to cache.</span></span>
 <span><span class="co">#&gt; ℹ Future calls to `get_solution("ZB20a")` will read from the cache.</span></span>
 <span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
@@ -107,12 +107,13 @@
 <span><span class="va">ZB18a_1_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"PT-ZB18a(1,1)"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ The astronomical solution "PT-ZB18a(1.0000,1.0000)" has not been cached.</span></span>
 <span><span class="co">#&gt; ℹ Reading 'PT-ZB18a(1.0000,1.0000).dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/ZB18a/asc/PT.De1.0000Td1.0000.dat&gt;.</span></span>
-<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.</span></span>
 <span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'PT-ZB18a(1.0000,1.0000).rds'</span></span>
 <span><span class="co">#&gt;   to cache.</span></span>
 <span><span class="co">#&gt; ℹ Future calls to `get_solution("PT-ZB18a(1.0000,1.0000)")` will read from the</span></span>
 <span><span class="co">#&gt;   cache.</span></span>
 <span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span></code></pre></div>
+<!-- we put this in a separate block so building the README is a little faster -->
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># the 3.5 Gyr solutions, e.g. number 5</span></span>
 <span><span class="va">ZB23.R05</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"ZB23.R05"</span><span class="op">)</span></span>
@@ -129,7 +130,7 @@
 <div class="section level2">
 <h2 id="calculating-precession-and-obliquity">Calculating Precession and Obliquity<a class="anchor" aria-label="anchor" href="#calculating-precession-and-obliquity"></a>
 </h2>
-<p>Here’s the main function that does the work in action:</p>
+<p>Here’s the <code><a href="reference/snvec.html">snvec()</a></code> function that calculates climatic precession and obliquity from an orbital solution input and values for tidal dissipation (T<sub>d</sub>) and dynamical ellipticity (E<sub>d</sub>).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">solution</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/snvec.html">snvec</a></span><span class="op">(</span>tend <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, <span class="co"># final timestep in kyr</span></span>
 <span>                  ed <span class="op">=</span> <span class="fl">1</span>, <span class="co"># dynamical ellipticity, normalized to modern</span></span>
@@ -137,7 +138,7 @@
 <span>                  astronomical_solution <span class="op">=</span> <span class="st">"full-ZB18a"</span>, <span class="co"># see ?full_ZB18a for details</span></span>
 <span>                  tres <span class="op">=</span> <span class="op">-</span><span class="fl">0.4</span> <span class="co"># timestep resolution in kyr (so this is 400 years)</span></span>
 <span>                  <span class="op">)</span></span>
-<span><span class="co">#&gt; This is snvecR VERSION: 3.10.0.9000 2025-03-04</span></span>
+<span><span class="co">#&gt; This is snvecR VERSION: 3.10.0.9000 2025-03-05</span></span>
 <span><span class="co">#&gt; Richard E. Zeebe</span></span>
 <span><span class="co">#&gt; Ilja J. Kocken</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -153,15 +154,15 @@
 <span><span class="co">#&gt; • `atol` = 1e-05</span></span>
 <span><span class="co">#&gt; • `rtol` = 0</span></span>
 <span><span class="co">#&gt; • `solver` = "vode"</span></span>
-<span><span class="co">#&gt; ℹ started at "2025-03-04 16:12:43.23286"</span></span>
+<span><span class="co">#&gt; ℹ started at "2025-03-05 12:04:56.589572"</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423</span></span>
 <span><span class="co">#&gt; • s-error = |s|-1: -5.51290422495798e-05</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • obliquity: 0.413060472710089 rad</span></span>
 <span><span class="co">#&gt; • precession: -0.562357122261026 rad</span></span>
-<span><span class="co">#&gt; ℹ stopped at "2025-03-04 16:12:43.956671"</span></span>
-<span><span class="co">#&gt; ℹ total duration: 0.72</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ stopped at "2025-03-05 12:04:57.417171"</span></span>
+<span><span class="co">#&gt; ℹ total duration: 0.83</span></span></code></pre></div>
 <p>To quickly save out the results for further study to CSV<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Actually I would recommend the &lt;a href="https://readr.tidyverse.org/" class="external-link"&gt;&lt;code&gt;readr&lt;/code&gt; package&lt;/a&gt; with &lt;code&gt;&lt;a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link"&gt;readr::write_csv()&lt;/a&gt;&lt;/code&gt; instead.&lt;/p&gt;'><sup>1</sup></a>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">solution</span>, <span class="st">"ZB18a_ed-1.0_td-0.0.csv"</span><span class="op">)</span></span></code></pre></div>
@@ -185,6 +186,11 @@
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"inside"</span>, legend.position.inside <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.9</span>, <span class="fl">.95</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot-1.png" width="100%"></p>
 </div>
+</div>
+<div class="section level1">
+<h1 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+</h1>
+<p>Contributions are more than welcome! If something doesn’t work the way you expect and you don’t know how to fix it, <a href="https://github.com/japhir/snvecR/issues" class="external-link">write an issue</a>. If you do know how to fix it, feel free to <a href="https://github.com/japhir/snvecR/pulls" class="external-link">create a pull request</a>!</p>
 </div>
 <div class="section level1">
 <h1 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
