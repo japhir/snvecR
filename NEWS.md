@@ -1,7 +1,11 @@
 # snvecR (development version)
+* Added examples of `get_solution()` to the README.
+* Created simple vignette comparing the C- and R implementation.
+* Improvements to the documentation.
 
 # snvecR 3.10.0
-* Added support for reading ZB23.Rxx and pre-computed PT-ZB18a solutions.
+* Added support for reading `ZB23.Rxx` and pre-computed precession-tilt
+  solutions, e.g.: `PT-ZB18a(1,1)`.
 * snvec() now also returns lpx by default.
 * CRAN tests no longer rely on downloading the solutions.
 
@@ -12,7 +16,8 @@
 * Added a package option for the cache directory.
   * Set it with options(snvecR.cachedir = "/you/path").
   * It still defaults to the user's cache directory.
-* Made all tests, vignettes, and examples use temporary directories rather than the user's cache dir.
+* Made all tests, vignettes, and examples use temporary directories rather than
+  the user's cache dir.
 
 # snvecR 3.9.2
 * Made the package work for R >= 3.6.x
@@ -23,16 +28,18 @@
 # snvecR 3.9.1
 * Removed a lot of dependencies
 * removed all |> from functions and tests
-* Should work for R >= 4.0.0 now
+* Should work for R < 4.0.1 now
 
 # snvecR 3.9.0
 * Refactor `age` in ka to `time` in kyr throughout.
 * Rename default astronomical solution from PT-ZB18a to full-ZB18a.
 * For the OS, convert time to negative for consistency.
-* Changed some default output! Now returns time (kyr), no longer both t and t_kyr.
+* Changed some default output! Now returns time (kyr), no longer both t and
+  t_kyr.
 
 # snvecR 3.8.0
-* Fix snapshot tests for CI (overwrite the cache dir, which is unique to each test).
+* Fix snapshot tests for CI (overwrite the cache dir, which is unique to each
+  test).
 * Make it possible for the user to specify a custom orbital solution as a
   data.frame. It should either have the same column names as the output of
   get_ZB18a() or as the output of [orbitN](https://github.com/rezeebe/orbitN);
@@ -49,7 +56,8 @@
 * Fix CRAN issues by revising the logic for checking the cache.
 
 # snvecR 3.7.6
-* Remove cache directory after last example (even though it's in a donttest environment).
+* Remove cache directory after last example (even though it's in a donttest
+  environment).
 
 # snvecR 3.7.5
 * Added a `NEWS.md` file to track changes to the package.
@@ -59,11 +67,13 @@
 * Added `snvec()` function that does all the work.
 * Added `ZB18a` dataset with orbital solution.
 * Added tests using `testthat`.
-* Added `snvec()` `output` parameter with choice to select `"ode"`, `"all"`, or `"nice"` (default).
+* Added `snvec()` `output` parameter with choice to select `"ode"`, `"all"`, or
+  `"nice"` (default).
 * Added a vignette with a grid of variations on Td and Ed.
 * Added a bookdown website rendering.
 * Released a version to Zenodo and assigned a doi.
 * Removed `ZB18a` dataset from the package because it was too large.
 * Added functions get_solution, get_ZB18a, prepare_solution.
 * Added caching code for the orbital solution.
-* Remove the cache directory after running tests, so that reproducible environments remain clean.
+* Remove the cache directory after running tests, so that reproducible
+  environments remain clean.
