@@ -36,6 +36,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/analyze_grid_td-ed.html">Analyze a grid of Td and Ed values</a></li>
+    <li><a class="dropdown-item" href="articles/compare_with_c.html">Compare R and C implementations</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -67,27 +68,76 @@
 <p>To use the development version of the package, use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"japhir/snvecR"</span><span class="op">)</span></span></code></pre></div>
+<p>Then load it with:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://japhir.github.io/snvecR/">snvecR</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+<h2 id="loading-astronomical-solutions">Loading Astronomical Solutions<a class="anchor" aria-label="anchor" href="#loading-astronomical-solutions"></a>
+</h2>
+<p>The function <code><a href="reference/get_solution.html">get_solution()</a></code> easily downloads astronomical solutions from <a href="https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html" class="external-link">Richard Zeebe’s website</a> and stores them locally so that they can be reused conveniently. Note that when run interactively, the function will ask for confirmation to store the files to the cache directory (which can be customized with <code>options(snvecR.cachedir = "/path/to/cache")</code>). See the documentation for more information (<code><a href="reference/get_solution.html">?snvecR::get_solution</a></code>).</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># full solution needed for snvec below</span></span>
+<span><span class="va">sol</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"full-ZB18a"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ The astronomical solution "full-ZB18a" has not been cached.</span></span>
+<span><span class="co">#&gt; ℹ Reading 'full-ZB18a.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;.</span></span>
+<span><span class="co">#&gt; ℹ Calculating helper columns.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'full-ZB18a.rds' to cache.</span></span>
+<span><span class="co">#&gt; ℹ Future calls to `get_solution("full-ZB18a")` will read from the cache.</span></span>
+<span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
+<span><span class="co"># eccentricity solutions</span></span>
+<span><span class="va">ZB18a</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"ZB18a-300"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ The astronomical solution "ZB18a-300" has not been cached.</span></span>
+<span><span class="co">#&gt; ℹ Reading 'ZB18a-300.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB18a.dat&gt;.</span></span>
+<span><span class="co">#&gt; ! Flipped time for "ZB18a-300" so that it is in negative kyr.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'ZB18a-300.rds' to cache.</span></span>
+<span><span class="co">#&gt; ℹ Future calls to `get_solution("ZB18a-300")` will read from the cache.</span></span>
+<span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
+<span><span class="va">ZB20a</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"ZB20a"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ The astronomical solution "ZB20a" has not been cached.</span></span>
+<span><span class="co">#&gt; ℹ Reading 'ZB20a.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20a.dat&gt;.</span></span>
+<span><span class="co">#&gt; ! Flipped time for "ZB20a" so that it is in negative kyr.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'ZB20a.rds' to cache.</span></span>
+<span><span class="co">#&gt; ℹ Future calls to `get_solution("ZB20a")` will read from the cache.</span></span>
+<span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
+<span><span class="co"># a pre-computed precession-tilt solution (PT)</span></span>
+<span><span class="va">ZB18a_1_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"PT-ZB18a(1,1)"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ The astronomical solution "PT-ZB18a(1.0000,1.0000)" has not been cached.</span></span>
+<span><span class="co">#&gt; ℹ Reading 'PT-ZB18a(1.0000,1.0000).dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/ZB18a/asc/PT.De1.0000Td1.0000.dat&gt;.</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.</span></span>
+<span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'PT-ZB18a(1.0000,1.0000).rds'</span></span>
+<span><span class="co">#&gt;   to cache.</span></span>
+<span><span class="co">#&gt; ℹ Future calls to `get_solution("PT-ZB18a(1.0000,1.0000)")` will read from the</span></span>
+<span><span class="co">#&gt;   cache.</span></span>
+<span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># the 3.5 Gyr solutions, e.g. number 5</span></span>
+<span><span class="va">ZB23.R05</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_solution.html">get_solution</a></span><span class="op">(</span><span class="st">"ZB23.R05"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ℹ The astronomical solution "ZB23.R05" has not been cached.</span></span>
+<span><span class="co">#&gt; ℹ Reading 'ZB23.R05.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/3.5Gyr/ZB23-N64-eiop/ZB23.R05.eiop.dat.zip&gt;.</span></span>
+<span><span class="co">#&gt; Downloading any of the ZB23.RXX solutions will take some time.</span></span>
+<span><span class="co">#&gt; Zip files are about 154 MB.</span></span>
+<span><span class="co">#&gt; Continue downloading and caching? (Yes/no/cancel)</span></span>
+<span><span class="co">#&gt; ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.</span></span>
+<span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'ZB23.R05.rds' to cache.</span></span>
+<span><span class="co">#&gt; ℹ Future calls to `get_solution("ZB23.R05")` will read from the cache.</span></span>
+<span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="calculating-precession-and-obliquity">Calculating Precession and Obliquity<a class="anchor" aria-label="anchor" href="#calculating-precession-and-obliquity"></a>
 </h2>
 <p>Here’s the main function that does the work in action:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://japhir.github.io/snvecR/">snvecR</a></span><span class="op">)</span></span>
-<span><span class="va">solution</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/snvec.html">snvec</a></span><span class="op">(</span>tend <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, <span class="co"># final timestep in kyr</span></span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">solution</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/snvec.html">snvec</a></span><span class="op">(</span>tend <span class="op">=</span> <span class="op">-</span><span class="fl">1000</span>, <span class="co"># final timestep in kyr</span></span>
 <span>                  ed <span class="op">=</span> <span class="fl">1</span>, <span class="co"># dynamical ellipticity, normalized to modern</span></span>
 <span>                  td <span class="op">=</span> <span class="fl">0</span>, <span class="co"># tidal dissipation, normalized to modern</span></span>
 <span>                  astronomical_solution <span class="op">=</span> <span class="st">"full-ZB18a"</span>, <span class="co"># see ?full_ZB18a for details</span></span>
 <span>                  tres <span class="op">=</span> <span class="op">-</span><span class="fl">0.4</span> <span class="co"># timestep resolution in kyr (so this is 400 years)</span></span>
 <span>                  <span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ The astronomical solution "full-ZB18a" has not been cached.</span></span>
-<span><span class="co">#&gt; ℹ Reading 'full-ZB18a.dat' from website &lt;http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat&gt;.</span></span>
-<span><span class="co">#&gt; ℹ Calculating helper columns.</span></span>
-<span><span class="co">#&gt; ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.</span></span>
-<span><span class="co">#&gt; ℹ Saved astronomical solution with helper columns 'full-ZB18a.rds' to cache.</span></span>
-<span><span class="co">#&gt; ℹ Future calls to `get_solution("full-ZB18a")` will read from the cache.</span></span>
-<span><span class="co">#&gt; ! If you want to read from scratch, specify `force = TRUE`.</span></span>
-<span><span class="co">#&gt; This is snvecR VERSION: 3.9.4.9000 2025-03-01</span></span>
+<span><span class="co">#&gt; This is snvecR VERSION: 3.10.0.9000 2025-03-04</span></span>
 <span><span class="co">#&gt; Richard E. Zeebe</span></span>
 <span><span class="co">#&gt; Ilja J. Kocken</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -103,25 +153,25 @@
 <span><span class="co">#&gt; • `atol` = 1e-05</span></span>
 <span><span class="co">#&gt; • `rtol` = 0</span></span>
 <span><span class="co">#&gt; • `solver` = "vode"</span></span>
-<span><span class="co">#&gt; ℹ started at "2025-02-28 16:31:41.171567"</span></span>
+<span><span class="co">#&gt; ℹ started at "2025-03-04 16:12:43.23286"</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423</span></span>
 <span><span class="co">#&gt; • s-error = |s|-1: -5.51290422495798e-05</span></span>
 <span><span class="co">#&gt; Final values:</span></span>
 <span><span class="co">#&gt; • obliquity: 0.413060472710089 rad</span></span>
 <span><span class="co">#&gt; • precession: -0.562357122261026 rad</span></span>
-<span><span class="co">#&gt; ℹ stopped at "2025-02-28 16:31:42.01687"</span></span>
-<span><span class="co">#&gt; ℹ total duration: 0.85</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ stopped at "2025-03-04 16:12:43.956671"</span></span>
+<span><span class="co">#&gt; ℹ total duration: 0.72</span></span></code></pre></div>
 <p>To quickly save out the results for further study to CSV<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;Actually I would recommend the &lt;a href="https://readr.tidyverse.org/" class="external-link"&gt;&lt;code&gt;readr&lt;/code&gt; package&lt;/a&gt; with &lt;code&gt;&lt;a href="https://readr.tidyverse.org/reference/write_delim.html" class="external-link"&gt;readr::write_csv()&lt;/a&gt;&lt;/code&gt; instead.&lt;/p&gt;'><sup>1</sup></a>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="va">solution</span>, <span class="st">"ZB18a_ed-1.0_td-0.0.csv"</span><span class="op">)</span></span></code></pre></div>
 <p>see <code><a href="reference/snvec.html">?snvec</a></code> for further documentation.</p>
 <p>Here we create a quick plot of the obliquity:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">epl</span> <span class="op">~</span> <span class="va">time</span>, data <span class="op">=</span> <span class="va">solution</span>, type <span class="op">=</span> <span class="st">'l'</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-simpleplot-1.png" width="100%"></p>
 <p>Or if you want to make a slightly fancier plot of the calculated climatic precession with the eccentricity envelope:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="va">solution</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">time</span>, y <span class="op">=</span> <span class="va">cp</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>

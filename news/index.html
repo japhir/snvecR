@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/analyze_grid_td-ed.html">Analyze a grid of Td and Ed values</a></li>
+    <li><a class="dropdown-item" href="../articles/compare_with_c.html">Compare R and C implementations</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -38,10 +39,13 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="snvecr-development-version">snvecR (development version)<a class="anchor" aria-label="anchor" href="#snvecr-development-version"></a></h2>
-</div>
+<ul><li>Added examples of <code><a href="../reference/get_solution.html">get_solution()</a></code> to the README.</li>
+<li>Created simple vignette comparing the C- and R implementation.</li>
+<li>Improvements to the documentation.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.10.0" id="snvecr-3100">snvecR 3.10.0<a class="anchor" aria-label="anchor" href="#snvecr-3100"></a></h2><p class="text-muted">CRAN release: 2025-03-01</p>
-<ul><li>Added support for reading ZB23.Rxx and pre-computed PT-ZB18a solutions.</li>
+<ul><li>Added support for reading <code>ZB23.Rxx</code> and pre-computed precession-tilt solutions, e.g.: <code>PT-ZB18a(1,1)</code>.</li>
 <li>snvec() now also returns lpx by default.</li>
 <li>CRAN tests no longer rely on downloading the solutions.</li>
 </ul></div>
@@ -69,7 +73,7 @@
 <h2 class="pkg-version" data-toc-text="3.9.1" id="snvecr-391">snvecR 3.9.1<a class="anchor" aria-label="anchor" href="#snvecr-391"></a></h2><p class="text-muted">CRAN release: 2024-03-04</p>
 <ul><li>Removed a lot of dependencies</li>
 <li>removed all |&gt; from functions and tests</li>
-<li>Should work for R &gt;= 4.0.0 now</li>
+<li>Should work for R &lt; 4.0.1 now</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="3.9.0" id="snvecr-390">snvecR 3.9.0<a class="anchor" aria-label="anchor" href="#snvecr-390"></a></h2><p class="text-muted">CRAN release: 2024-03-01</p>
