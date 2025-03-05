@@ -14,7 +14,7 @@
 # get_solution() can load eccentricity solutions
 
     Code
-      head(get_solution(astronomical_solution = "ZB20b", quiet = TRUE, force = TRUE))
+      head(get_solution(astronomical_solution = "ZB17a", quiet = TRUE, force = TRUE))
     Output
       # A tibble: 6 x 3
          time    ecc   inc
@@ -25,6 +25,71 @@
       4  -4.8 0.0184  6.95
       5  -6.4 0.0188  6.84
       6  -8   0.0192  6.70
+
+---
+
+    Code
+      head(get_solution(astronomical_solution = "ZB18a-100", quiet = TRUE, force = TRUE))
+    Output
+      # A tibble: 6 x 3
+         time    ecc   inc
+        <dbl>  <dbl> <dbl>
+      1   0   0.0167  7.15
+      2  -1.6 0.0173  7.11
+      3  -3.2 0.0179  7.04
+      4  -4.8 0.0184  6.95
+      5  -6.4 0.0188  6.84
+      6  -8   0.0192  6.70
+
+---
+
+    Code
+      head(get_solution(astronomical_solution = "ZB18a-300", quiet = TRUE, force = TRUE))
+    Output
+      # A tibble: 6 x 3
+         time    ecc   inc
+        <dbl>  <dbl> <dbl>
+      1   0   0.0167  7.15
+      2  -1.6 0.0173  7.11
+      3  -3.2 0.0179  7.04
+      4  -4.8 0.0184  6.95
+      5  -6.4 0.0188  6.84
+      6  -8   0.0192  6.70
+
+---
+
+    Code
+      head(get_solution(astronomical_solution = "ZB20a", quiet = TRUE, force = TRUE))
+    Output
+      # A tibble: 6 x 3
+         time    ecc   inc
+        <dbl>  <dbl> <dbl>
+      1   0   0.0167  7.15
+      2  -1.6 0.0173  7.11
+      3  -3.2 0.0179  7.04
+      4  -4.8 0.0184  6.95
+      5  -6.4 0.0188  6.84
+      6  -8   0.0192  6.70
+
+---
+
+    Code
+      head(get_solution(astronomical_solution = "La10d", quiet = TRUE, force = TRUE))
+    Message
+      i Relying on astrochron to get solution "La10d"
+      i We do not cache these results.
+      ! astrochron converts time from -kyr to ka by default.
+      i Output has column names "Time_ka" and "ecc_LA10d"
+    Output
+      # A tibble: 6 x 2
+        Time_ka ecc_LA10d
+          <dbl>     <dbl>
+      1       0    0.0167
+      2       1    0.0172
+      3       2    0.0175
+      4       3    0.0178
+      5       4    0.0182
+      6       5    0.0185
 
 # get_solution() can load full solutions
 
@@ -108,10 +173,10 @@
     Message
       i The astronomical solution "ZB23.R01" has not been cached.
       i Reading 'ZB23.R01.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/3.5Gyr/ZB23-N64-eiop/ZB23.R01.eiop.dat.zip>.
-      Downloading any of the ZB23.RXX solutions will take some time.
-      Zip files are about 154 MB.
+      i Downloading any of the ZB23.RXX solutions will take some time.
+      i Zip files are about 154 MB.
     Output
-      Continue downloading and caching {.q {astronomical_solution}}? (Yes/no/cancel) 
+      Continue downloading and caching? (Yes/no/cancel) 
     Message
       i The cache directory is 'transformed-for-CI'.
       i Saved astronomical solution with helper columns 'ZB23.R01.rds' to cache.

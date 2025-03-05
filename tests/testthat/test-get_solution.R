@@ -4,6 +4,7 @@ test_that("get_solution() bad inputs throw errors", {
   expect_error(get_solution(astronomical_solution = "hoi"))
   expect_error(get_solution(astronomical_solution = "full-La11"))
   expect_error(get_solution(astronomical_solution = data.frame(x = 1, y = 5))) # this runs via prepare_solution
+  expect_error(get_solution(astronomical_solution = "ZB18a"))
 })
 
 test_that("get_solution() can return a dataframe", {
@@ -26,9 +27,20 @@ test_that("get_solution() can load eccentricity solutions", {
   pth <- withr::local_tempdir(pattern = "snvecR")
   withr::local_options(list(snvecR.cachedir = pth, width = 150))
 
-  expect_snapshot(head(get_solution(astronomical_solution = "ZB20b",
+  expect_snapshot(head(get_solution(astronomical_solution = "ZB17a",
                                     quiet = TRUE, force = TRUE)))
 
+  expect_snapshot(head(get_solution(astronomical_solution = "ZB18a-100",
+                                    quiet = TRUE, force = TRUE)))
+
+  expect_snapshot(head(get_solution(astronomical_solution = "ZB18a-300",
+                                    quiet = TRUE, force = TRUE)))
+
+  expect_snapshot(head(get_solution(astronomical_solution = "ZB20a",
+                                    quiet = TRUE, force = TRUE)))
+
+  expect_snapshot(head(get_solution(astronomical_solution = "La10d",
+                                    quiet = TRUE, force = TRUE)))
 })
 
 test_that("get_solution() can load full solutions", {

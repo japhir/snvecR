@@ -11,7 +11,8 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-options(snvecR.cachedir = withr::local_tempdir(pattern = "snvecR"))
+pth <- withr::local_tempdir(pattern = "snvecR")
+withr::local_options(list(snvecR.cachedir = pth))
 ```
 
 # snvecR

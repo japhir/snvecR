@@ -105,19 +105,19 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
   }
 
   if (grepl("^La\\d{2}[a-z]?", astronomical_solution)) {
-    cli::cli_warn(c(
+    cli::cli_inform(c(
       "i" = "Relying on {.pkg astrochron} to get solution {.q {astronomical_solution}}",
-                    "i" = "We do not cache these results.",
-                    "!" = "{.pkg astrochron} converts time from -kyr to ka by default."))
+      "i" = "We do not cache these results.",
+      "!" = "{.pkg astrochron} converts time from -kyr to ka by default."))
     rlang::check_installed("astrochron",
                            reason = "to use `astrochron::getLaskar()`")
     dat <- tibble::as_tibble(
       astrochron::getLaskar(sol = tolower(astronomical_solution),
                             verbose = !quiet)
     )
-    cli::cli_warn(c(
-      "i" = "Output has column names {.q {colnames(dat)}}"
-    ))
+    cli::cli_alert_info(
+      "Output has column names {.q {colnames(dat)}}"
+    )
     return(dat)
   }
 
@@ -189,7 +189,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
 
   if (!quiet) {
     cli::cli_alert_info(c(
-      "!" = "The astronomical solution {.q {astronomical_solution}} has not been cached."
+      "The astronomical solution {.q {astronomical_solution}} has not been cached."
     ))
   }
 
@@ -298,8 +298,9 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     raw <- prepare_solution(raw, quiet = quiet)
   } else {
     if (grepl("^ZB23\\.R", astronomical_solution)) {
-      cli::cli_inform(c("Downloading any of the ZB23.RXX solutions will take some time.",
-                        "Zip files are about 154 MB."))
+      cli::cli_inform(c(
+        "i" = "Downloading any of the ZB23.RXX solutions will take some time.",
+        "i" = "Zip files are about 154 MB."))
       sure <- utils::askYesNo("Continue downloading and caching?")
       if (is.na(sure)) {
         cli::cli_abort("Cancelled by user.", call = NULL)
@@ -326,7 +327,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
   if (grepl("^ZB17|^ZB18|^ZB20", astronomical_solution)) {
     raw <- dplyr::mutate(raw, time = -.data$time)
     if (!quiet) {
-      cli::cli_alert_warning(
+      cli::cli_alert_info(
         "Flipped time for {.q {astronomical_solution}} so that it is in negative kyr."
       )
     }

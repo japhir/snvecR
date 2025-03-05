@@ -62,7 +62,7 @@ sol <- get_solution("full-ZB18a")
 #> ℹ The astronomical solution "full-ZB18a" has not been cached.
 #> ℹ Reading 'full-ZB18a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/OS/ZB18a/ems-plan3.dat>.
 #> ℹ Calculating helper columns.
-#> ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.
+#> ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.
 #> ℹ Saved astronomical solution with helper columns 'full-ZB18a.rds' to cache.
 #> ℹ Future calls to `get_solution("full-ZB18a")` will read from the cache.
 #> ! If you want to read from scratch, specify `force = TRUE`.
@@ -71,7 +71,7 @@ ZB18a <- get_solution("ZB18a-300")
 #> ℹ The astronomical solution "ZB18a-300" has not been cached.
 #> ℹ Reading 'ZB18a-300.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB18a.dat>.
 #> ! Flipped time for "ZB18a-300" so that it is in negative kyr.
-#> ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.
+#> ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.
 #> ℹ Saved astronomical solution with helper columns 'ZB18a-300.rds' to cache.
 #> ℹ Future calls to `get_solution("ZB18a-300")` will read from the cache.
 #> ! If you want to read from scratch, specify `force = TRUE`.
@@ -79,7 +79,7 @@ ZB20a <- get_solution("ZB20a")
 #> ℹ The astronomical solution "ZB20a" has not been cached.
 #> ℹ Reading 'ZB20a.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/300Myr/ZB20a.dat>.
 #> ! Flipped time for "ZB20a" so that it is in negative kyr.
-#> ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.
+#> ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.
 #> ℹ Saved astronomical solution with helper columns 'ZB20a.rds' to cache.
 #> ℹ Future calls to `get_solution("ZB20a")` will read from the cache.
 #> ! If you want to read from scratch, specify `force = TRUE`.
@@ -87,13 +87,15 @@ ZB20a <- get_solution("ZB20a")
 ZB18a_1_1 <- get_solution("PT-ZB18a(1,1)")
 #> ℹ The astronomical solution "PT-ZB18a(1.0000,1.0000)" has not been cached.
 #> ℹ Reading 'PT-ZB18a(1.0000,1.0000).dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/PrecTilt/ZB18a/asc/PT.De1.0000Td1.0000.dat>.
-#> ℹ The cache directory is '/tmp/RtmpR5G9yC/snvecR43dce2ecdb925'.
+#> ℹ The cache directory is '/tmp/Rtmpya43uW/snvecR1942b47b14132e'.
 #> ℹ Saved astronomical solution with helper columns 'PT-ZB18a(1.0000,1.0000).rds'
 #>   to cache.
 #> ℹ Future calls to `get_solution("PT-ZB18a(1.0000,1.0000)")` will read from the
 #>   cache.
 #> ! If you want to read from scratch, specify `force = TRUE`.
 ```
+
+<!-- we put this in a separate block so building the README is a little faster -->
 
 ``` r
 # the 3.5 Gyr solutions, e.g. number 5
@@ -111,7 +113,9 @@ ZB23.R05 <- get_solution("ZB23.R05")
 
 ## Calculating Precession and Obliquity
 
-Here’s the main function that does the work in action:
+Here’s the `snvec()` function that calculates climatic precession and
+obliquity from an orbital solution input and values for tidal
+dissipation (T<sub>d</sub>) and dynamical ellipticity (E<sub>d</sub>).
 
 ``` r
 solution <- snvec(tend = -1000, # final timestep in kyr
@@ -120,7 +124,7 @@ solution <- snvec(tend = -1000, # final timestep in kyr
                   astronomical_solution = "full-ZB18a", # see ?full_ZB18a for details
                   tres = -0.4 # timestep resolution in kyr (so this is 400 years)
                   )
-#> This is snvecR VERSION: 3.10.0.9000 2025-03-04
+#> This is snvecR VERSION: 3.10.0.9000 2025-03-05
 #> Richard E. Zeebe
 #> Ilja J. Kocken
 #> 
@@ -136,15 +140,15 @@ solution <- snvec(tend = -1000, # final timestep in kyr
 #> • `atol` = 1e-05
 #> • `rtol` = 0
 #> • `solver` = "vode"
-#> ℹ started at "2025-03-04 16:12:43.23286"
+#> ℹ started at "2025-03-05 12:04:56.589572"
 #> Final values:
 #> • s[1][2][3]: 0.404184487124565, -0.0537555129057148, and 0.913036138471423
 #> • s-error = |s|-1: -5.51290422495798e-05
 #> Final values:
 #> • obliquity: 0.413060472710089 rad
 #> • precession: -0.562357122261026 rad
-#> ℹ stopped at "2025-03-04 16:12:43.956671"
-#> ℹ total duration: 0.72
+#> ℹ stopped at "2025-03-05 12:04:57.417171"
+#> ℹ total duration: 0.83
 ```
 
 To quickly save out the results for further study to CSV[^1]:
@@ -181,6 +185,14 @@ solution |>
 ```
 
 <img src="man/figures/README-plot-1.png" width="100%" />
+
+# Contributing
+
+Contributions are more than welcome! If something doesn’t work the way
+you expect and you don’t know how to fix it, [write an
+issue](https://github.com/japhir/snvecR/issues). If you do know how to
+fix it, feel free to [create a pull
+request](https://github.com/japhir/snvecR/pulls)!
 
 # References
 
