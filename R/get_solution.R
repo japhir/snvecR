@@ -300,7 +300,7 @@ get_ZB <- function(astronomical_solution = "full-ZB18a",
     if (grepl("^ZB23\\.R", astronomical_solution)) {
       cli::cli_inform(c("Downloading any of the ZB23.RXX solutions will take some time.",
                         "Zip files are about 154 MB."))
-      sure <- utils::askYesNo("Continue downloading and caching {.q {astronomical_solution}}?")
+      sure <- utils::askYesNo("Continue downloading and caching?")
       if (is.na(sure)) {
         cli::cli_abort("Cancelled by user.", call = NULL)
       }

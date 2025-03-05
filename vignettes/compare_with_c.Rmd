@@ -1,0 +1,100 @@
+---
+title: "Compare R and C implementations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Compare R and C implementations}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 8, fig.height = 4
+)
+## modern_r <- getRversion() >= "4.1.0"
+pth <- withr::local_tempdir(pattern = "snvecR")
+withr::local_options(list(snvecR.cachedir = pth))
+```
+
+```{r setup}
+library(tibble)  # nice dataframes
+library(ggplot2) # nice plots
+library(snvecR)  # this package
+```
+
+# Introduction
+
+The function `snvec()` uses some of the parameters of a full astronomical
+solution (AS) such as ZB18a from Zeebe and Lourens (2019) in combination with
+values for tidal dissipation (T<sub>d</sub>) and dynamical ellipticity
+(E<sub>d</sub>) to calculate precession and obliquity (or tilt).
+
+In this vignette we show how we can run `snvec()` and contrast the result to pre-computed solutions, which were calculated using the [c-routine](https://github.com/rezeebe/snvec).
+
+
+# Apply `snvec`
+For the full 100 Myr available:
+```{r snvec}
+dat <- snvec(-1e5, 1, 1, astronomical_solution = "full-ZB18a")
+```
+
+# Load PT-solution
+```{r pt}
+pt <- get_solution("PT-ZB18a(1,1)")
+```
+
+# Inspect results
+We find that despite the different ODE solvers and timesteps, the C- and
+R-implementations are almost identical up to -60 Myr.
+
+```{r prec}
+pl <- ggplot(dat, aes(x = time / 1000, y = cp)) +
+  labs(x = "Time (Myr)",
+       y = "Climatic precession") +
+  geom_line(aes(colour = "snvecR ZB18a(1,1)")) +
+  geom_line(aes(colour = "snvec  ZB18a(1,1)"),
+            data = pt) +
+  # add eccentricity
+  geom_line(aes(y = ee, colour = "ZB18a eccentricity"),
+            linetype = "solid",
+            data = get_solution("full-ZB18a")) +
+  labs(colour = "")
+pl + xlim(-60, -59)
+```
+
+```{r obl}
+plo <- ggplot(dat, aes(x = time / 1000, y = epl)) +
+  labs(x = "Time (Myr)",
+       y = "Obliquity (rad)") +
+  geom_line(aes(colour = "snvecR ZB18a(1,1)")) +
+  geom_line(aes(colour = "snvec  ZB18a(1,1)"), data = pt) +
+  labs(colour = "")
+plo + xlim(-60, -59)
+```
+
+But note the subtle differences at around -100 Myr. This is not significant,
+however, because this difference occurs far beyond the horizon of
+predictability in the orbital solutions (the eccentricity curves).
+
+```{r prec2}
+pl + xlim(-100, -99)
+```
+
+```{r obl2}
+plo + xlim(-100, -99)
+```
+
+# References
+
+Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
+  Paleocene–Eocene boundary age constrained by geology and astronomy.
+  _Science_, 365(6456), 926–929.
+  [doi:10.1126/science.aax0612](https://doi.org/10.1126/science.aax0612).
+
+Zeebe, R. E., & Lourens, L. J. (2022). A deep-time dating tool for
+  paleo-applications utilizing obliquity and precession cycles: The role of
+  dynamical ellipticity and tidal dissipation. _Paleoceanography and
+  Paleoclimatology_, e2021PA004349.
+  [doi:10.1029/2021PA004349](https://doi.org/10.1029/2021PA004349).

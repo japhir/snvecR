@@ -9,9 +9,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%",
-  snvecR.cachedir = withr::local_tempdir(pattern = "snvecR")
+  out.width = "100%"
 )
+options(snvecR.cachedir = withr::local_tempdir(pattern = "snvecR"))
 ```
 
 # snvecR
@@ -39,22 +39,64 @@ vector n.
 
 You can install snvecR like so:
 
-``` r
+```{r install, eval = FALSE}
 install.packages("snvecR")
 ```
 
 To use the development version of the package, use:
 
-``` r
+```{r install2, eval = FALSE}
 remotes::install_github("japhir/snvecR")
 ```
 
-## Example
+Then load it with:
+```{r libs}
+library(snvecR)
+```
 
-Here's the main function that does the work in action:
+## Loading Astronomical Solutions
+
+The function `get_solution()` easily downloads astronomical solutions from
+[Richard Zeebe's
+website](https://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html)
+and stores them locally so that they can be reused conveniently. Note that when
+run interactively, the function will ask for confirmation to store the files to
+the cache directory (which can be customized with `options(snvecR.cachedir =
+"/path/to/cache")`). See the documentation for more information
+(`?snvecR::get_solution`).
+
+```{r sols}
+# full solution needed for snvec below
+sol <- get_solution("full-ZB18a")
+# eccentricity solutions
+ZB18a <- get_solution("ZB18a-300")
+ZB20a <- get_solution("ZB20a")
+# a pre-computed precession-tilt solution (PT)
+ZB18a_1_1 <- get_solution("PT-ZB18a(1,1)")
+```
+
+<!-- we put this in a separate block so building the README is a little faster -->
+```{r sols_big, eval = FALSE}
+# the 3.5 Gyr solutions, e.g. number 5
+ZB23.R05 <- get_solution("ZB23.R05")
+#> ℹ The astronomical solution "ZB23.R05" has not been cached.
+#> ℹ Reading 'ZB23.R05.dat' from website <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro/3.5Gyr/ZB23-N64-eiop/ZB23.R05.eiop.dat.zip>.
+#> Downloading any of the ZB23.RXX solutions will take some time.
+#> Zip files are about 154 MB.
+#> Continue downloading and caching? (Yes/no/cancel)
+#> ℹ The cache directory is '/home/japhir/.cache/R/snvecR'.
+#> ℹ Saved astronomical solution with helper columns 'ZB23.R05.rds' to cache.
+#> ℹ Future calls to `get_solution("ZB23.R05")` will read from the cache.
+#> ! If you want to read from scratch, specify `force = TRUE`.
+```
+
+## Calculating Precession and Obliquity
+
+Here's the `snvec()` function that calculates climatic precession and obliquity
+from an orbital solution input and values for tidal dissipation (T<sub>d</sub>)
+and dynamical ellipticity (E<sub>d</sub>).
 
 ```{r example}
-library(snvecR)
 solution <- snvec(tend = -1000, # final timestep in kyr
                   ed = 1, # dynamical ellipticity, normalized to modern
                   td = 0, # tidal dissipation, normalized to modern
@@ -94,6 +136,14 @@ solution |>
   scale_color_discrete(type = c("skyblue", "black")) +
   theme(legend.position = "inside", legend.position.inside = c(.9, .95))
 ```
+
+# Contributing
+
+Contributions are more than welcome! If something doesn't work the way you
+expect and you don't know how to fix it, [write an
+issue](https://github.com/japhir/snvecR/issues). If you do know how to fix it,
+feel free to [create a pull request](https://github.com/japhir/snvecR/pulls)!
+
 
 # References
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
