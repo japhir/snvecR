@@ -4,15 +4,15 @@
 \alias{ZB18a_300}
 \alias{ZB18a}
 \alias{"ZB18a-300"}
-\title{Astronomical Solution ZB18a for the Past 300 Myr}
+\title{Astronomical Solution ZB18a}
 \format{
 \subsection{\code{get_solution("ZB18a-300")}}{
 
 A data frame with 187,501 rows and 3 columns:
 \describe{
 \item{time}{Time in thousands of years (kyr).}
-\item{ecc}{Eccentricity \eqn{e} (unitless).}
-\item{inc}{Inclination \eqn{I} (degrees).}
+\item{ecc}{Eccentricity \eqn{e}{e} (unitless).} \item{inc}{Inclination
+\eqn{I}{I} (degrees).}
 }
 }
 }
@@ -23,11 +23,12 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-Astronomical Solution ZB18a for the Past 300 Myr
+The ZB18a_300 eccentricity solution spans the past 300 Myr. See \link{ZB18a_100}
+for the past 100 Myr.
 }
 \references{
-Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
-Paleocene–Eocene boundary age constrained by geology and astronomy.
+Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and
+the Paleocene–Eocene boundary age constrained by geology and astronomy.
 \emph{Science}, 365(6456), 926–929. \doi{10.1126/science.aax0612}.'
 
 Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained

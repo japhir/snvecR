@@ -5,16 +5,16 @@
 \alias{PT-ZB18a}
 \alias{"PT-ZB18a(1,1)"}
 \alias{"PT-ZB18a(1,0)"}
-\title{Astronomical Solutions PT-ZB18a(x.xxxx,y.yyyy) for the past 100 Myr}
+\title{Astronomical Solutions PT-ZB18a(E\if{html}{\out{<sub>}}d\if{html}{\out{</sub>}},T\if{html}{\out{<sub>}}d\if{html}{\out{</sub>}})}
 \format{
-\subsection{\code{get_solution("PT-ZB18a(1,1)")}}{
+\subsection{\code{get_solution("PT-ZB18a(1.000,1.000)")}}{
 
 A data frame with 249,480 rows and 4 columns:
 \describe{
 \item{time}{Time in thousands of years (kyr).}
-\item{epl}{Obliqity \eqn{\epsilon} (radians).}
-\item{phi}{Axial Precession \eqn{phi} (radians).}
-\item{cp}{Climatic Precession \eqn{e sin(\bar{\omega})} (unitless).}
+\item{epl}{Obliqity \eqn{\epsilon}{epsilon} (radians).}
+\item{phi}{Axial Precession \eqn{\phi}{phi} (radians).}
+\item{cp}{Climatic Precession \eqn{e \sin(\bar{\omega})}{e sin(baromega)} (unitless).}
 }
 }
 }
@@ -25,7 +25,11 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-Astronomical Solutions PT-ZB18a(x.xxxx,y.yyyy) for the past 100 Myr
+The pre-computed precession-tilt solutions
+PT-ZB18a(E\if{html}{\out{<sub>}}d\if{html}{\out{</sub>}},T\if{html}{\out{<sub>}}d\if{html}{\out{</sub>}}) span the past 100 Myr. Available
+solutions include all combinations of dynamical ellipticity values between
+0.9950 and 1.0050 in increments of 0.0010 and tidal dissipation values
+between 0.000 and 1.2000 in increments of 0.1.
 }
 \references{
 Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained

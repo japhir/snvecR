@@ -6,7 +6,7 @@
 \alias{snvecR-package}
 \title{snvecR: Calculate Earth’s Obliquity and Precession in the Past}
 \description{
-Easily calculate precession and obliquity from an orbital solution (defaults to ZB18a from Zeebe and Lourens (2019) \doi{10.1126/science.aax0612}) and assumed or reconstructed values for tidal dissipation (Td) and dynamical ellipticity (Ed). This is a translation and adaptation of the 'C'-code in the supplementary material to Zeebe and Lourens (2022) \doi{10.1029/2021PA004349}, with further details on the methodology described in Zeebe (2022) \doi{10.3847/1538-3881/ac80f8}. The name of the 'C'-routine is 'snvec', which refers to the key units of computation: spin vector s and orbit normal vector n.
+Easily calculate precession and obliquity from an orbital solution (defaults to ZB18a from Zeebe and Lourens (2019) \doi{10.1126/science.aax0612}) and assumed or reconstructed values for dynamical ellipticity (Ed) and tidal dissipation (Td). This is a translation and adaptation of the 'C'-code in the supplementary material to Zeebe and Lourens (2022) \doi{10.1029/2021PA004349}, with further details on the methodology described in Zeebe (2022) \doi{10.3847/1538-3881/ac80f8}. The name of the 'C'-routine is 'snvec', which refers to the key units of computation: spin vector s and orbit normal vector n.
 }
 \seealso{
 Useful links:

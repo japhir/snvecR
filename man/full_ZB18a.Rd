@@ -3,45 +3,45 @@
 \name{full_ZB18a}
 \alias{full_ZB18a}
 \alias{full-ZB18a}
-\title{Full Astronomical Solution ZB18a for the past 100 Myr}
+\title{Full Astronomical Solution ZB18a}
 \format{
 \subsection{\code{get_solution("full-ZB18a")}}{
 
 A data frame with 250,001 rows and 20 columns:
 \describe{
-\item{t}{Time \eqn{t} (days).}
+\item{t}{Time \eqn{t}{t} (days).}
 \item{time}{Time in thousands of years (kyr).}
-\item{aa}{Semimajor axis \eqn{a} in astronomical units (au).}
-\item{ee}{Eccentricity \eqn{e} (unitless).}
-\item{inc}{Inclination \eqn{I} (degrees).}
-\item{lph}{Longitude of perihelion \eqn{\varpi} (degrees).}
-\item{lan}{Longitude of the ascending node \eqn{\Omega} (degrees).}
-\item{arp}{Argument of perihelion \eqn{\omega} (degrees).}
-\item{mna}{Mean anomaly \eqn{M} (degrees).}
+\item{aa}{Semimajor axis \eqn{a}{a} in astronomical units (au).}
+\item{ee}{Eccentricity \eqn{e}{e} (unitless).}
+\item{inc}{Inclination \eqn{I}{I} (degrees).}
+\item{lph}{Longitude of perihelion \eqn{\varpi}{varpi} (degrees).}
+\item{lan}{Longitude of the ascending node \eqn{\Omega}{Omega} (degrees).}
+\item{arp}{Argument of perihelion \eqn{\omega}{omega} (degrees).}
+\item{mna}{Mean anomaly \eqn{M}{M} (degrees).}
 
 The following columns were computed from the above input with \code{\link[=prepare_solution]{prepare_solution()}}:
 
-\item{lphu}{Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
-jumps).}
+\item{lphu}{Unwrapped longitude of perihelion \eqn{\varpi}{varpi} (degrees
+without jumps).}
 
-\item{lanu}{Unwrapped longitude of the ascending node \eqn{\Omega}
+\item{lanu}{Unwrapped longitude of the ascending node \eqn{\Omega}{Omega}
 (degrees without jumps).}
 
-\item{hh}{Variable: \eqn{e\sin(\varpi)}{ee * sin(lph / R2D)}.}
+\item{hh}{Variable: \eqn{e\sin(\varpi)}{e sin(lph)}.}
 
-\item{kk}{Variable: \eqn{e\cos(\varpi)}{ee * cos(lph / R2D)}.}
+\item{kk}{Variable: \eqn{e\cos(\varpi)}{e cos(lph)}.}
 
-\item{pp}{Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 * sin(0.5 * inc / R2D) *
-  sin(lan / R2D)}.}
+\item{pp}{Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 sin(0.5 I)
+  sin(Omega)}.}
 
-\item{qq}{Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 * sin(0.5 * inc / R2D) *
-  cos(lan / R2D)}.}
+\item{qq}{Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 sin(0.5 inc) *
+  cos(Omega)}.}
 
-\item{cc}{Helper: \eqn{\cos(I)}{cos(inc / R2D)}.}
+\item{cc}{Helper: \eqn{\cos(I)}{cos(I)}.}
 
-\item{dd}{Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.}
+\item{dd}{Helper: \eqn{\cos(I)/2}{cos(I) / 2}.}
 
-\item{nnx, nny, nnz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+\item{nnx, nny, nnz}{The \eqn{x}{x}, \eqn{y}{y}, and \eqn{z}{z}-components of the
 Eart's orbit unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
 instantaneous orbital plane.}
 
@@ -55,11 +55,10 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-The HNBody output of Zeebe & Lourens (2019) after some pre-processing using
+The full ZB18a solution spans the past 100 Myr.
+It contains the HNBody output of Zeebe & Lourens (2019) after some pre-processing using
 \code{\link[=prepare_solution]{prepare_solution()}}. The wikipedia page on \href{https://en.wikipedia.org/wiki/Orbital_elements}{Orbital elements} describes what the
-components relate to in order to uniquely specify an orbital plane. The
-function asks to download the files to the user's cache directory so that
-they can be accessed more quickly in the future.
+components relate to in order to uniquely specify an orbital plane.
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the

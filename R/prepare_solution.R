@@ -1,6 +1,6 @@
 #' Prepare Astronomical Solution
 #'
-#' Calculates helper columns from an astronomical solution input.
+#' `prepare_solution()` calculates helper columns from an astronomical solution input.
 #'
 #' @export
 #' @param data A data frame with the following columns:

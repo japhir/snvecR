@@ -1,25 +1,45 @@
 #' Get an Astronomical Solution
 #'
-#' Download supported astronomical solutions from the web and store it in the
-#' user's cache directory. The next use of the function will load the data from
-#' the cache rather than downloading it again. This also provides a wrapper for
-#' [astrochron::getLaskar()] if one of their supported solutions is specified,
-#' but converts the output to a [tibble][tibble::tibble-package]. Note that we
-#' do not cache these solutions locally, however.
+#' `get_solution()` downloads an astronomical solution and stores it in the user's cache
+#' directory. The next time the function is called, it will load the data from
+#' the cache rather than downloading it again.
+#'
+#' @details
+#'
+#' All astronomical solutions by Zeebe can be found on
+#'   <http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html>.
+#' Supported solutions include:
+#'
+#' - [full-ZB18a]
+#' - [ZB17]
+#' - [ZB18a_100] and [ZB18a_300]
+#' - [ZB20]
+#' - [ZB23]
+#' - [PT-ZB18a]
+#'
+#' See their respective documentation pages for details and citations.
+#'
+#' This also provides a wrapper for [astrochron::getLaskar()] if one of
+#' `"La04"`, `"La10a"`, `"La10b"`, `"La10c"`, `"La10d"`, or `"La11"` is
+#' specified, but converts the output to a [tibble][tibble::tibble-package].
+#' Note that we do not cache these solutions locally, however.
+#'
+#' It is possible to change the location of the cache directory with
+#' `options(snvecR.cachedir = "/path/to/cache")`.
 #'
 # astronomical_solution, quiet, and force are documented in get_ZB
 #' @inheritParams get_ZB
 #' @inherit get_ZB references
-#' @seealso [full_ZB18a], [ZB17], [ZB18a_100], [ZB18a_300] [ZB20], [PT_ZB18a], [ZB23]
+#' @seealso [prepare_solution], [full_ZB18a], [ZB17], [ZB18a_100], [ZB18a_300] [ZB20], [ZB23], [PT_ZB18a]
 #' @returns A [tibble][tibble::tibble-package] with the astronomical solution
 #'   (and some preprocessed new columns).
 #' @examples
-#' \donttest{
 #' \dontshow{
 #' # set the cachedir to a temporary directory
 #' pth <- withr::local_tempdir(pattern = "snvecR")
 #' withr::local_options(snvecR.cachedir = pth)
 #' }
+#' \donttest{
 #' get_solution("full-ZB18a")    # input for snvec
 #' get_solution("ZB18a-300")     # eccentricity
 #' get_solution("ZB20a")
@@ -153,7 +173,7 @@ get_solution <- function(astronomical_solution = "full-ZB18a", quiet = FALSE, fo
 # #'
 #' @param astronomical_solution Character vector with the name of the desired
 #'   solution. Defaults to `"full-ZB18a"`.
-# TODO: add something like "for list of valid solutions, mistype it on purpose."
+# TODO: document that you can also pass a dataframe directly?
 #' @param quiet Be quiet?
 #'
 #'   * If `TRUE`, hide info messages.

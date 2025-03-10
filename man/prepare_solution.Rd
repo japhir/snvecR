@@ -28,7 +28,7 @@ The easiest way to get this is with \code{\link[=get_solution]{get_solution()}}.
 A \link[tibble:tibble-package]{tibble} with the new columns added.
 }
 \description{
-Calculates helper columns from an astronomical solution input.
+\code{prepare_solution()} calculates helper columns from an astronomical solution input.
 }
 \details{
 New columns include:

@@ -66,17 +66,17 @@
 \alias{ZB23.R62}
 \alias{ZB23.R63}
 \alias{ZB23.R64}
-\title{Astronomical Solutions ZB23.RXX for the past 3.6 Gyr}
+\title{Astronomical Solutions ZB23.Rxx}
 \format{
 \subsection{\code{get_solution("ZB23.Rxx")}}{
 
 A data frame with 8,750,001 rows and 5 columns:
 \describe{
 \item{time}{Time in thousands of years (kyr).}
-\item{ecc}{Eccentricity \eqn{e} (unitless).}
-\item{inc}{Inclination \eqn{I} (radians).}
-\item{obliquity}{Obliqity \eqn{\epsilon} (radians).}
-\item{cp}{Climatic Precession \eqn{e sin(\bar{\omega})} (unitless).}
+\item{ecc}{Eccentricity \eqn{e}{e} (unitless).}
+\item{inc}{Inclination \eqn{I}{I} (radians).}
+\item{obliquity}{Obliqity \eqn{\epsilon}{epsilon} (radians).}
+\item{cp}{Climatic Precession \eqn{e \sin(\bar{\omega})}{e sin(baromega)} (unitless).}
 }
 }
 }
@@ -87,7 +87,8 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-Astronomical Solutions ZB23.RXX for the past 3.6 Gyr
+The ZB23.Rxx eccentricity solutions spand the past 3.6 Gyr. Available solutions include
+\code{"ZB23.R01"} to \code{"ZB23.R60"} and \code{"ZB23.R62"} to \code{"ZB23.R64"}.
 }
 \references{
 Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained

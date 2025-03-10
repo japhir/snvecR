@@ -6,15 +6,15 @@
 \alias{ZB20b}
 \alias{ZB20c}
 \alias{ZB20d}
-\title{Astronomical Solutions ZB20 for the past 300 Myr}
+\title{Astronomical Solutions ZB20}
 \format{
 \subsection{\code{get_solution("ZB20x")}}{
 
 A data frame with 187,501 rows and 3 columns:
 \describe{
 \item{time}{Time in thousands of years (kyr).}
-\item{ee}{Eccentricity \eqn{e} (unitless).}
-\item{inc}{Inclination \eqn{I} (degrees).}
+\item{ee}{Eccentricity \eqn{e}{e} (unitless).}
+\item{inc}{Inclination \eqn{I}{I} (degrees).}
 }
 }
 }
@@ -25,7 +25,8 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-Astronomical Solutions ZB20 for the past 300 Myr
+The ZB20x eccentricity solutions span the past 300 Myr. Available solutions
+include \code{"ZB20a"}, \code{"ZB20b"}, \code{"ZB20c"}, and \code{"ZB20d"}.
 }
 \references{
 Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained

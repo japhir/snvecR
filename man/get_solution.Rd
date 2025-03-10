@@ -28,20 +28,40 @@ A \link[tibble:tibble-package]{tibble} with the astronomical solution
 (and some preprocessed new columns).
 }
 \description{
-Download supported astronomical solutions from the web and store it in the
-user's cache directory. The next use of the function will load the data from
-the cache rather than downloading it again. This also provides a wrapper for
-\code{\link[astrochron:getLaskar]{astrochron::getLaskar()}} if one of their supported solutions is specified,
-but converts the output to a \link[tibble:tibble-package]{tibble}. Note that we
-do not cache these solutions locally, however.
+\code{get_solution()} downloads an astronomical solution and stores it in the user's cache
+directory. The next time the function is called, it will load the data from
+the cache rather than downloading it again.
+}
+\details{
+All astronomical solutions by Zeebe can be found on
+\url{http://www.soest.hawaii.edu/oceanography/faculty/zeebe_files/Astro.html}.
+Supported solutions include:
+\itemize{
+\item \link{full-ZB18a}
+\item \link{ZB17}
+\item \link{ZB18a_100} and \link{ZB18a_300}
+\item \link{ZB20}
+\item \link{ZB23}
+\item \link{PT-ZB18a}
+}
+
+See their respective documentation pages for details and citations.
+
+This also provides a wrapper for \code{\link[astrochron:getLaskar]{astrochron::getLaskar()}} if one of
+\code{"La04"}, \code{"La10a"}, \code{"La10b"}, \code{"La10c"}, \code{"La10d"}, or \code{"La11"} is
+specified, but converts the output to a \link[tibble:tibble-package]{tibble}.
+Note that we do not cache these solutions locally, however.
+
+It is possible to change the location of the cache directory with
+\code{options(snvecR.cachedir = "/path/to/cache")}.
 }
 \examples{
-\donttest{
 \dontshow{
 # set the cachedir to a temporary directory
 pth <- withr::local_tempdir(pattern = "snvecR")
 withr::local_options(snvecR.cachedir = pth)
 }
+\donttest{
 get_solution("full-ZB18a")    # input for snvec
 get_solution("ZB18a-300")     # eccentricity
 get_solution("ZB20a")
@@ -61,5 +81,5 @@ dynamical ellipticity and tidal dissipation. \emph{Paleoceanography and
 Paleoclimatology}. \doi{10.1029/2021PA004349}
 }
 \seealso{
-\link{full_ZB18a}, \link{ZB17}, \link{ZB18a_100}, \link{ZB18a_300} \link{ZB20}, \link{PT_ZB18a}, \link{ZB23}
+\link{prepare_solution}, \link{full_ZB18a}, \link{ZB17}, \link{ZB18a_100}, \link{ZB18a_300} \link{ZB20}, \link{ZB23}, \link{PT_ZB18a}
 }

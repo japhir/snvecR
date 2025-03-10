@@ -13,15 +13,15 @@
 \alias{ZB17j}
 \alias{ZB17k}
 \alias{ZB17p}
-\title{Astronomical Solutions ZB17 for the past 100 Myr}
+\title{Astronomical Solutions ZB17}
 \format{
 \subsection{\code{get_solution("ZB17x")}}{
 
 A data frame with 62,501 rows and 3 columns:
 \describe{
 \item{time}{Time in thousands of years (kyr).}
-\item{ecc}{Eccentricity \eqn{e} (unitless).}
-\item{inc}{Inclination \eqn{I} (degrees).}
+\item{ecc}{Eccentricity \eqn{e}{e} (unitless).}
+\item{inc}{Inclination \eqn{I}{I} (degrees).}
 }
 }
 }
@@ -32,7 +32,10 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-Astronomical Solutions ZB17 for the past 100 Myr
+The ZB17x eccentricity solutions span the past 100 Myr.
+Available solutions include \code{"ZB17a"}, \code{"ZB17b"}, \code{"ZB17c"}, \code{"ZB17d"},
+\code{"ZB17e"}, \code{"ZB17f"}, \code{"ZB17h"}, \code{"ZB17i"}, \code{"ZB17j"}, \code{"ZB17k"}, and
+\code{"ZB17p"}.
 }
 \references{
 Zeebe, R. E. (2017). Numerical Solutions for the orbital motion of the Solar

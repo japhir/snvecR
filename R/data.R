@@ -1,51 +1,50 @@
 # document the astronomical solutions
 # we cache them locally, so I document them with @name and return type NULL.
 
-#' Full Astronomical Solution ZB18a for the past 100 Myr
+#' Full Astronomical Solution ZB18a
 #'
-#' The HNBody output of Zeebe & Lourens (2019) after some pre-processing using
+#' The full ZB18a solution spans the past 100 Myr.
+#' It contains the HNBody output of Zeebe & Lourens (2019) after some pre-processing using
 #' [prepare_solution()]. The wikipedia page on [Orbital
 #' elements](https://en.wikipedia.org/wiki/Orbital_elements) describes what the
-#' components relate to in order to uniquely specify an orbital plane. The
-#' function asks to download the files to the user's cache directory so that
-#' they can be accessed more quickly in the future.
+#' components relate to in order to uniquely specify an orbital plane.
 #'
 #' @format ## `get_solution("full-ZB18a")`
 #' A data frame with 250,001 rows and 20 columns:
 #' \describe{
-#'   \item{t}{Time \eqn{t} (days).}
+#'   \item{t}{Time \eqn{t}{t} (days).}
 #'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{aa}{Semimajor axis \eqn{a} in astronomical units (au).}
-#'   \item{ee}{Eccentricity \eqn{e} (unitless).}
-#'   \item{inc}{Inclination \eqn{I} (degrees).}
-#'   \item{lph}{Longitude of perihelion \eqn{\varpi} (degrees).}
-#'   \item{lan}{Longitude of the ascending node \eqn{\Omega} (degrees).}
-#'   \item{arp}{Argument of perihelion \eqn{\omega} (degrees).}
-#'   \item{mna}{Mean anomaly \eqn{M} (degrees).}
+#'   \item{aa}{Semimajor axis \eqn{a}{a} in astronomical units (au).}
+#'   \item{ee}{Eccentricity \eqn{e}{e} (unitless).}
+#'   \item{inc}{Inclination \eqn{I}{I} (degrees).}
+#'   \item{lph}{Longitude of perihelion \eqn{\varpi}{varpi} (degrees).}
+#'   \item{lan}{Longitude of the ascending node \eqn{\Omega}{Omega} (degrees).}
+#'   \item{arp}{Argument of perihelion \eqn{\omega}{omega} (degrees).}
+#'   \item{mna}{Mean anomaly \eqn{M}{M} (degrees).}
 #'
 #'   The following columns were computed from the above input with [prepare_solution()]:
 #'
-#'   \item{lphu}{Unwrapped longitude of perihelion \eqn{\varpi} (degrees without
-#'   jumps).}
+#'   \item{lphu}{Unwrapped longitude of perihelion \eqn{\varpi}{varpi} (degrees
+#'   without jumps).}
 #'
-#'   \item{lanu}{Unwrapped longitude of the ascending node \eqn{\Omega}
+#'   \item{lanu}{Unwrapped longitude of the ascending node \eqn{\Omega}{Omega}
 #'   (degrees without jumps).}
 #'
-#'   \item{hh}{Variable: \eqn{e\sin(\varpi)}{ee * sin(lph / R2D)}.}
+#'   \item{hh}{Variable: \eqn{e\sin(\varpi)}{e sin(lph)}.}
 #'
-#'   \item{kk}{Variable: \eqn{e\cos(\varpi)}{ee * cos(lph / R2D)}.}
+#'   \item{kk}{Variable: \eqn{e\cos(\varpi)}{e cos(lph)}.}
 #'
-#'   \item{pp}{Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 * sin(0.5 * inc / R2D) *
-#'   sin(lan / R2D)}.}
+#'   \item{pp}{Variable: \eqn{2\sin(0.5I)\sin(\Omega)}{2 sin(0.5 I)
+#'   sin(Omega)}.}
 #'
-#'   \item{qq}{Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 * sin(0.5 * inc / R2D) *
-#'   cos(lan / R2D)}.}
+#'   \item{qq}{Variable: \eqn{2\sin(0.5I)\cos(\Omega)}{2 sin(0.5 inc) *
+#'   cos(Omega)}.}
 #'
-#'   \item{cc}{Helper: \eqn{\cos(I)}{cos(inc / R2D)}.}
+#'   \item{cc}{Helper: \eqn{\cos(I)}{cos(I)}.}
 #'
-#'   \item{dd}{Helper: \eqn{\cos(I)/2}{cos(inc / R2D / 2)}.}
+#'   \item{dd}{Helper: \eqn{\cos(I)/2}{cos(I) / 2}.}
 #'
-#'   \item{nnx, nny, nnz}{The \eqn{x}, \eqn{y}, and \eqn{z}-components of the
+#'   \item{nnx, nny, nnz}{The \eqn{x}{x}, \eqn{y}{y}, and \eqn{z}{z}-components of the
 #'   Eart's orbit unit normal vector \eqn{\vec{n}}{n}, normal to Earth's
 #'   instantaneous orbital plane.}
 #    HCI = heliocentric inertial
@@ -76,14 +75,19 @@
 #' @aliases full-ZB18a
 NULL
 
-#' Astronomical Solutions ZB17 for the past 100 Myr
+#' Astronomical Solutions ZB17
+#'
+#' The ZB17x eccentricity solutions span the past 100 Myr.
+#' Available solutions include `"ZB17a"`, `"ZB17b"`, `"ZB17c"`, `"ZB17d"`,
+#' `"ZB17e"`, `"ZB17f"`, `"ZB17h"`, `"ZB17i"`, `"ZB17j"`, `"ZB17k"`, and
+#' `"ZB17p"`.
 #'
 #' @format ## `get_solution("ZB17x")`
 #' A data frame with 62,501 rows and 3 columns:
 #' \describe{
 #'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{ecc}{Eccentricity \eqn{e} (unitless).}
-#'   \item{inc}{Inclination \eqn{I} (degrees).}
+#'   \item{ecc}{Eccentricity \eqn{e}{e} (unitless).}
+#'   \item{inc}{Inclination \eqn{I}{I} (degrees).}
 #' }
 #' @inherit full_ZB18a source
 #' @references
@@ -94,14 +98,17 @@ NULL
 #' @aliases ZB17a ZB17b ZB17c ZB17d ZB17e ZB17f ZB17h ZB17i ZB17j ZB17k ZB17p
 NULL
 
-#' Astronomical Solution ZB18a for the Past 100 Myr
+#' Astronomical Solution ZB18a
+#'
+#' The ZB18a_100 eccentricity solution spans the past 100 Myr. See [ZB18a_300]
+#' for the past 300 Myr.
 #'
 #' @format ## `get_solution("ZB18a-100")`
 #' A data frame with 62,501 rows and 3 columns:
 #' \describe{
 #'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{ecc}{Eccentricity \eqn{e} (unitless).}
-#'   \item{inc}{Inclination \eqn{I} (degrees).}
+#'   \item{ecc}{Eccentricity \eqn{e}{e} (unitless).}
+#'   \item{inc}{Inclination \eqn{I}{I} (degrees).}
 #' }
 #' @inherit full_ZB18a source
 #' @references
@@ -112,19 +119,21 @@ NULL
 #' @aliases "ZB18a-100"
 NULL
 
-#' Astronomical Solution ZB18a for the Past 300 Myr
+#' Astronomical Solution ZB18a
+#'
+#' The ZB18a_300 eccentricity solution spans the past 300 Myr. See [ZB18a_100]
+#' for the past 100 Myr.
 #'
 #' @format ## `get_solution("ZB18a-300")`
 #' A data frame with 187,501 rows and 3 columns:
 #' \describe{
-#'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{ecc}{Eccentricity \eqn{e} (unitless).}
-#'   \item{inc}{Inclination \eqn{I} (degrees).}
+#'     \item{time}{Time in thousands of years (kyr).}
+#'     \item{ecc}{Eccentricity \eqn{e}{e} (unitless).} \item{inc}{Inclination
+#'     \eqn{I}{I} (degrees).}
 #' }
 #' @inherit full_ZB18a source
-#' @references
-#' Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
-#'   Paleocene–Eocene boundary age constrained by geology and astronomy.
+#' @references Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and
+#'   the Paleocene–Eocene boundary age constrained by geology and astronomy.
 #'   _Science_, 365(6456), 926–929. \doi{10.1126/science.aax0612}.'
 #'
 #' Zeebe, R. E. and Lourens, L. J. (2022). Geologically constrained
@@ -134,14 +143,17 @@ NULL
 #' @aliases ZB18a "ZB18a-300"
 NULL
 
-#' Astronomical Solutions ZB20 for the past 300 Myr
+#' Astronomical Solutions ZB20
+#'
+#' The ZB20x eccentricity solutions span the past 300 Myr. Available solutions
+#' include `"ZB20a"`, `"ZB20b"`, `"ZB20c"`, and `"ZB20d"`.
 #'
 #' @format ## `get_solution("ZB20x")`
 #' A data frame with 187,501 rows and 3 columns:
 #' \describe{
 #'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{ee}{Eccentricity \eqn{e} (unitless).}
-#'   \item{inc}{Inclination \eqn{I} (degrees).}
+#'   \item{ee}{Eccentricity \eqn{e}{e} (unitless).}
+#'   \item{inc}{Inclination \eqn{I}{I} (degrees).}
 #' }
 #' @inherit full_ZB18a source
 #' @references
@@ -152,15 +164,21 @@ NULL
 #' @aliases ZB20a ZB20b ZB20c ZB20d
 NULL
 
-#' Astronomical Solutions PT-ZB18a(x.xxxx,y.yyyy) for the past 100 Myr
+#' Astronomical Solutions PT-ZB18a(E<sub>d</sub>,T<sub>d</sub>)
 #'
-#' @format ## `get_solution("PT-ZB18a(1,1)")`
+#' The pre-computed precession-tilt solutions
+#' PT-ZB18a(E<sub>d</sub>,T<sub>d</sub>) span the past 100 Myr. Available
+#' solutions include all combinations of dynamical ellipticity values between
+#' 0.9950 and 1.0050 in increments of 0.0010 and tidal dissipation values
+#' between 0.000 and 1.2000 in increments of 0.1.
+#'
+#' @format ## `get_solution("PT-ZB18a(1.000,1.000)")`
 #' A data frame with 249,480 rows and 4 columns:
 #' \describe{
 #'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{epl}{Obliqity \eqn{\epsilon} (radians).}
-#'   \item{phi}{Axial Precession \eqn{phi} (radians).}
-#'   \item{cp}{Climatic Precession \eqn{e sin(\bar{\omega})} (unitless).}
+#'   \item{epl}{Obliqity \eqn{\epsilon}{epsilon} (radians).}
+#'   \item{phi}{Axial Precession \eqn{\phi}{phi} (radians).}
+#'   \item{cp}{Climatic Precession \eqn{e \sin(\bar{\omega})}{e sin(baromega)} (unitless).}
 #' }
 #' @inherit full_ZB18a source
 #' @references
@@ -171,16 +189,19 @@ NULL
 #' @aliases PT-ZB18a "PT-ZB18a(1,1)" "PT-ZB18a(1,0)"
 NULL
 
-#' Astronomical Solutions ZB23.RXX for the past 3.6 Gyr
+#' Astronomical Solutions ZB23.Rxx
+#'
+#' The ZB23.Rxx eccentricity solutions spand the past 3.6 Gyr. Available solutions include
+#' `"ZB23.R01"` to `"ZB23.R60"` and `"ZB23.R62"` to `"ZB23.R64"`.
 #'
 #' @format ## `get_solution("ZB23.Rxx")`
 #' A data frame with 8,750,001 rows and 5 columns:
 #' \describe{
 #'   \item{time}{Time in thousands of years (kyr).}
-#'   \item{ecc}{Eccentricity \eqn{e} (unitless).}
-#'   \item{inc}{Inclination \eqn{I} (radians).}
-#'   \item{obliquity}{Obliqity \eqn{\epsilon} (radians).}
-#'   \item{cp}{Climatic Precession \eqn{e sin(\bar{\omega})} (unitless).}
+#'   \item{ecc}{Eccentricity \eqn{e}{e} (unitless).}
+#'   \item{inc}{Inclination \eqn{I}{I} (radians).}
+#'   \item{obliquity}{Obliqity \eqn{\epsilon}{epsilon} (radians).}
+#'   \item{cp}{Climatic Precession \eqn{e \sin(\bar{\omega})}{e sin(baromega)} (unitless).}
 #' }
 #' @inherit full_ZB18a source
 #' @references

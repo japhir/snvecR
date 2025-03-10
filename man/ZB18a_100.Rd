@@ -3,15 +3,15 @@
 \name{ZB18a_100}
 \alias{ZB18a_100}
 \alias{"ZB18a-100"}
-\title{Astronomical Solution ZB18a for the Past 100 Myr}
+\title{Astronomical Solution ZB18a}
 \format{
 \subsection{\code{get_solution("ZB18a-100")}}{
 
 A data frame with 62,501 rows and 3 columns:
 \describe{
 \item{time}{Time in thousands of years (kyr).}
-\item{ecc}{Eccentricity \eqn{e} (unitless).}
-\item{inc}{Inclination \eqn{I} (degrees).}
+\item{ecc}{Eccentricity \eqn{e}{e} (unitless).}
+\item{inc}{Inclination \eqn{I}{I} (degrees).}
 }
 }
 }
@@ -22,7 +22,8 @@ All astronomical solutions by Zeebe can be found on
 They can be loaded into R quickly, using \code{\link[=get_solution]{get_solution()}}.
 }
 \description{
-Astronomical Solution ZB18a for the Past 100 Myr
+The ZB18a_100 eccentricity solution spans the past 100 Myr. See \link{ZB18a_300}
+for the past 300 Myr.
 }
 \references{
 Zeebe, R. E., & Lourens, L. J. (2019). Solar System chaos and the
