@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   analyze_grid_td-ed: analyze_grid_td-ed.html
   compare_with_c: compare_with_c.html
-last_built: 2025-03-06T12:53Z
+last_built: 2025-03-10T13:02Z
 urls:
   reference: https://japhir.github.io/snvecR/reference
   article: https://japhir.github.io/snvecR/articles
