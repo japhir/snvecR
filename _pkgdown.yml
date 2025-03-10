@@ -1,4 +1,4 @@
 url: https://japhir.github.io/snvecR/
 template:
   bootstrap: 5
-
+  math-rendering: katex
